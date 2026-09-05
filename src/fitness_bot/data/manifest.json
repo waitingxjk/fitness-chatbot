@@ -1,0 +1,11 @@
+{
+  "source": "flutter-init/assets/catalog",
+  "upstream": "https://github.com/hasaneyldrm/exercises-dataset",
+  "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+  "exercise_count": 1324,
+  "sha256": {
+    "exercises_zh_hans.json": "5572c415c2106182be0c8e5a22974b17b5b0497835b605d9d8719f8a43fda85c",
+    "catalog_terms_zh_hans.json": "01a25eea67ebf7fe7b0565f1fe5fcaacf2bc516993551e27a9ba0562ed553b5d"
+  },
+  "media": "Metadata references only; images remain in the iOS app."
+}
