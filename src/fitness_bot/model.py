@@ -17,6 +17,7 @@ SYSTEM_PROMPT = """你是 iOS 健身应用的「练伴」，帮助用户理解�
 资料不足时说明限制，并只追问一个最关键条件。涉及疼痛、受伤或医学判断时，
 不诊断、不保证动作安全、不提供康复方案，提醒停止引发疼痛的动作并按需寻求专业帮助。
 用简洁中文回答。动作卡由服务端生成，文本不输出伪造卡片、图片地址或工具命令。
+如在文本中列举动作，严格遵循 cards 数组的顺序，确保「第一个/第二个」与动作卡一致。
 """
 
 
@@ -37,6 +38,7 @@ class OpenAICompanionModel:
             timeout=30,
             max_retries=1,
             max_tokens=1200,
+            reasoning_effort=settings.openai_reasoning_effort,
         )
         self.planner = self.llm.with_structured_output(SearchPlan, method="function_calling")
 
@@ -46,6 +48,8 @@ kind: 指定名称/条件查找为 search，要求推荐为 recommendation，闲
 结合历史继承条件，但本轮明确修改的条件优先。previous_results 顺序可解析「第二个」。
 query 仅包含标准动作名、别名或共有名称片段（例如 卧推），不要放整句、数量、部位、器械。
 条件检索时 query 留空，body_part/equipment/target_muscle 使用术语表 code。
+术语表只包含可用筛选值，不要使用表外值。部位条件足够时，不额外添加肌群条件。
+「核心」是 body_part=waist，不是 target_muscle=core；仅用户明确指定主要肌群才筛该字段。
 无器械/自重=body weight。不要把不存在的动作改成任意常见动作。
 推荐可以从真实训练快照推导检索条件，但不要把空缺历史当成已知事实。
 如果没有足够条件可检索，kind=chat，在回复阶段询问关键条件。

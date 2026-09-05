@@ -21,6 +21,8 @@ uv run uvicorn fitness_bot.app:create_app --factory --reload
 `.env` 配置 `OPENAI_API_KEY`、`OPENAI_MODEL`，以及可选的 `OPENAI_BASE_URL`。
 兼容已有 `OPENAI_API_BASE`，两者同时存在时 `OPENAI_BASE_URL` 优先。
 默认模型为 `gpt-4o-mini`，请设为所用供应商实际支持的模型；需要支持工具调用和流式输出。
+支持推理的模型可通过 `OPENAI_REASONING_EFFORT` 配置强度；默认不发送此参数。
+快速实测示例：`OPENAI_MODEL=gpt-5.4-mini OPENAI_REASONING_EFFORT=low uv run fitness-bot`。
 没有 Key 时目录和健康检查仍可用，聊天返回 HTTP 503；不会伪装成已调用真实模型。
 现有 `.env` 保留，不进入 Git。
 

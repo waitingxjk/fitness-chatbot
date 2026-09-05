@@ -22,6 +22,20 @@ class Catalog:
         if len(versions) != 1:
             raise ValueError("Catalog contains mixed versions")
         self.version = versions.pop()
+        fields = {
+            "bodyPart": "body_part_code",
+            "equipment": "equipment_code",
+            "muscle": "target_muscle_code",
+        }
+        filter_codes = {
+            kind: {getattr(e, field) for e in exercises if e.is_active}
+            for kind, field in fields.items()
+        }
+        # The full iOS terminology also describes secondary muscles; those are not
+        # valid values for our exact primary-muscle filter.
+        self.search_terms = [
+            term for term in terms if term["code"] in filter_codes.get(term["type"], set())
+        ]
 
     @classmethod
     def load(cls, directory: Path = DATA_DIR) -> "Catalog":

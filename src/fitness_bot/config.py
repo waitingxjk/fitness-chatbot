@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -10,6 +12,9 @@ class Settings(BaseSettings):
         default=None, validation_alias=AliasChoices("OPENAI_BASE_URL", "OPENAI_API_BASE")
     )
     openai_model: str = "gpt-4o-mini"
+    openai_reasoning_effort: Literal["none", "minimal", "low", "medium", "high", "xhigh"] | None = (
+        None
+    )
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
     chat_timeout_seconds: float = Field(default=90, gt=0, le=600)

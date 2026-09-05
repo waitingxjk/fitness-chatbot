@@ -69,6 +69,17 @@ async def test_followup_context_is_forwarded_without_cross_request_memory():
     assert model.reference["previous_results"] == []
 
 
+async def test_planner_only_receives_terms_usable_as_primary_filters():
+    catalog = Catalog.load()
+    model = PlannedModel(SearchPlan(kind="chat"))
+    _ = [e async for e in CompanionAgent(catalog, model).stream(ChatRequest(message="核心动作"))]
+    muscles = {t["code"] for t in model.reference["terms"] if t["type"] == "muscle"}
+    actual_primary = {e.target_muscle_code for e in catalog.exercises if e.is_active}
+    assert muscles == actual_primary
+    assert "core" not in muscles
+    assert "abs" in muscles
+
+
 def test_timeout_is_terminal():
     agent = CompanionAgent(Catalog.load(), PlannedModel(SearchPlan(kind="chat"), delay=1))
     settings = Settings(_env_file=None, chat_timeout_seconds=0.03)

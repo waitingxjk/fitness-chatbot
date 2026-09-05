@@ -38,7 +38,7 @@ class CompanionAgent:
         request = state["request"]
         ids = [r.exercise_id for r in request.context.recent_exercises]
         reference = {
-            "terms": self.catalog.terms,
+            "terms": self.catalog.search_terms,
             "previous_results": [
                 e.model_dump(mode="json", by_alias=True)
                 for item in request.previous_result_ids
