@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light"><title>练伴 · Chatbot Playground</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script>
+</head>
+<body>
+  <button id="backdrop" class="backdrop" aria-label="关闭侧栏" hidden></button>
+  <aside id="sidebar" class="sidebar">
+    <a class="brand" href="./" aria-label="练伴测试台首页"><span class="brand-icon">练</span><span>练伴<small>CHATBOT PLAYGROUND</small></span></a>
+    <button id="new-chat" class="new-chat"><span aria-hidden="true">＋</span> 新建对话 <kbd>⌘ K</kbd></button>
+    <div class="section-label"><span>历史对话</span><button id="refresh-history" class="icon-button" aria-label="刷新历史对话" title="刷新历史对话">↻</button></div>
+    <nav id="history" aria-label="历史对话"></nav>
+    <button id="more-history" class="more" hidden>加载更多对话</button>
+    <div class="sidebar-footer"><span class="local-dot"></span><div>本地测试环境<small>会话保存在服务端数据库</small></div><span class="version">v0.1</span></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar">
+      <button id="toggle-sidebar" class="icon-button mobile-only" aria-label="打开历史对话" aria-expanded="false">☰</button>
+      <div class="heading"><span class="eyebrow">对话测试</span><h1 id="conversation-title">新对话</h1></div>
+      <button id="connection" class="connection"><span id="connection-dot" class="dot"></span><span id="connection-label">连接中</span></button>
+      <button id="toggle-inspector" class="secondary" aria-expanded="true">运行面板</button>
+    </header>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <div class="workbody">
+      <section class="chat-column" aria-label="对话区">
+        <div id="messages" class="messages" aria-label="聊天记录" aria-busy="false">
+          <div id="welcome" class="welcome"><span class="welcome-mark" aria-hidden="true">↗</span><p class="eyebrow">和练伴聊聊训练</p><h2>从一个动作，<br>开始这次对话。</h2><p class="welcome-copy">搜索动作、获取训练推荐，或接着上次的话题。<br>在右侧查看每一步处理过程和流式事件。</p><div class="suggestions"><button data-prompt="帮我找哑铃卧推的动作">搜索哑铃卧推 <span>↗</span></button><button data-prompt="只有哑铃，推荐三个适合练背的动作">用哑铃练背 <span>↗</span></button><button data-prompt="你好，你能怎样帮我安排训练？">了解练伴 <span>↗</span></button></div></div>
+          <div id="turns"></div>
+        </div>
+        <form id="composer" class="composer">
+          <div id="attachments" class="attachments" aria-label="待发送图片" hidden></div>
+          <input id="image-files" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+          <label class="sr-only" for="message">输入消息</label>
+          <textarea id="message" rows="2" maxlength="4000" placeholder="输入问题，或直接粘贴图片…"></textarea>
+          <div class="composer-bottom"><button id="attach-image" class="attach-button" type="button" title="JPEG / PNG / WebP，每张最多 5 MiB，最多 3 张">＋ 图片</button><span><span class="tiny-dot"></span> HTTP 流式对话 <span class="keyboard-hint">· Enter 发送，Shift + Enter 换行</span></span><button id="send" class="send" type="submit">发送 <span aria-hidden="true">↑</span></button><button id="stop" class="stop" type="button" hidden>■ 停止生成</button></div>
+        </form>
+        <p class="composer-note" id="composer-note">可直接粘贴图片 · 每条最多 3 张，每张 5 MiB · 历史自动保存</p>
+      </section>
+      <aside id="inspector" class="inspector" aria-label="运行面板">
+        <div class="inspector-title"><h2>运行面板</h2><span class="protocol">NDJSON</span></div>
+        <div class="inspector-tabs" role="tablist" aria-label="运行面板内容"><button id="tab-process" role="tab" aria-selected="true" aria-controls="panel-process" data-tab="process">处理过程</button><button id="tab-events" role="tab" aria-selected="false" aria-controls="panel-events" data-tab="events" tabindex="-1">原始事件</button><button id="tab-context" role="tab" aria-selected="false" aria-controls="panel-context" data-tab="context" tabindex="-1">上下文</button></div>
+        <section id="panel-process" class="inspector-panel" role="tabpanel" aria-labelledby="tab-process"><div class="panel-intro">展示实际执行的阶段、检索条件与结果摘要，不包含模型内部推理。</div><div id="run-summary" class="run-summary">发送消息后，处理过程将在这里出现。</div><div id="trace"></div><dl id="run-meta" class="run-meta"></dl></section>
+        <section id="panel-events" class="inspector-panel" role="tabpanel" aria-labelledby="tab-events" hidden><div class="panel-intro">实时展示各类流事件。仅保留本页最近 500 条；历史对话可查看保存的最终响应。</div><div id="event-count" class="event-count">尚无事件</div><div id="events"></div></section>
+        <section id="panel-context" class="inspector-panel" role="tabpanel" aria-labelledby="tab-context" hidden><label for="context" class="context-label">下一条消息的训练上下文</label><p class="panel-intro">可填写器械条件和训练快照。上下文随每条消息保存；切换对话时恢复最后一条消息的上下文。</p><textarea id="context" class="code-input" spellcheck="false" rows="16">{
+  "available_equipment": [],
+  "recent_exercises": [],
+  "active_workout": null
+}</textarea><button id="reset-context" class="secondary">重置上下文</button><p class="panel-intro">示例器械代码：<code>dumbbell</code>、<code>barbell</code>。会话历史由服务器自动补充。</p></section>
+      </aside>
+    </div>
+  </main>
+  <dialog id="connection-dialog"><form method="dialog"><div class="dialog-heading"><h2>服务连接</h2><button class="icon-button" aria-label="关闭">×</button></div></form><p class="dialog-copy">测试页直接连接提供此页面的 chatbot 服务。</p><label for="base-url">当前服务地址</label><input id="base-url" readonly><div id="health-details" class="health-details"></div><button id="reconnect" class="send">重新连接</button><p class="panel-intro">如需连接其他实例，请打开该实例的 <code>/playground/</code>。</p></dialog>
+  <dialog id="image-dialog"><form method="dialog"><div class="dialog-heading"><h2>图片预览</h2><button class="icon-button" aria-label="关闭图片预览">×</button></div></form><img id="image-preview" alt="上传图片的大图预览"></dialog>
+  <dialog id="exercise-dialog"><form method="dialog"><div class="dialog-heading"><h2 id="exercise-title">动作详情</h2><button class="icon-button" aria-label="关闭动作详情">×</button></div></form><div id="exercise-detail"></div></dialog>
+</body>
+</html>

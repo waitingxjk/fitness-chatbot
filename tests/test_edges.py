@@ -23,7 +23,7 @@ class PlannedModel:
         self.request = request
         return self.search_plan
 
-    async def stream_reply(self, request, plan, cards):
+    async def stream_reply(self, request, plan, cards, previous_results):
         await asyncio.sleep(self.delay)
         yield "请告诉我你想训练的部位。"
 

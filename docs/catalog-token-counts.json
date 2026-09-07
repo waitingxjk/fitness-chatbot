@@ -1,0 +1,38 @@
+{
+  "model": "gpt-5.4-mini",
+  "encoding": "o200k_base",
+  "exercise_count": 1324,
+  "variants": {
+    "id_name_lines": {
+      "tokens": 18116,
+      "average_tokens_per_exercise": 13.7,
+      "utf8_bytes": 41097
+    },
+    "id_name_attributes_lines": {
+      "tokens": 36634,
+      "average_tokens_per_exercise": 27.7,
+      "utf8_bytes": 98047
+    },
+    "id_name_first_step_lines": {
+      "tokens": 46337,
+      "average_tokens_per_exercise": 35.0,
+      "utf8_bytes": 125568
+    },
+    "id_name_full_description_lines": {
+      "tokens": 160393,
+      "average_tokens_per_exercise": 121.1,
+      "utf8_bytes": 495253
+    },
+    "id_name_full_description_json": {
+      "tokens": 169664,
+      "average_tokens_per_exercise": 128.1,
+      "utf8_bytes": 540271
+    },
+    "current_full_catalog_json_compact": {
+      "tokens": 378303,
+      "average_tokens_per_exercise": 285.7,
+      "utf8_bytes": 1162099
+    }
+  },
+  "scope": "Catalog content only; excludes messages framing, tools, history and responses."
+}

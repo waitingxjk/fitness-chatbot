@@ -10,10 +10,13 @@ dependencies = [
   "langgraph>=1.0,<2",
   "langchain-openai>=1.0,<2",
   "pydantic-settings>=2.7,<3",
+  "sqlalchemy[asyncio]>=2.0,<3",
+  "asyncmy>=0.2,<1",
+  "pillow>=11,<13",
 ]
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "pytest-asyncio>=1,<2", "httpx>=0.28,<1", "ruff>=0.12,<1"]
+dev = ["pytest>=8,<10", "pytest-asyncio>=1,<2", "httpx>=0.28,<1", "ruff>=0.12,<1", "aiosqlite>=0.21,<1"]
 
 [project.scripts]
 fitness-bot = "fitness_bot.__main__:main"

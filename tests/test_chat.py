@@ -18,7 +18,7 @@ class FakeModel:
     async def plan(self, request, terms):
         return SearchPlan(kind=self.kind, query="卧推", equipment="dumbbell")
 
-    async def stream_reply(self, request, plan, cards):
+    async def stream_reply(self, request, plan, cards, previous_results):
         yield "找到以下动作。\n"
         if self.fail:
             raise RuntimeError("secret-provider-detail")

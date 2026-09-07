@@ -14,3 +14,11 @@ This backend copies exercise metadata and instructions, including media identifi
 It does not copy or serve exercise JPG/GIF files. The iOS app resolves its own media.
 The upstream media attribution is **© Gym visual — https://gymvisual.com/**;
 media is governed separately from the dataset's MIT license.
+
+## Marked
+
+Web Markdown parsing uses Marked 16.4.2 (MIT), bundled locally without a runtime CDN dependency.
+Source: https://github.com/markedjs/marked/tree/v16.4.2
+License: src/fitness_bot/web/vendor/marked-LICENSE.md
+NPM tarball SHA-1: 4959a64be6c486f0db7467ead7ce288de54290a3
+Only lexer output is used; application code creates allowlisted DOM elements and text nodes.

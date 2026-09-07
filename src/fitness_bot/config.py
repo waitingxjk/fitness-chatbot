@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal
 
 from pydantic import AliasChoices, Field, SecretStr
@@ -5,7 +6,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(".env", ".env.mysql"), env_file_encoding="utf-8", extra="ignore"
+    )
 
     openai_api_key: SecretStr | None = None
     openai_base_url: str | None = Field(
@@ -18,6 +21,8 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
     chat_timeout_seconds: float = Field(default=90, gt=0, le=600)
+    database_url: SecretStr | None = None
+    image_directory: Path = Path("runtime/uploads")
 
     @property
     def model_configured(self) -> bool:

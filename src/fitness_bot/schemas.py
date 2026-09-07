@@ -4,10 +4,12 @@ from datetime import datetime
 from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 from pydantic.alias_generators import to_camel
 
 Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)]
+ImageId = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
+InputText = Annotated[str, StringConstraints(strip_whitespace=True, max_length=4000)]
 ExerciseId = Annotated[str, StringConstraints(min_length=1, max_length=64)]
 
 
@@ -34,7 +36,8 @@ class Exercise(BaseModel):
 
 class Message(BaseModel):
     role: Literal["user", "assistant"]
-    text: Text
+    text: InputText
+    images: list[ImageId] = Field(default_factory=list, max_length=3)
 
 
 class WorkoutSnapshot(BaseModel):
@@ -63,11 +66,19 @@ class TrainingContext(BaseModel):
 class ChatRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    message: Text
+    message: InputText = ""
+    images: list[ImageId] = Field(default_factory=list, max_length=3)
+    request_id: UUID = Field(default_factory=uuid4)
     conversation_id: UUID = Field(default_factory=uuid4)
     history: list[Message] = Field(default_factory=list, max_length=30)
     previous_result_ids: list[ExerciseId] = Field(default_factory=list, max_length=3)
     context: TrainingContext = Field(default_factory=TrainingContext)
+
+    @model_validator(mode="after")
+    def require_content(self):
+        if not self.message and not self.images:
+            raise ValueError("请提供文字或至少一张图片。")
+        return self
 
 
 class SearchPlan(BaseModel):
@@ -86,6 +97,13 @@ class ExerciseCard(BaseModel):
     can_add_to_active_workout: bool
 
 
+class ProcessingStep(BaseModel):
+    stage: Literal["understanding", "retrieving", "responding"]
+    title: str
+    summary: str
+    data: dict = Field(default_factory=dict)
+
+
 class ChatResponse(BaseModel):
     conversation_id: UUID
     result_id: UUID = Field(default_factory=uuid4)
@@ -93,3 +111,4 @@ class ChatResponse(BaseModel):
     text: str
     cards: list[ExerciseCard]
     catalog_version: str
+    trace: list[ProcessingStep] = Field(default_factory=list)
