@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { consumeNDJSON, newTurn, applyEvent } from '../../src/fitness_bot/web/stream.mjs';
+import { consumeNDJSON, newTurn, applyEvent, completionLabel } from '../../src/fitness_bot/web/stream.mjs';
 
 function response(text, size = 1) {
   const bytes = new TextEncoder().encode(text);
@@ -66,4 +66,17 @@ test('raw event history is bounded while all text deltas are retained', () => {
   assert.equal(turn.eventCount,600);
   assert.equal(turn.events.length,500);
   assert.equal(turn.events[0].sequence,101);
+});
+
+
+test('omitted review sections are visibly incomplete in live and historical responses', () => {
+  const turn = newTurn('分析历史');
+  applyEvent(turn, {type:'done', response:{review:{findings:[],omitted_findings:1}}});
+  assert.equal(completionLabel(turn), '分析未完成');
+  turn.response.review.findings = [{conclusion:'可保留的分析'}];
+  assert.equal(completionLabel(turn), '部分完成');
+  assert.equal(completionLabel({status:'completed',response:turn.response}), '部分完成');
+  turn.response.review.omitted_findings = 0;
+  assert.equal(completionLabel(turn), '已完成');
+  assert.equal(completionLabel({status:'failed'}), '未完成');
 });

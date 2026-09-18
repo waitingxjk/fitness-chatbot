@@ -50,10 +50,22 @@ class Catalog:
             raise ValueError("Catalog count mismatch")
         return cls(exercises, json.loads((directory / "catalog_terms_zh_hans.json").read_text()))
 
+    def with_personal(self, exercises: list[Exercise]) -> "Catalog":
+        """Build an isolated view; never mutate the shared standard snapshot."""
+        catalog = Catalog([e for e in self.exercises if e.source_kind == "standard"], self.terms)
+        for exercise in exercises:
+            if exercise.source_kind != "custom" or exercise.id in catalog._by_id:
+                raise ValueError("Invalid personal catalog entry")
+            catalog.exercises.append(exercise)
+            catalog._by_id[exercise.id] = exercise
+        return catalog
+
     def get(self, exercise_id: str) -> Exercise | None:
         return self._by_id.get(exercise_id)
 
     def label(self, kind: str, code: str) -> str:
+        if code == "unknown":
+            return "待补充"
         return next(
             (t["displayNameZhHans"] for t in self.terms if t["type"] == kind and t["code"] == code),
             code,

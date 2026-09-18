@@ -1,0 +1,42 @@
+{
+  "sourceId": "local-install-001",
+  "version": 1,
+  "deleted": false,
+  "workout": {
+    "id": "local-workout-001",
+    "title": "胸部训练",
+    "status": "active",
+    "startedAt": "2026-09-07T01:00:00Z",
+    "pausedAt": null,
+    "pausedDurationSeconds": 0,
+    "endedAt": null,
+    "createdAt": "2026-09-07T01:00:00Z",
+    "updatedAt": "2026-09-07T01:10:00Z",
+    "records": [{
+      "id": "local-record-001",
+      "workoutId": "local-workout-001",
+      "exerciseId": "0289",
+      "exerciseNameSnapshot": "哑铃卧推",
+      "sequence": 0,
+      "occurredAt": "2026-09-07T01:01:00Z",
+      "detailType": "weightedReps",
+      "detailPayload": {"legacyNote": "保留原始输入", "weight": -1, "nested": [true, null, 2]},
+      "feelingPayload": {"note": "轻松", "legacyRating": 3},
+      "isDraft": true,
+      "version": 1,
+      "sets": [{
+        "id": "local-set-001",
+        "exerciseRecordId": "local-record-001",
+        "sequence": 0,
+        "loadType": "external",
+        "loadValue": -1,
+        "loadUnit": "kg",
+        "repetitions": 0,
+        "durationSeconds": null,
+        "difficulty": null,
+        "rpe": null,
+        "isCompleted": false
+      }]
+    }]
+  }
+}

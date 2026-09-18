@@ -1,3 +1,5 @@
+import {applyReportEvent, reportFromResponse, reportText} from './content-blocks.mjs';
+
 /** Parse NDJSON at the byte boundary, including multi-byte Chinese characters. */
 export async function consumeNDJSON(response, onEvent) {
   if (!response.ok) {
@@ -39,7 +41,7 @@ export async function consumeNDJSON(response, onEvent) {
 
 export function newTurn(message, requestId = null) {
   return {message, requestId, text:'', cards:[], trace:[], events:[], eventCount:0,
-    status:'pending', stage:'understanding', kind:'chat', error:'', response:null};
+    status:'pending', stage:'understanding', kind:'chat', error:'', response:null, report:null};
 }
 
 export function applyEvent(turn, event) {
@@ -49,11 +51,16 @@ export function applyEvent(turn, event) {
   switch (event.type) {
     case 'status': turn.stage = event.stage; break;
     case 'trace': turn.trace.push(event.step); break;
-    case 'text_delta': turn.text += event.delta; break;
+    case 'text_delta': if (!turn.report && typeof event.delta === 'string') turn.text += event.delta; break;
+    case 'report_layout': case 'block_start': case 'block_delta': case 'block_end': case 'block':
+      turn.report = applyReportEvent(turn.report,event);
+      if (turn.report) turn.text = reportText(turn.report);
+      break;
     case 'exercise_cards': turn.cards = event.cards; turn.kind = event.kind; break;
     case 'done':
       turn.response = event.response;
-      turn.text = event.response.text ?? '';
+      turn.report = reportFromResponse(event.response);
+      turn.text = event.response.text ?? (turn.report ? reportText(turn.report) : '');
       turn.cards = event.response.cards ?? [];
       turn.trace = event.response.trace ?? turn.trace;
       turn.kind = event.response.kind;
@@ -63,4 +70,12 @@ export function applyEvent(turn, event) {
     // Forward-compatible event types remain visible in the event inspector.
   }
   return turn;
+}
+
+
+export function completionLabel(turn) {
+  if (turn.status === 'completed' && turn.response?.review?.omitted_findings > 0) {
+    return turn.response.review.findings?.length ? '部分完成' : '分析未完成';
+  }
+  return ({pending:'生成中', generating:'服务端处理中', completed:'已完成', failed:'未完成', cancelled:'已停止'})[turn.status] || turn.status;
 }

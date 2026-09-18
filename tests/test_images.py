@@ -94,7 +94,7 @@ def test_upload_rejects_invalid_images_and_limits():
             ).status_code
             == 413
         )
-        assert client.post("/v1/chat", json={"images": ["0" * 64]}).status_code == 422
+        assert client.post("/v1/chat", json={"images": ["0" * 64]}).status_code == 404
         assert client.post("/v1/chat", json={"message": " ", "images": []}).status_code == 422
         assert client.post("/v1/chat", json={"images": ["0" * 64] * 4}).status_code == 422
         assert client.get("/v1/images/" + "0" * 64).status_code == 404

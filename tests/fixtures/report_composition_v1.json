@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "outline": [
+    {
+      "id": "block_eb0e5b6b03734348a113c884a7b67918",
+      "type": "markdown",
+      "purposes": [
+        "主要判断",
+        "训练节奏"
+      ],
+      "evidence_ids": [
+        "recent.frequency",
+        "cadence.spacing"
+      ]
+    },
+    {
+      "id": "block_4ca1bad3bafa41989276896aefc5ebaa",
+      "type": "chart_ref",
+      "artifact_id": "chart_35473a52eb7c4528895719c886579a46"
+    },
+    {
+      "id": "block_b3d1afb06d30468cb73d174520baddfa",
+      "type": "markdown",
+      "purposes": [
+        "部位分布"
+      ],
+      "evidence_ids": [
+        "recent.distribution"
+      ]
+    },
+    {
+      "id": "block_4b918971bc8f4eb2bcf6002276bd1e9b",
+      "type": "chart_ref",
+      "artifact_id": "chart_531893bac10b4afdaf96760ae6bb4c49"
+    }
+  ],
+  "artifacts": {
+    "chart_35473a52eb7c4528895719c886579a46": {
+      "format": "chart-spec/v1",
+      "chart_type": "timeline",
+      "title": "训练节奏",
+      "description": "按实际日期间隔排列 · UTC",
+      "unit": "次",
+      "dataset_id": "data_a1f43fd3a297482c9dcbfd0b83fe4a61",
+      "encoding": {
+        "label": "label",
+        "value": "value",
+        "at": "at"
+      },
+      "truncated": false
+    },
+    "chart_531893bac10b4afdaf96760ae6bb4c49": {
+      "format": "chart-spec/v1",
+      "chart_type": "bars",
+      "title": "训练部位分布",
+      "description": "所选训练按目录主部位归属的已完成组；辅助肌群不重复计数",
+      "unit": "组",
+      "dataset_id": "data_53be668ce99f4049a3239940183da1ef",
+      "encoding": {
+        "label": "label",
+        "value": "value",
+        "at": "at"
+      },
+      "truncated": false
+    }
+  },
+  "datasets": {
+    "data_a1f43fd3a297482c9dcbfd0b83fe4a61": {
+      "rows": [
+        {
+          "label": "01-01",
+          "at": "2026-01-01T01:00:00Z",
+          "value": 1,
+          "source": {
+            "source_id": "a",
+            "workout_id": "one",
+            "version": 1
+          }
+        },
+        {
+          "label": "01-03",
+          "at": "2026-01-03T01:00:00Z",
+          "value": 1,
+          "source": {
+            "source_id": "a",
+            "workout_id": "two",
+            "version": 1
+          }
+        }
+      ]
+    },
+    "data_53be668ce99f4049a3239940183da1ef": {
+      "rows": [
+        {
+          "label": "胸部",
+          "value": 6
+        }
+      ]
+    }
+  },
+  "kind": "review",
+  "text": "模拟报告：先观察训练节奏。\n\n## 部位分布\n\n结合自己的目标看待分布。",
+  "blocks": [
+    {
+      "id": "block_eb0e5b6b03734348a113c884a7b67918",
+      "type": "markdown",
+      "content": "模拟报告：先观察训练节奏。"
+    },
+    {
+      "id": "block_4ca1bad3bafa41989276896aefc5ebaa",
+      "type": "chart_ref",
+      "artifact_id": "chart_35473a52eb7c4528895719c886579a46"
+    },
+    {
+      "id": "block_b3d1afb06d30468cb73d174520baddfa",
+      "type": "markdown",
+      "content": "## 部位分布\n\n结合自己的目标看待分布。"
+    },
+    {
+      "id": "block_4b918971bc8f4eb2bcf6002276bd1e9b",
+      "type": "chart_ref",
+      "artifact_id": "chart_531893bac10b4afdaf96760ae6bb4c49"
+    }
+  ],
+  "cards": [],
+  "result_id": "00000000-0000-4000-8000-000000000001",
+  "conversation_id": "00000000-0000-4000-8000-000000000002"
+}

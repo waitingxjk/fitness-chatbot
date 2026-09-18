@@ -981,3 +981,128 @@ dialog input {
 .assistant-text .align-right { text-align:right; }
 .assistant-text .align-center { text-align:center; }
 .assistant-text input[type=checkbox] { accent-color:var(--accent); vertical-align:middle; }
+.training-dialog { width:min(640px,calc(100vw - 32px)); max-height:90vh; overflow-y:auto; }
+.training-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.training-dialog label { display:block; margin:12px 0 6px; line-height:1.6; }
+.training-dialog select,.training-dialog textarea { width:100%; padding:10px; border:1px solid var(--line); border-radius:6px; background:#fff; font:inherit; }
+.training-dialog .training-check { display:flex; align-items:center; gap:8px; margin:4px 0; }
+.training-check input { width:auto; margin:0; }
+.training-equipment { max-height:170px; overflow:auto; display:grid; grid-template-columns:1fr 1fr; gap:6px; border:1px solid var(--line); border-radius:6px; padding:10px; }
+.training-search { display:flex; gap:8px; align-items:center; }
+.training-search input { flex:1; min-width:0; }
+.training-actions { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+.training-actions small { width:100%; color:var(--muted); }
+.training-dialog details { margin:16px 0; }
+.training-dialog .send { margin-top:18px; }
+.training-plan { border:1px solid var(--line); border-radius:12px; padding:18px; margin:20px 0; background:#f7faf8; line-height:1.7; }
+.training-plan > strong { display:block; margin-bottom:8px; }
+.training-evidence { margin:12px 0; padding:10px; border-left:2px solid #9cc6b4; overflow-wrap:anywhere; font-size:13px; line-height:1.8; }
+.training-evidence summary { cursor:pointer; color:var(--accent); }
+@media(max-width:600px) { .training-fields { grid-template-columns:1fr; } .topbar { flex-wrap:wrap; } .training-equipment { grid-template-columns:1fr; } }
+
+/* The same prescription card represents one choice or one ordered plan step. */
+.prescription-grid { grid-template-columns:1fr; gap:14px; }
+.prescription-card { background:#fff; border:1px solid #dce7df; border-radius:14px; padding:18px; min-width:0; }
+.prescription-header { display:flex; align-items:center; gap:12px; }
+.prescription-thumbnail { width:70px; height:70px; object-fit:contain; border-radius:10px; background:#f5f7f5; flex-shrink:0; }
+.prescription-identity { flex:1; min-width:0; }
+.prescription-identity strong { display:block; font-size:17px; line-height:1.5; }
+.prescription-identity .tags { margin-top:7px; display:flex; flex-wrap:wrap; gap:5px; }
+.prescription-order { display:flex; align-items:center; justify-content:center; background:#e9f3ed; color:#286448; width:30px; height:30px; border-radius:50%; font-size:12px; font-weight:700; flex-shrink:0; }
+.prescription-link { border:0; padding:5px 0; color:#387358; background:transparent; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap; }
+.prescription-purpose { margin:14px 0 8px; color:#597363; font-size:13px; line-height:1.7; }
+.prescription-dose { margin:12px 0; font-size:14px; color:#264d38; font-weight:600; }
+.prescription-sets { border-top:1px solid #edf1ed; margin-top:12px; }
+.prescription-sets > summary { cursor:pointer; padding:12px 0; font-size:13px; color:#426e55; }
+.set-editor-list { display:grid; gap:10px; }
+.set-editor-row { background:#f7faf7; padding:12px; border:1px solid #e5ece6; border-radius:9px; }
+.set-editor-heading { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:12px; }
+.set-editor-heading .prescription-link { margin-left:auto; }
+.set-load-preview { color:#657c6c; font-weight:400; }
+.set-editor-fields { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.set-field { display:flex; flex-direction:column; gap:5px; min-width:0; font-size:11px; color:#6c7e71; }
+.set-field input,.set-field select { box-sizing:border-box; width:100%; min-width:0; border:1px solid #d9e4dc; border-radius:6px; padding:8px; background:white; font:inherit; font-size:13px; color:#264d38; }
+.set-field input:focus,.set-field select:focus { outline:2px solid #8fb89f; outline-offset:1px; }
+.set-field input:disabled,.set-field select:disabled { color:#5c6d62; background:#f3f5f3; }
+.prescription-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.prescription-help { color:#819187; font-size:11px; line-height:1.7; margin:12px 0 0; }
+.prescription-error { color:#ad4939; font-size:12px; }
+.training-plan { padding:22px; border-color:#cddfd2; background:#f3f8f4; }
+.plan-eyebrow { color:#6d8c77; font-size:11px; letter-spacing:0; margin-bottom:8px; }
+.plan-title { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.plan-title h3 { margin:0; font-size:20px; color:#214d34; }
+.plan-overview { font-size:13px; color:#4c745a; margin:10px 0 16px; }
+.plan-rationale,.plan-preparation { color:#627b69; font-size:13px; line-height:1.8; }
+.plan-preparation { padding:10px 12px; border-left:3px solid #acc7b2; background:#eaf3ed; }
+.plan-exercises { display:grid; gap:14px; margin:18px 0; }
+.plan-edit-state { background:#fff4d8; color:#836321; padding:9px 12px; border-radius:7px; font-size:12px; }
+.training-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:18px; }
+.training-actions .send { font-size:13px; padding:10px 16px; }
+@media(max-width:600px) {
+  .training-plan { padding:13px; margin-left:-3px; margin-right:-3px; }
+  .prescription-card { padding:13px; }
+  .prescription-thumbnail { width:46px; height:46px; }
+  .prescription-header { gap:8px; flex-wrap:wrap; }
+  .prescription-identity strong { font-size:15px; }
+  .prescription-header > .prescription-link { margin-left:auto; }
+  .set-editor-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .plan-title h3 { font-size:18px; }
+  .prescription-order { width:25px; height:25px; }
+}
+
+.demo-mode { padding:8px 18px; color:#80601f; background:#fff5db; border-bottom:1px solid #efdfb4; font-size:12px; line-height:1.6; }
+
+/* Evidence charts use the same muted teal palette as training cards. */
+.review-charts { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; margin:20px 0; }
+.review-chart { min-width:0; margin:0; padding:18px 20px 12px; border:1px solid #dce7e1; border-radius:12px; background:#fbfdfc; }
+.review-chart figcaption h4 { margin:0 0 5px; color:#284e43; font-size:15px; font-weight:650; line-height:1.6; }
+.review-chart figcaption p { margin:0 0 6px; color:#61776d; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.review-chart figcaption small { color:#698078; font-size:11px; }
+.review-chart-svg { display:block; width:100%; height:auto; overflow:visible; margin:12px 0 4px; }
+.review-chart-point { fill:#5c9686; stroke:none; outline:none; cursor:default; }
+.review-chart-point line { stroke:#5c9686; stroke-width:2; }
+.review-chart-point:hover rect,.review-chart-point:focus rect,.review-chart-point:hover circle,.review-chart-point:focus circle { fill:#2e6d5c; stroke:#173e33; stroke-width:2; }
+.review-chart-point:focus line { stroke:#173e33; stroke-width:3; }
+.review-chart-axis { stroke:#c8d8d0; stroke-width:1; }
+.review-chart-axis-label { font:12px system-ui,sans-serif; fill:#61796e; }
+.review-chart-value { font:12px system-ui,sans-serif; fill:#305d4c; }
+.review-chart-readout { display:block; min-height:2em; margin:6px 0; font-size:12px; line-height:1.7; color:#526e60; overflow-wrap:anywhere; }
+.review-chart-note { margin:8px 0; font-size:12px; line-height:1.7; color:#84662d; }
+.review-chart-data { border-top:1px solid #e4ece7; font-size:12px; }
+.review-chart-data summary { padding:10px 0 2px; color:#427661; cursor:pointer; }
+.review-chart-table-scroll { overflow:auto; margin-top:10px; }
+.review-chart-data table { width:100%; border-collapse:collapse; text-align:left; font-size:12px; }
+.review-chart-data th,.review-chart-data td { padding:8px; border-bottom:1px solid #e4ece7; overflow-wrap:anywhere; }
+.review-chart-data th { font-weight:600; color:#4e6e5e; }
+@media(max-width:600px) {
+  .review-chart { padding:13px 10px 9px; }
+  .review-chart-svg { min-width:0; }
+  .review-chart-axis-label,.review-chart-value { font-size:16px; }
+  .review-chart-data th,.review-chart-data td { padding:7px 4px; }
+}
+
+/* Size labels for the chart's available width, including narrow desktop panels. */
+.review-chart { container-type:inline-size; }
+.review-chart-axis-label,.review-chart-value { font-size:16px; }
+@container(max-width:400px) {
+  .review-chart-axis-label,.review-chart-value { font-size:26px; }
+}
+
+/* Private exercise metadata editor, shared with existing action cards. */
+.custom-exercise-editor { margin-top:24px; padding-top:16px; border-top:1px solid #d7e4df; }
+.custom-exercise-editor form { display:grid; gap:14px; }
+.custom-exercise-editor label { display:grid; gap:6px; }
+.custom-exercise-editor input,.custom-exercise-editor select,.custom-exercise-editor textarea { width:100%; padding:10px 12px; border:1px solid #cadbd3; border-radius:8px; background:#fff; color:inherit; font:inherit; box-sizing:border-box; }
+.custom-exercise-avatar { width:80px; height:80px; border-radius:18px; }
+.custom-exercise-actions { display:flex; flex-wrap:wrap; gap:12px; }
+.custom-exercise-actions button { padding:10px 16px; border:1px solid #8baea0; border-radius:8px; background:#e8f2ee; color:#244a40; cursor:pointer; }
+.custom-exercise-actions button:disabled { opacity:.55; cursor:default; }
+
+.custom-exercise-draft { margin:20px 0; padding:22px; border:1px solid #cadbd3; border-radius:16px; background:#f6faf8; max-width:620px; }
+.custom-draft-heading { display:flex; align-items:center; gap:16px; }
+.custom-draft-heading h3 { margin:0; }
+.custom-draft-heading p { margin:6px 0 0; color:#5d786e; font-size:14px; }
+.custom-exercise-draft dl { display:grid; grid-template-columns:auto 1fr; gap:8px 20px; }
+.custom-exercise-draft dt { color:#5d786e; }
+.custom-exercise-draft dd { margin:0; overflow-wrap:anywhere; }
+.custom-exercise-draft li,.custom-exercise-draft p { line-height:1.65; }

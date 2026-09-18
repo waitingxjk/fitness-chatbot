@@ -15,6 +15,7 @@ class Settings(BaseSettings):
         default=None, validation_alias=AliasChoices("OPENAI_BASE_URL", "OPENAI_API_BASE")
     )
     openai_model: str = "gpt-4o-mini"
+    openai_use_responses_api: bool = False
     openai_reasoning_effort: Literal["none", "minimal", "low", "medium", "high", "xhigh"] | None = (
         None
     )
@@ -22,7 +23,12 @@ class Settings(BaseSettings):
     port: int = Field(default=8000, ge=1, le=65535)
     chat_timeout_seconds: float = Field(default=90, gt=0, le=600)
     database_url: SecretStr | None = None
+    auth_enabled: bool = False
+    default_user_id: str = Field(default="local-user", pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
     image_directory: Path = Path("runtime/uploads")
+    exercise_media_directory: Path = (
+        Path(__file__).resolve().parents[3] / "flutter-init/assets/exercises/images"
+    )
 
     @property
     def model_configured(self) -> bool:

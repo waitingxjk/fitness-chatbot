@@ -57,6 +57,10 @@ class ChatTurnMedia(Base):
     image_ids: Mapped[list] = mapped_column(JSON)
 
 
+class ObjectNotFound(Exception):
+    """Object absent or owned by another user."""
+
+
 class TurnConflict(Exception):
     """A busy conversation or reused request ID with incompatible input."""
 
@@ -72,19 +76,35 @@ class ConversationStore:
         self.engine = create_async_engine(url, pool_pre_ping=True)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
         self.lease_seconds = lease_seconds
+        self.default_user_id = "local-user"
 
-    async def initialize(self):
+    async def initialize(self, default_user_id="local-user", image_directory=None):
+        from fitness_bot import (  # noqa: F401
+            custom_exercise_storage,
+            training_storage,
+            workout_storage,
+        )
+        from fitness_bot.identity import IdentityStore
+
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
+        await IdentityStore(self).migrate(default_user_id, image_directory)
+        self.default_user_id = default_user_id
+
+    async def resolve_user(self, user_id=None):
+        from fitness_bot.identity import IdentityStore
+
+        return await IdentityStore(self).require_user_id(user_id or self.default_user_id)
 
     async def close(self):
         await self.engine.dispose()
 
-    async def begin_turn(self, request: ChatRequest) -> StartedTurn:
+    async def begin_turn(self, request: ChatRequest, *, user_id=None) -> StartedTurn:
+        user_id = await self.resolve_user(user_id)
         # Retry only the initial conversation/request uniqueness race, never generation.
         for attempt in range(2):
             try:
-                return await self._begin_turn(request)
+                return await self._begin_turn(request, user_id)
             except IntegrityError:
                 if attempt:
                     raise TurnConflict(
@@ -92,22 +112,51 @@ class ConversationStore:
                     ) from None
         raise AssertionError("Unreachable")
 
-    async def _begin_turn(self, request: ChatRequest) -> StartedTurn:
+    async def _begin_turn(self, request: ChatRequest, user_id) -> StartedTurn:
+        from fitness_bot.identity import ConversationOwner, ImageOwner
+        from fitness_bot.training_schemas import ReviewOptions
+
         cid, rid = str(request.conversation_id), str(request.request_id)
         digest = hashlib.sha256(
             json.dumps(
                 request.model_dump(
                     mode="json",
-                    exclude={"history", "previous_result_ids"}
-                    | ({"images"} if not request.images else set()),
+                    exclude={
+                        "history": True,
+                        "previous_result_ids": True,
+                        "context": {
+                            "custom_exercise_drafts",
+                            "workout_history",
+                            "training_review",
+                            "training_profile",
+                            "session_plans",
+                            *(
+                                {"plan_to_modify"}
+                                if request.context.plan_to_modify is None
+                                else set()
+                            ),
+                            *(
+                                {"review_options"}
+                                if request.context.review_options == ReviewOptions()
+                                else set()
+                            ),
+                        },
+                        **({"images": True} if not request.images else {}),
+                    },
                 ),
                 sort_keys=True,
                 ensure_ascii=False,
             ).encode()
         ).hexdigest()
         async with self.sessions.begin() as session:
+            owner = await session.get(ConversationOwner, cid)
+            if owner is not None and owner.user_id != user_id:
+                raise ObjectNotFound("Conversation not found")
             existing = await session.scalar(select(ChatTurn).where(ChatTurn.request_id == rid))
             if existing:
+                existing_owner = await session.get(ConversationOwner, existing.conversation_id)
+                if existing_owner is None or existing_owner.user_id != user_id:
+                    raise ObjectNotFound("Request not found")
                 if existing.input_hash != digest:
                     raise TurnConflict("request_id was already used for different input")
                 if existing.status == "completed":
@@ -121,6 +170,9 @@ class ConversationStore:
                 conversation = Conversation(id=cid, title=request.message[:120] or "图片对话")
                 session.add(conversation)
                 await session.flush()
+                session.add(ConversationOwner(conversation_id=cid, user_id=user_id))
+            elif owner is None:
+                raise ObjectNotFound("Conversation not found")
             elif conversation.active_request_id:
                 if conversation.lease_expires_at and conversation.lease_expires_at > now:
                     raise TurnConflict("Conversation is already generating a reply")
@@ -148,13 +200,22 @@ class ConversationStore:
                     )
                 )
             }
+            owned_images = set(
+                await session.scalars(
+                    select(ImageOwner.image_id).where(ImageOwner.user_id == user_id)
+                )
+            )
             history = []
             for turn in reversed(previous):
                 history.append(
                     Message(
                         role="user",
                         text=turn.user_text[:4000],
-                        images=media.get(turn.request_id, []),
+                        images=[
+                            image_id
+                            for image_id in media.get(turn.request_id, [])
+                            if image_id in owned_images
+                        ],
                     )
                 )
                 if turn.assistant_text.strip():
@@ -164,19 +225,45 @@ class ConversationStore:
                 (cards for turn in previous if (cards := (turn.response or {}).get("cards"))),
                 [],
             )
+            from fitness_bot.training_review import load_training_review
+            from fitness_bot.training_storage import load_session_plans, load_training_profile
+            from fitness_bot.workout_context import load_workout_history
+
+            profile = await load_training_profile(session, user_id)
+            options = request.context.review_options
+            if "time_zone" not in options.model_fields_set:
+                options = options.model_copy(update={"time_zone": profile["profile"]["time_zone"]})
+
+            context = request.context.model_copy(
+                update={
+                    "custom_exercise_drafts": [
+                        draft
+                        for turn in reversed(previous)
+                        if (draft := (turn.response or {}).get("custom_exercise"))
+                        and draft.get("status") == "draft"
+                        and not draft.get("saved_result")
+                    ][-3:],
+                    "workout_history": await load_workout_history(session, user_id),
+                    "training_review": await load_training_review(session, user_id, options),
+                    "training_profile": profile,
+                    "session_plans": await load_session_plans(session, user_id),
+                }
+            )
             prepared = request.model_copy(
                 update={
                     "history": history[-30:],
                     "previous_result_ids": [c["exercise"]["id"] for c in cards][:3],
+                    "context": context,
                 }
             )
+            prepared._user_id = user_id
             session.add(
                 ChatTurn(
                     request_id=rid,
                     conversation_id=cid,
                     input_hash=digest,
                     user_text=request.message,
-                    context=request.context.model_dump(mode="json"),
+                    context=context.model_dump(mode="json"),
                 )
             )
             if request.images:
@@ -187,13 +274,19 @@ class ConversationStore:
             conversation.updated_at = now
         return StartedTurn(prepared)
 
-    async def complete(self, request_id: UUID, response: dict):
+    async def complete(self, request_id: UUID, response: dict, *, user_id=None, context=None):
+        from fitness_bot.identity import ConversationOwner
+
+        user_id = await self.resolve_user(user_id)
         async with self.sessions.begin() as session:
             turn = await session.scalar(
                 select(ChatTurn).where(ChatTurn.request_id == str(request_id))
             )
             if turn is None:
                 raise TurnConflict("Unknown request")
+            owner = await session.get(ConversationOwner, turn.conversation_id)
+            if owner is None or owner.user_id != user_id:
+                raise ObjectNotFound("Request not found")
             conversation = await session.scalar(
                 select(Conversation)
                 .where(Conversation.id == turn.conversation_id)
@@ -202,34 +295,61 @@ class ConversationStore:
             if conversation.active_request_id != str(request_id) or turn.status != "generating":
                 raise TurnConflict("Generation lease expired")
             turn.assistant_text = response["text"]
+            if context is not None:
+                turn.context = context.model_dump(mode="json")
+            if plan := response.get("session_plan"):
+                from fitness_bot.training_storage import persist_session_plan
+
+                await persist_session_plan(session, user_id, request_id, plan)
             turn.response, turn.status, turn.updated_at = response, "completed", utcnow()
             conversation.active_request_id = None
             conversation.lease_expires_at = None
             conversation.updated_at = utcnow()
 
-    async def fail(self, request_id: UUID, partial_text: str, code: str):
+    async def fail(
+        self,
+        request_id: UUID,
+        partial_text: str,
+        code: str,
+        *,
+        user_id=None,
+        partial_response: dict | None = None,
+    ):
+        from fitness_bot.identity import ConversationOwner
+
+        user_id = await self.resolve_user(user_id)
         async with self.sessions.begin() as session:
             turn = await session.scalar(
                 select(ChatTurn).where(ChatTurn.request_id == str(request_id))
             )
             if turn is None or turn.status != "generating":
                 return
+            owner = await session.get(ConversationOwner, turn.conversation_id)
+            if owner is None or owner.user_id != user_id:
+                raise ObjectNotFound("Request not found")
             conversation = await session.scalar(
                 select(Conversation)
                 .where(Conversation.id == turn.conversation_id)
                 .with_for_update()
             )
             turn.assistant_text = partial_text
+            if partial_response is not None:
+                turn.response = partial_response
             turn.status = "cancelled" if code == "cancelled" else "failed"
             turn.error_code, turn.updated_at = code, utcnow()
             if conversation.active_request_id == str(request_id):
                 conversation.active_request_id, conversation.lease_expires_at = None, None
                 conversation.updated_at = utcnow()
 
-    async def conversations(self, limit=50, offset=0):
+    async def conversations(self, limit=50, offset=0, *, user_id=None):
+        from fitness_bot.identity import ConversationOwner
+
+        user_id = await self.resolve_user(user_id)
         async with self.sessions() as session:
             rows = await session.scalars(
                 select(Conversation)
+                .join(ConversationOwner, ConversationOwner.conversation_id == Conversation.id)
+                .where(ConversationOwner.user_id == user_id)
                 .order_by(Conversation.updated_at.desc(), Conversation.id)
                 .limit(limit)
                 .offset(offset)
@@ -244,10 +364,14 @@ class ConversationStore:
                 for r in rows
             ]
 
-    async def turns(self, conversation_id: UUID, *, after_id=0, limit=100):
+    async def turns(self, conversation_id: UUID, *, after_id=0, limit=100, user_id=None):
+        from fitness_bot.identity import ConversationOwner
+
+        user_id = await self.resolve_user(user_id)
         async with self.sessions() as session:
             conversation = await session.get(Conversation, str(conversation_id))
-            if conversation is None:
+            owner = await session.get(ConversationOwner, str(conversation_id))
+            if conversation is None or owner is None or owner.user_id != user_id:
                 return None
             rows = await session.scalars(
                 select(ChatTurn)

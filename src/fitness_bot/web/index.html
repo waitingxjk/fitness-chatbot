@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light"><title>练伴 · Chatbot Playground</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js?v=report-blocks-v1"></script>
 </head>
 <body>
   <button id="backdrop" class="backdrop" aria-label="关闭侧栏" hidden></button>
@@ -21,13 +21,16 @@
       <button id="toggle-sidebar" class="icon-button mobile-only" aria-label="打开历史对话" aria-expanded="false">☰</button>
       <div class="heading"><span class="eyebrow">对话测试</span><h1 id="conversation-title">新对话</h1></div>
       <button id="connection" class="connection"><span id="connection-dot" class="dot"></span><span id="connection-label">连接中</span></button>
+      <button id="open-evidence" class="secondary">确认记录</button>
+      <button id="open-training" class="secondary">目标与状态</button>
       <button id="toggle-inspector" class="secondary" aria-expanded="true">运行面板</button>
     </header>
+    <div id="demo-mode" class="demo-mode" hidden>模拟数据预览 · 用于体验卡片与确认流程，不是个人训练建议。</div>
     <div id="notice" class="notice" role="status" hidden></div>
     <div class="workbody">
       <section class="chat-column" aria-label="对话区">
         <div id="messages" class="messages" aria-label="聊天记录" aria-busy="false">
-          <div id="welcome" class="welcome"><span class="welcome-mark" aria-hidden="true">↗</span><p class="eyebrow">和练伴聊聊训练</p><h2>从一个动作，<br>开始这次对话。</h2><p class="welcome-copy">搜索动作、获取训练推荐，或接着上次的话题。<br>在右侧查看每一步处理过程和流式事件。</p><div class="suggestions"><button data-prompt="帮我找哑铃卧推的动作">搜索哑铃卧推 <span>↗</span></button><button data-prompt="只有哑铃，推荐三个适合练背的动作">用哑铃练背 <span>↗</span></button><button data-prompt="你好，你能怎样帮我安排训练？">了解练伴 <span>↗</span></button></div></div>
+          <div id="welcome" class="welcome"><span class="welcome-mark" aria-hidden="true">↗</span><p class="eyebrow">和练伴聊聊训练</p><h2>复盘每次训练，<br>安排下一次进步。</h2><p class="welcome-copy">回顾训练记录，制定完整方案，再用实际反馈调整。<br>先在「目标与状态」中补充你的训练条件。</p><div class="suggestions"><button data-prompt="复盘我最近的训练，与此前几周对比">复盘近期训练 <span>↗</span></button><button data-prompt="结合近期训练，为我推荐明天一次完整训练方案">安排明天训练 <span>↗</span></button><button data-prompt="帮我找哑铃卧推的动作">搜索哑铃卧推 <span>↗</span></button></div></div>
           <div id="turns"></div>
         </div>
         <form id="composer" class="composer">
@@ -52,8 +55,54 @@
       </aside>
     </div>
   </main>
-  <dialog id="connection-dialog"><form method="dialog"><div class="dialog-heading"><h2>服务连接</h2><button class="icon-button" aria-label="关闭">×</button></div></form><p class="dialog-copy">测试页直接连接提供此页面的 chatbot 服务。</p><label for="base-url">当前服务地址</label><input id="base-url" readonly><div id="health-details" class="health-details"></div><button id="reconnect" class="send">重新连接</button><p class="panel-intro">如需连接其他实例，请打开该实例的 <code>/playground/</code>。</p></dialog>
+  <dialog id="connection-dialog"><form method="dialog"><div class="dialog-heading"><h2>服务连接</h2><button class="icon-button" aria-label="关闭">×</button></div></form><p class="dialog-copy">测试页直接连接提供此页面的 chatbot 服务。</p><label for="base-url">当前服务地址</label><input id="base-url" readonly><label for="user-id">内部用户 ID（兼容旧用户名称）</label><input id="user-id" maxlength="64" autocomplete="off" spellcheck="false"><label for="auth-token">Bearer 令牌</label><input id="auth-token" type="password" autocomplete="off" spellcheck="false"><p class="panel-intro">关闭鉴权时仍按用户 ID 区分数据。令牌仅保留在当前页面内存中，刷新后需重新填写。</p><button id="apply-identity" class="send">应用身份并连接</button><label for="new-user-name">新用户昵称（选填）</label><input id="new-user-name" maxlength="120" autocomplete="off"><button id="create-user" class="send">创建新用户</button><p class="panel-intro">服务器生成内部 ID；重复请求会取回同一用户。开启鉴权后由管理员创建用户。</p><div id="health-details" class="health-details"></div><button id="reconnect" class="send">重新连接</button><p class="panel-intro">如需连接其他实例，请打开该实例的 <code>/playground/</code>。</p></dialog>
   <dialog id="image-dialog"><form method="dialog"><div class="dialog-heading"><h2>图片预览</h2><button class="icon-button" aria-label="关闭图片预览">×</button></div></form><img id="image-preview" alt="上传图片的大图预览"></dialog>
   <dialog id="exercise-dialog"><form method="dialog"><div class="dialog-heading"><h2 id="exercise-title">动作详情</h2><button class="icon-button" aria-label="关闭动作详情">×</button></div></form><div id="exercise-detail"></div></dialog>
+  <dialog id="training-dialog" class="training-dialog">
+    <form method="dialog"><div class="dialog-heading"><h2>训练目标与当天状态</h2><button class="icon-button" aria-label="关闭训练设置">×</button></div></form>
+    <form id="training-form">
+      <div class="training-fields">
+        <label>主要目标<select id="training-goal"><option value="">尚未确定</option><option value="strength">提高力量</option><option value="hypertrophy">增肌</option><option value="general_fitness">保持整体体能</option></select></label>
+        <label>训练经验<select id="training-experience"><option value="">尚未填写</option><option value="beginner">刚开始训练</option><option value="experienced">熟悉常用力量动作</option></select></label>
+        <label>每次可用分钟<input id="training-minutes" type="number" min="10" max="180" placeholder="例如 45"></label>
+        <label>每周计划次数<input id="training-weekly" type="number" min="1" max="7" placeholder="例如 3"></label>
+      </div>
+      <label>可用器械</label><div id="training-equipment" class="training-equipment"></div>
+      <label for="training-search">优先改善的动作（选填，最多 5 个）</label>
+      <div class="training-search"><input id="training-search" placeholder="输入动作名称，例如卧推"><button id="training-find" type="button" class="secondary">查找</button></div>
+      <div id="training-matches" class="training-actions"></div><div id="training-priorities" class="training-actions"></div>
+      <label>训练记录时区<input id="training-timezone" required placeholder="Asia/Singapore"></label>
+      <p id="training-saved" class="panel-intro"></p>
+      <label class="training-check"><input id="training-update-readiness" type="checkbox">更新我当前的主观状态</label>
+      <div class="training-fields">
+        <label>疼痛<select id="training-pain"><option value="unknown">未确认</option><option value="none">没有疼痛</option><option value="present">有疼痛</option></select></label>
+        <label>残留疲劳<select id="training-fatigue"><option value="unknown">未确认</option><option value="normal">正常</option><option value="high">明显疲劳</option></select></label>
+        <label>近期睡眠<select id="training-sleep"><option value="unknown">未确认</option><option value="normal">正常</option><option value="poor">较差</option></select></label>
+      </div>
+      <label>状态补充<textarea id="training-notes" maxlength="1000" rows="2"></textarea></label>
+      <details><summary>已确认的训练阶段（选填）</summary><p class="panel-intro">只填写你已经决定的阶段；一次疲劳或少练不自动代表进入减量期。</p>
+        <label>阶段<select id="training-cycle"><option value="">尚未确认</option><option value="maintain">延续当前要求</option><option value="progress">逐步提高要求</option><option value="deload">减量</option><option value="recovery">恢复</option></select></label>
+        <div class="training-fields"><label>开始日期<input id="training-cycle-start" type="date"></label><label>结束日期<input id="training-cycle-end" type="date"></label></div>
+        <label>确认依据<input id="training-cycle-reason" maxlength="1000"></label>
+      </details>
+      <button id="training-save" class="send" type="submit">保存目标与状态</button>
+    </form>
+  </dialog>
+  <dialog id="feedback-dialog" class="training-dialog">
+    <form method="dialog"><div class="dialog-heading"><h2 id="feedback-title">执行反馈</h2><button class="icon-button" aria-label="关闭执行反馈">×</button></div></form>
+    <form id="feedback-form">
+      <label>记录类型<select id="feedback-kind"></select></label>
+      <label>实际完成的训练<select id="feedback-workout"></select></label>
+      <label>调整、未完成或跳过原因<textarea id="feedback-reason" maxlength="1000" rows="3"></textarea></label>
+      <div class="training-fields">
+        <label>用力量表（选填）<select id="feedback-scale"><option value="">不填写</option><option value="RIR">RIR：估计还能做几次</option><option value="RPE">RPE：主观用力程度</option></select></label>
+        <label>数值<input id="feedback-value" type="number" min="0" max="10" step="0.5"></label>
+        <label>测量时机<select id="feedback-timing"><option value="last_working_set">最后一个工作组</option><option value="session">整次训练结束</option></select></label>
+        <label>观察时间<input id="feedback-observed" type="datetime-local"></label>
+      </div>
+      <label class="training-check"><input id="feedback-familiar" type="checkbox">我熟悉所选量表</label>
+      <button id="feedback-save" class="send" type="submit">保存执行反馈</button>
+    </form>
+  </dialog>
 </body>
 </html>

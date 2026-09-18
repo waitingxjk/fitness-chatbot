@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "outline": [
+    {
+      "id": "block_2490fafb",
+      "type": "markdown",
+      "purposes": [
+        "主要判断",
+        "训练节奏"
+      ],
+      "evidence_ids": [
+        "recent.frequency",
+        "cadence.spacing"
+      ],
+      "fact_ids": [
+        "fact_cd09d872",
+        "fact_848b0130",
+        "fact_d96f099c",
+        "fact_73d108f0"
+      ]
+    },
+    {
+      "id": "block_65ee0492",
+      "type": "chart_ref",
+      "artifact_id": "chart_bc39594b"
+    },
+    {
+      "id": "block_04103a55",
+      "type": "markdown",
+      "purposes": [
+        "部位分布"
+      ],
+      "evidence_ids": [
+        "recent.distribution"
+      ],
+      "fact_ids": [
+        "fact_0bf18c4b"
+      ]
+    },
+    {
+      "id": "block_91c75e77",
+      "type": "chart_ref",
+      "artifact_id": "chart_5eba671f"
+    }
+  ],
+  "artifacts": {
+    "chart_bc39594b": {
+      "format": "chart-spec/v1",
+      "chart_type": "timeline",
+      "title": "训练节奏",
+      "description": "按实际日期间隔排列 · UTC",
+      "unit": "次",
+      "dataset_id": "data_8d1f2962",
+      "encoding": {
+        "label": "label",
+        "value": "value",
+        "at": "at"
+      },
+      "truncated": false
+    },
+    "chart_5eba671f": {
+      "format": "chart-spec/v1",
+      "chart_type": "bars",
+      "title": "训练部位分布",
+      "description": "所选训练按目录主部位归属的已完成组；辅助肌群不重复计数",
+      "unit": "组",
+      "dataset_id": "data_026cbf55",
+      "encoding": {
+        "label": "label",
+        "value": "value",
+        "at": "at"
+      },
+      "truncated": false
+    }
+  },
+  "datasets": {
+    "data_8d1f2962": {
+      "rows": [
+        {
+          "label": "01-01",
+          "at": "2026-01-01T01:00:00Z",
+          "value": 1,
+          "source": {
+            "source_id": "a",
+            "workout_id": "one",
+            "version": 1
+          }
+        },
+        {
+          "label": "01-03",
+          "at": "2026-01-03T01:00:00Z",
+          "value": 1,
+          "source": {
+            "source_id": "a",
+            "workout_id": "two",
+            "version": 1
+          }
+        }
+      ]
+    },
+    "data_026cbf55": {
+      "rows": [
+        {
+          "label": "胸部",
+          "value": 6
+        }
+      ]
+    }
+  },
+  "facts": {
+    "fact_cd09d872": {
+      "source_key": "recent.workouts",
+      "value": "2 次训练",
+      "evidence_id": "recent.frequency"
+    },
+    "fact_848b0130": {
+      "source_key": "recent.sets",
+      "value": "6 个已完成组",
+      "evidence_id": "recent.frequency"
+    },
+    "fact_d96f099c": {
+      "source_key": "recent.dates",
+      "value": "2026-01-01 至 2026-01-03",
+      "evidence_id": "recent.frequency"
+    },
+    "fact_0bf18c4b": {
+      "source_key": "recent.part.chest",
+      "value": "胸部 6 个已完成组",
+      "evidence_id": "recent.distribution"
+    },
+    "fact_73d108f0": {
+      "source_key": "cadence.workouts",
+      "value": "2 次训练",
+      "evidence_id": "cadence.spacing"
+    }
+  },
+  "blocks": [
+    {
+      "id": "block_2490fafb",
+      "type": "markdown",
+      "content": "本次分析最近 2 次已完成训练，记录日期 2026-01-01 至 2026-01-03；共 6 个已完成组。\n\n记录包含 2 次训练，可以结合目标观察安排。",
+      "parts": [
+        {
+          "type": "text",
+          "text": "本次分析最近 2 次已完成训练，记录日期 2026-01-01 至 2026-01-03；共 6 个已完成组。"
+        },
+        {
+          "type": "text",
+          "text": "\n\n"
+        },
+        {
+          "type": "text",
+          "text": "记录包含 "
+        },
+        {
+          "type": "fact_ref",
+          "fact_id": "fact_cd09d872"
+        },
+        {
+          "type": "text",
+          "text": "，可以结合目标观察安排。"
+        }
+      ]
+    },
+    {
+      "id": "block_65ee0492",
+      "type": "chart_ref",
+      "artifact_id": "chart_bc39594b"
+    },
+    {
+      "id": "block_04103a55",
+      "type": "markdown",
+      "content": "记录包含 胸部 6 个已完成组，可以结合目标观察安排。",
+      "parts": [
+        {
+          "type": "text",
+          "text": "记录包含 "
+        },
+        {
+          "type": "fact_ref",
+          "fact_id": "fact_0bf18c4b"
+        },
+        {
+          "type": "text",
+          "text": "，可以结合目标观察安排。"
+        }
+      ]
+    },
+    {
+      "id": "block_91c75e77",
+      "type": "chart_ref",
+      "artifact_id": "chart_5eba671f"
+    }
+  ],
+  "text": "本次分析最近 2 次已完成训练，记录日期 2026-01-01 至 2026-01-03；共 6 个已完成组。\n\n记录包含 2 次训练，可以结合目标观察安排。\n\n记录包含 胸部 6 个已完成组，可以结合目标观察安排。",
+  "kind": "review",
+  "cards": []
+}
