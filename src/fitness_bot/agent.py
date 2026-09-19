@@ -11,6 +11,7 @@ from langgraph.graph import END, START, StateGraph
 
 from fitness_bot.catalog import Catalog
 from fitness_bot.model import CompanionModel
+from fitness_bot.planning import planning_metadata, planning_target, planning_view
 from fitness_bot.schemas import (
     ChatRequest,
     ChatResponse,
@@ -38,6 +39,7 @@ class AgentState(TypedDict, total=False):
     trace: list[ProcessingStep]
     previous_results: list[Exercise]
     presentation: dict
+    parent_plan: dict
 
 
 class CompanionAgent:
@@ -61,6 +63,8 @@ class CompanionAgent:
     async def _understand(self, state: AgentState):
         get_stream_writer()({"type": "status", "stage": "understanding"})
         request = state["request"]
+        if request.context.planning_target == "next_workout":
+            request.context = planning_view(request).context
         ids = [r.exercise_id for r in request.context.recent_exercises]
         previous_results = [
             exercise for item in request.previous_result_ids if (exercise := self.catalog.get(item))
@@ -77,6 +81,47 @@ class CompanionAgent:
         plan = await self.model.plan(request, reference)
         if plan.kind == "session_plan" and request.context.plan_to_modify:
             plan.parent_plan_id = request.context.plan_to_modify
+        parent = None
+        if plan.kind == "session_plan":
+            if plan.parent_plan_id:
+                if self.training_store is None:
+                    raise ValueError("Plan storage required for a successor")
+                parent = await self.training_store.plan(request._user_id, plan.parent_plan_id)
+                parent_target = parent["plan"].get("planning_target", "next_workout")
+                if request.context.planning_target not in {None, parent_target}:
+                    raise ValueError("A revised plan must keep its planning target")
+                request.context.planning_target = parent_target
+                if request.context.planning_target_date is None and parent["plan"].get(
+                    "target_date"
+                ):
+                    from datetime import date
+
+                    request.context.planning_target_date = date.fromisoformat(
+                        parent["plan"]["target_date"]
+                    )
+                current = request.context.current_workout
+                before = parent["plan"].get("current_workout")
+                if (
+                    current
+                    and before
+                    and (
+                        current.sourceId != before["sourceId"]
+                        or current.workout.id != before["workout"]["id"]
+                        or current.version < before["version"]
+                    )
+                ):
+                    raise ValueError(
+                        "A revised current plan requires the same workout and a current snapshot"
+                    )
+                request.context.session_plans = [
+                    parent,
+                    *[
+                        p
+                        for p in request.context.session_plans
+                        if p["plan"]["id"] != parent["plan"]["id"]
+                    ],
+                ][:5]
+            request.context = planning_view(request).context
         if plan.kind == "review" and plan.review_options and self.training_store:
             explicit = request.context.review_options.model_dump(exclude_unset=True)
             if explicit:
@@ -96,6 +141,8 @@ class CompanionAgent:
                 request._user_id, plan.review_options, self.catalog
             )
         if plan.kind == "session_plan" and plan.session_inputs:
+            if plan.session_inputs.target_date:
+                request.context.planning_target_date = plan.session_inputs.target_date
             saved = request.context.training_profile or {"version": 0, "profile": {}}
             overrides = plan.session_inputs.model_dump(
                 mode="json", exclude_none=True, exclude={"target_date"}
@@ -119,7 +166,12 @@ class CompanionAgent:
             data={**plan.model_dump(mode="json"), "image_count": len(request.images)},
         )
         get_stream_writer()({"type": "trace", "step": step.model_dump(mode="json")})
-        return {"plan": plan, "trace": [step], "previous_results": previous_results}
+        return {
+            "plan": plan,
+            "trace": [step],
+            "previous_results": previous_results,
+            "parent_plan": parent,
+        }
 
     async def _retrieve(self, state: AgentState):
         plan, request = state["plan"], state["request"]
@@ -343,7 +395,11 @@ class CompanionAgent:
         request = state["request"]
         readiness = effective_profile(request).readiness
         blocked = readiness is not None and readiness.pain == "present"
-        candidates = [] if blocked else preview_candidates(request, self.catalog)
+        missing_current = (
+            planning_target(request) == "current_workout"
+            and request.context.current_workout is None
+        )
+        candidates = [] if blocked or missing_current else preview_candidates(request, self.catalog)
         cards = []
         theme = "训练安排"
         rationale = "先确认训练条件，再选择适合本次安排的动作。"
@@ -362,11 +418,12 @@ class CompanionAgent:
             draft, cards = preview_cards(preview_draft, candidates, self.catalog)
             theme, rationale = draft.theme, draft.rationale
         preview = {
+            **planning_metadata(request),
             "status": "blocked" if blocked else "needs_input",
             "theme": theme,
             "next_question": question,
-            "target_date": state["plan"].session_inputs.target_date.isoformat()
-            if state["plan"].session_inputs and state["plan"].session_inputs.target_date
+            "target_date": request.context.planning_target_date.isoformat()
+            if request.context.planning_target_date
             else None,
         }
         text = f"**{theme} · 待完善**\n\n{rationale}"
@@ -487,26 +544,14 @@ class CompanionAgent:
                 return await self._preview_response(state)
             return await self._respond(state, training_discussion=True)
         else:
-            parent = None
-            if plan.parent_plan_id:
-                if self.training_store is None:
-                    raise ValueError("Plan storage required for a successor")
-                parent = await self.training_store.plan(request._user_id, plan.parent_plan_id)
-                request.context.session_plans = [
-                    parent,
-                    *[
-                        p
-                        for p in request.context.session_plans
-                        if p["plan"]["id"] != parent["plan"]["id"]
-                    ],
-                ][:5]
+            parent = state.get("parent_plan")
             if hasattr(self.model, "session_plan_with_progress"):
                 draft = await self.model.session_plan_with_progress(
                     request, self.catalog, on_progress=self._plan_progress_writer()
                 )
             else:
                 draft = await self.model.session_plan(request, self.catalog)
-            target_date = plan.session_inputs.target_date if plan.session_inputs else None
+            target_date = request.context.planning_target_date
             session_plan = validate_session_plan(
                 draft,
                 request,
@@ -519,11 +564,7 @@ class CompanionAgent:
                 session_plan["parent_plan_id"] = str(plan.parent_plan_id)
                 session_plan["version"] = parent["plan"]["version"] + 1
                 session_plan["parent_revision"] = parent["revision"]
-            session_plan["target_date"] = (
-                plan.session_inputs.target_date.isoformat()
-                if plan.session_inputs and plan.session_inputs.target_date
-                else None
-            )
+            session_plan["target_date"] = target_date.isoformat() if target_date else None
             text = render_session(session_plan)
         step = ProcessingStep(
             stage="responding",

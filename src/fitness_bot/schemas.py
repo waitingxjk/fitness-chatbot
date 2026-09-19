@@ -1,6 +1,6 @@
 """Validated HTTP contracts and iOS-compatible exercise records."""
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
@@ -9,6 +9,7 @@ from pydantic.alias_generators import to_camel
 
 from fitness_bot.prescriptions import SetPrescription
 from fitness_bot.training_schemas import ReviewOptions, SessionInputs
+from fitness_bot.workout_schemas import WorkoutUpload
 
 Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)]
 ImageId = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
@@ -67,7 +68,20 @@ class StoredWorkoutHistory(BaseModel):
     truncated: bool = False
 
 
+class CurrentWorkoutUpload(WorkoutUpload):
+    @model_validator(mode="after")
+    def active_snapshot(self):
+        if self.deleted or self.workout is None or self.workout.status not in {"active", "paused"}:
+            raise ValueError("Current workout requires a non-deleted active or paused snapshot")
+        return self
+
+
 class TrainingContext(BaseModel):
+    planning_target: Literal["current_workout", "next_workout"] | None = None
+    current_workout: CurrentWorkoutUpload | None = None
+    remaining_minutes: int | None = Field(default=None, strict=True, ge=10, le=180)
+    # Server-owned continuation metadata. Never restored from client echoes.
+    planning_target_date: date | None = None
     custom_exercise_drafts: list[dict] = Field(default_factory=list, max_length=3)
     plan_to_modify: UUID | None = None
     review_options: ReviewOptions = Field(default_factory=ReviewOptions)

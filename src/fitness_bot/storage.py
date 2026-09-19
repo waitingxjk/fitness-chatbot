@@ -3,7 +3,7 @@
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from uuid import UUID
 
 from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, Text, select
@@ -130,6 +130,16 @@ class ConversationStore:
                             "training_review",
                             "training_profile",
                             "session_plans",
+                            "planning_target_date",
+                            *(
+                                field
+                                for field in (
+                                    "planning_target",
+                                    "current_workout",
+                                    "remaining_minutes",
+                                )
+                                if getattr(request.context, field) is None
+                            ),
                             *(
                                 {"plan_to_modify"}
                                 if request.context.plan_to_modify is None
@@ -230,12 +240,50 @@ class ConversationStore:
             from fitness_bot.workout_context import load_workout_history
 
             profile = await load_training_profile(session, user_id)
+            # Restore only intent/date. App-owned snapshots and remaining time
+            # must come from this request, never a stale saved conversation turn.
+            prior_planning = next(
+                (
+                    turn.context
+                    for turn in previous
+                    if (turn.context or {}).get("planning_target") is not None
+                ),
+                {},
+            )
+            target = request.context.planning_target or prior_planning.get("planning_target")
+            prior_date = next(
+                (
+                    (turn.response or {}).get("session_plan")
+                    or (turn.response or {}).get("plan_preview")
+                    for turn in previous
+                    if (turn.response or {}).get("session_plan")
+                    or (turn.response or {}).get("plan_preview")
+                ),
+                {},
+            )
+            target_date = (
+                prior_date.get("target_date")
+                if (prior_date.get("planning_target", "next_workout") == (target or "next_workout"))
+                else None
+            )
+            latest_context = previous[0].context if previous else {}
+            if "planning_target_date" in latest_context:
+                target_date = (
+                    latest_context["planning_target_date"]
+                    if (latest_context.get("planning_target") or "next_workout")
+                    == (target or "next_workout")
+                    else None
+                )
             options = request.context.review_options
             if "time_zone" not in options.model_fields_set:
                 options = options.model_copy(update={"time_zone": profile["profile"]["time_zone"]})
 
             context = request.context.model_copy(
                 update={
+                    "planning_target": target,
+                    "planning_target_date": date.fromisoformat(target_date)
+                    if target_date
+                    else None,
                     "custom_exercise_drafts": [
                         draft
                         for turn in reversed(previous)

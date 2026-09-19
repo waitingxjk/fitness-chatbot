@@ -6,6 +6,12 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
+from fitness_bot.planning import (
+    current_exercise_ids,
+    plan_outcome,
+    planning_metadata,
+    planning_target,
+)
 from fitness_bot.training_schemas import TrainingProfile
 
 RULES_VERSION = "training-decision-v1.1"
@@ -60,12 +66,17 @@ def effective_profile(request):
 
 
 def plan_question(request):
+    if planning_target(request) == "current_workout":
+        if request.context.current_workout is None:
+            return "请从 App 刷新本次训练快照，包含当前已完成和待完成的动作与组。"
+        if request.context.remaining_minutes is None:
+            return "在现有待完成内容之外，你还能为新增安排预留多少分钟？"
     profile = effective_profile(request)
     if profile.goal is None:
         return "你目前最希望改善的训练目标是什么：力量、增肌，还是保持整体体能？"
     if profile.experience is None:
         return "你是否已经熟悉常用力量动作，还是刚开始训练？"
-    if profile.session_minutes is None:
+    if profile.session_minutes is None and planning_target(request) != "current_workout":
         return "这次训练大约有多少分钟可以使用？"
     if not profile.equipment:
         return "这次可以使用哪些器械？"
@@ -192,6 +203,9 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
     if question := plan_question(request):
         raise ValueError(f"Missing planning inputs: {question}")
     profile = effective_profile(request)
+    is_current = planning_target(request) == "current_workout"
+    time_budget = request.context.remaining_minutes if is_current else profile.session_minutes
+    existing_ids = current_exercise_ids(request)
 
     # A title may repeat the user's exact time cap; actual duration is still computed
     # below. Other numeric dose/load directions remain structured-only.
@@ -210,7 +224,7 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
                     value += (current or 1) * (10 if char == "十" else 100)
                     current = 0
             value += current
-        if value != profile.session_minutes:
+        if value != time_budget:
             raise ValueError("Title time must match the available time")
         return ""
 
@@ -296,7 +310,7 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         raise ValueError("Progression exercise requires an increase adjustment")
     if draft.adjustment == "rest" and draft.items:
         raise ValueError("Rest plan cannot contain work sets")
-    if draft.adjustment != "rest" and not draft.items:
+    if draft.adjustment != "rest" and not draft.items and not is_current:
         raise ValueError("Training plan needs work items")
     original = original_plan or next(
         (
@@ -308,7 +322,9 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
     )
     if draft.adjustment == "reduce" and original:
         original_items = {i["exercise"]["id"]: i for i in original["items"]}
-        if sum(i.sets for i in draft.items) >= original["working_sets"]:
+        if sum(i.sets for i in draft.items) >= original["working_sets"] and not (
+            is_current and not draft.items
+        ):
             raise ValueError("Reduced plan must decrease work sets from the original")
         for item in draft.items:
             previous = original_items.get(item.exercise_id)
@@ -325,6 +341,10 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
     items = []
     seen = set()
     for item in draft.items:
+        if item.exercise_id in existing_ids:
+            raise ValueError(
+                "Exercise already exists in the current workout; only new exercises allowed"
+            )
         exercise = catalog.get(item.exercise_id)
         if exercise is None or not exercise.is_active or exercise.id in seen:
             raise ValueError("Plan requires unique active catalog exercises")
@@ -467,13 +487,14 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         raise ValueError("Configured priority exercise must come first when included")
     if items and items[0]["role"] != "priority":
         raise ValueError("Identify and protect the session priority")
-    fixed = draft.preparation_minutes + draft.finish_minutes
+    fixed = draft.preparation_minutes + draft.finish_minutes if items else 0
+    buffer_minutes = draft.buffer_minutes if items else 0
 
     def duration():
         return fixed + sum(i["estimated_seconds"] for i in items) / 60
 
     removed = []
-    while duration() + draft.buffer_minutes > profile.session_minutes:
+    while duration() + buffer_minutes > time_budget:
         removable = next((i for i in reversed(items) if i["role"] != "priority"), None)
         if removable is None:
             raise ValueError("Time budget cannot fit preparation, priority work and rest")
@@ -520,6 +541,8 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
     if confirmed and not confirmed.starts_on <= today <= confirmed.ends_on:
         confirmed = None
     return {
+        **planning_metadata(request),
+        "outcome": plan_outcome(draft.adjustment, items),
         "id": str(uuid4()),
         "version": 1,
         "status": "proposed",
@@ -549,13 +572,13 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         "progression_basis": progression,
         "adjustment_reason": draft.adjustment_reason,
         "preparation": draft.preparation,
-        "preparation_minutes": draft.preparation_minutes,
-        "finish_minutes": draft.finish_minutes,
-        "buffer_minutes": draft.buffer_minutes,
+        "preparation_minutes": draft.preparation_minutes if items else 0,
+        "finish_minutes": draft.finish_minutes if items else 0,
+        "buffer_minutes": buffer_minutes,
         "items": items,
         "working_sets": sum(i["sets"] for i in items),
         "estimated_minutes_min": math.ceil(duration()),
-        "estimated_minutes_max": math.ceil(duration() + draft.buffer_minutes),
+        "estimated_minutes_max": math.ceil(duration() + buffer_minutes),
         "removed_items": removed,
         "ordering_checks": checks,
         "feedback_questions": [
@@ -642,6 +665,7 @@ def render_review(review):
 
 
 def render_session(plan):
+    is_current = plan.get("planning_target") == "current_workout"
     lines = [
         f"**{plan['theme']}**",
         plan["rationale"],
@@ -654,6 +678,15 @@ def render_session(plan):
         ),
         f"准备约 {plan['preparation_minutes']} 分钟：{plan['preparation']}",
     ]
+    if is_current:
+        lines.insert(
+            2,
+            (
+                f"本次训练已记录 {plan['existing_completed_sets']} 组完成、"
+                f"{plan['existing_pending_sets']} 组待完成；原有记录完整保留。"
+            ),
+        )
+        lines.append(f"新增安排可用 {plan['remaining_minutes']} 分钟，独立于原有待完成内容。")
     if plan["items"]:
         from fitness_bot.prescriptions import legacy_sets
 
@@ -666,12 +699,24 @@ def render_session(plan):
         )
         lines.append("用力目标：" + "；".join(efforts) + "。各组目标以卡片设置为准。")
         lines.append(
-            "动作已按执行顺序排在下方。展开卡片可查看或调整每组设置，确认整份计划后再开始训练。"
+            "下方仅列新增动作。确认后由 App 校验最新快照并追加，原有动作和组保持不变。"
+            if is_current
+            else (
+                "动作已按执行顺序排在下方。展开卡片可查看或调整每组设置，"
+                "确认整份计划后保存供下次训练使用。"
+            )
         )
     else:
-        lines.append("本次建议休息，不创建待开始的训练。")
+        lines.append(
+            "本次建议停止新增训练；已有记录保持不变，App 不自动结束训练。"
+            if is_current and plan.get("outcome") == "rest"
+            else "当前无需新增动作；已有完成和待完成记录保持不变。"
+            if is_current
+            else "本次建议休息，不创建待开始的训练。"
+        )
     lines.append(
-        f"预计共 {plan['estimated_minutes_min']}–{plan['estimated_minutes_max']} 分钟，"
+        ("新增部分" if is_current else "整份计划")
+        + f"预计共 {plan['estimated_minutes_min']}–{plan['estimated_minutes_max']} 分钟，"
         "包含准备、执行、组间休息、切换、收尾与缓冲。"
     )
     if plan["removed_items"]:

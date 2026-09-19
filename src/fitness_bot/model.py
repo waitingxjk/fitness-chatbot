@@ -11,6 +11,12 @@ from langchain_openai import ChatOpenAI
 
 from fitness_bot.config import Settings
 from fitness_bot.images import ImageStore
+from fitness_bot.planning import (
+    current_exercise_ids,
+    planning_metadata,
+    planning_target,
+    planning_view,
+)
 from fitness_bot.report_model import ReviewCompositionModel
 from fitness_bot.schemas import ChatRequest, Exercise, ExerciseCard, SearchPlan
 from fitness_bot.session_preview import qualitative_preview
@@ -103,6 +109,8 @@ class OpenAICompanionModel(ReviewCompositionModel):
         return list(reversed(selected))
 
     async def plan(self, request: ChatRequest, reference: dict) -> SearchPlan:
+        if request.context.planning_target == "next_workout":
+            request = planning_view(request)
         prompt = """将请求转换为本地动作库检索条件。
 先识别本轮要完成的行为，而不是只看训练、推荐、明天等关键词。
 用户明确要求创建/添加自定义动作，或继续回答建档追问时，用 custom_exercise。
@@ -134,6 +142,10 @@ source_id/workout_id 只能从服务端提供的训练引用中选择，不能�
 selection_mode="date_window" 并填写 recent_days（以及必要的 end_date）。
 不要继承上一条回答中自行引入的日期范围。单次未指定 ID 时仍设置 scope="single"。
 用户明确修改已有完整方案时，parent_plan_id 从 session_plans 中选择原方案 ID；独立新训练则为 null。
+context.planning_target 是调用方选择的训练目的地，不根据文字覆盖它。
+current_workout 表示基于本次完整快照补充新动作；next_workout 表示仅基于已同步历史安排下次。
+本次已有动作和每个已完成/待完成组均为只读输入，不重写、不删除、不标记完成。
+remaining_minutes 是现有待完成内容之外为新增安排预留的时间，不是整次训练时间。
 结合历史继承条件，但本轮明确修改的条件优先。previous_results 顺序可解析「第二个」。
 query 仅包含标准动作名、别名或共有名称片段（例如 卧推），不要放整句、数量、部位、器械。
 条件检索时 query 留空，body_part/equipment/target_muscle 使用术语表 code。
@@ -318,6 +330,9 @@ purpose 简洁解释为何适合当前条件，不出现数字、重量单位、
         )
 
     async def session_preview(self, request, candidates, *, on_progress=None):
+        request = planning_view(request)
+        existing = current_exercise_ids(request)
+        candidates = [exercise for exercise in candidates if exercise.id not in existing]
         schema = SessionPreviewDraft.model_json_schema()
         schema["$defs"]["PreviewExercise"]["properties"]["exercise_id"]["enum"] = [
             exercise.id for exercise in candidates
@@ -332,6 +347,8 @@ items 只能选 supplied catalog 中的真实 ID，并逐字保留前导零，�
 这些卡片仅用于讨论，不是可以开始的训练处方。不能提供组数、次数、重量、时长、休息或加量指示。
 theme、rationale、purpose 只说明候选主题和取舍，不出现数字、重量单位或百分比。
 没有足够依据选择动作时 items 可以为空，rationale 说明具体缺口。
+current_workout 只讨论额外的新动作；不能重复已有动作，必须综合已完成和待完成组判断是否还需新增。
+next_workout 仅以已同步历史为训练记录依据，不依据客户端当前训练或近期动作安排。
 """,
             {
                 "catalog": [
@@ -351,6 +368,8 @@ theme、rationale、purpose 只说明候选主题和取舍，不出现数字、�
         return qualitative_preview(result)
 
     async def session_plan(self, request, catalog, *, on_progress=None):
+        request = planning_view(request)
+        existing = current_exercise_ids(request)
         profile = (request.context.training_profile or {}).get("profile", {})
         equipment = profile.get("equipment", [])
         candidates = [
@@ -364,13 +383,22 @@ theme、rationale、purpose 只说明候选主题和取舍，不出现数字、�
                 "detail_type": e.detail_type,
             }
             for e in catalog.exercises
-            if e.is_active and e.equipment_code in equipment
+            if e.is_active and e.equipment_code in equipment and e.id not in existing
         ]
         return await self._decision(
             request,
             SessionDraft,
             """输出一次完整训练候选方案。
 只用 supplied catalog 中的真实候选。
+planning_target=current_workout 时，current_workout 是 App 拥有的不可修改快照。
+综合其中所有已完成和待完成组的整体训练量、动作分布和疲劳考虑是否需要新增；不能只看未做完的组。
+items 只返回需要新增的动作，绝不能包含已有动作，也不改变已有记录、目标或完成状态。
+已有内容足够或全部完成且无需补充时允许 items=[]。
+maintain/reduce 表示无需新增，rest 表示建议停止新增。
+remaining_minutes 仅是现有待完成内容之外给新增安排的预算；不要把它当作整次训练时长。
+新增安排的准备、执行、休息、切换、收尾和缓冲都要纳入该预算；已有待完成内容不消耗此预算。
+planning_target=next_workout 时，仅以服务端已同步的已完成历史为训练记录依据。
+输出待保存供下次使用的完整计划。
 状态明显疲劳或睡眠差时 adjustment 必须 reduce 或 rest；不能推断已处于减量周期。
 increase_* 仅限 progression_signals 指定的动作，并用 progression_exercise_id 指明。
 adjustment 为 maintain、reduce 或 rest 时，progression_exercise_id 必须为 null；
@@ -395,7 +423,13 @@ target_rir_min/max 填预计保留次数范围，effort 只写动作控制提示
 遵守可用时间，上限太短时减少低优先级项目或提出休息。rest 时 items 为空。
 alternatives 只列同主要肌群和记录类型、当前可用器械的真实动作，标记需要重算且不转移重量。
 """,
-            {"catalog": candidates},
+            {
+                "catalog": candidates,
+                "planning": planning_metadata(request),
+                "time_budget_minutes": request.context.remaining_minutes
+                if planning_target(request) == "current_workout"
+                else profile.get("session_minutes"),
+            },
             skill="training-recommendation",
             on_progress=on_progress,
         )

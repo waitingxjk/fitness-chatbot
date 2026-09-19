@@ -126,6 +126,18 @@ async def persist_session_plan(session, user_id, request_id, plan):
             raise ObjectNotFound("Parent plan not found")
         if plan["version"] != parent.plan["version"] + 1:
             raise TurnConflict("Invalid successor version")
+        if plan.get("planning_target", "next_workout") != parent.plan.get(
+            "planning_target", "next_workout"
+        ):
+            raise TurnConflict("A successor must keep its planning target")
+        current, previous = plan.get("current_workout"), parent.plan.get("current_workout")
+        if previous and (
+            not current
+            or current["sourceId"] != previous["sourceId"]
+            or current["workout"]["id"] != previous["workout"]["id"]
+            or current["version"] < previous["version"]
+        ):
+            raise TurnConflict("A successor requires the same current workout and a fresh snapshot")
         if (await plan_snapshot(session, parent))["superseded_by"]:
             raise TurnConflict("A newer plan exists; modify that version instead")
         expected = plan.get("parent_revision")
@@ -247,6 +259,13 @@ class TrainingStore:
                 event = {**content, "created_at": utcnow().isoformat() + "Z"}
                 if payload.workout:
                     link = payload.workout
+                    current = row.plan.get("current_workout")
+                    if row.plan.get("planning_target") == "current_workout" and (
+                        not current
+                        or current["sourceId"] != link.source_id
+                        or current["workout"]["id"] != link.workout_id
+                    ):
+                        raise TurnConflict("Execution must reference this plan's current workout")
                     workout = await session.get(
                         WorkoutRow, (user_id, link.source_id, link.workout_id)
                     )

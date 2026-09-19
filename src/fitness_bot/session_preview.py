@@ -1,5 +1,6 @@
 """Qualitative catalog previews; never prescriptions or accepted workout plans."""
 
+from fitness_bot.planning import current_exercise_ids, planning_view
 from fitness_bot.prescriptions import validate_prescription_reason
 from fitness_bot.schemas import ExerciseCard
 from fitness_bot.training_decision import effective_profile
@@ -35,10 +36,13 @@ def qualitative_preview(payload):
 
 
 def preview_candidates(request, catalog):
+    request = planning_view(request)
+    existing = current_exercise_ids(request)
+    available = [e for e in catalog.exercises if e.is_active and e.id not in existing]
     equipment = set(effective_profile(request).equipment)
     equipment.update(request.context.available_equipment)
     if equipment:
-        return [e for e in catalog.exercises if e.is_active and e.equipment_code in equipment]
+        return [e for e in available if e.equipment_code in equipment]
     known = {item.exercise_id for item in request.context.recent_exercises}
     if history := request.context.workout_history:
         known.update(
@@ -46,7 +50,7 @@ def preview_candidates(request, catalog):
             for workout in history.workouts
             for record in workout.get("records", [])
         )
-    return [e for e in catalog.exercises if e.is_active and e.id in known]
+    return [e for e in available if e.id in known]
 
 
 def preview_cards(draft, candidates, catalog):

@@ -1,6 +1,6 @@
 ---
 name: training-recommendation
-version: 1.1.0
+version: 1.2.0
 description: Propose catalog-based exercises or sessions from server facts, goals, and current constraints.
 ---
 
@@ -19,6 +19,12 @@ description: Propose catalog-based exercises or sessions from server facts, goal
 
 先识别用户请求的是单动作、几个备选、供讨论的动作预览、完整训练还是原方案修订。
 结合目标、服务端所选的近期训练、已接受方案和执行反馈确定主题，并解释取舍，不仅按最久未练部位安排。
+调用方的 planning_target 决定目的地：current_workout 补充本次，next_workout 保存供下次使用。
+本次完整快照包括所有已完成与待完成组，两者均影响是否还需新增；不能只看剩余组。
+快照属于 App，保留每条记录、顺序、组与原始数值，不修改、删除或标记完成。
+本次 items 只提出快照尚不存在的新动作；已有内容足够时允许不新增，建议休息也不抹去原记录。
+remaining_minutes 是独立于已有待完成内容、明确留给新增安排的预算，不推测整次训练还剩多久。
+下次计划仅以服务端已同步的已完成历史作为训练记录依据，不能拿客户端当前快照或近期动作凑历史。
 先保护用户重点动作，再考虑互补关系和当前限制，不必罗列全部历史动作。
 不能把动作出现频繁等同于表现稳定、技术熟练或适合优先；不能把未确认目标和状态写成事实。
 

@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
+from fitness_bot.planning import plan_outcome
 from fitness_bot.prescriptions import SetPrescription, summarize_sets, validate_user_sets
 from fitness_bot.storage import ObjectNotFound, TurnConflict, utcnow
 from fitness_bot.training_storage import PlanEventRow, SessionPlanRow, plan_snapshot
@@ -23,10 +24,13 @@ class PlanRevisionInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     revision_id: UUID
     expected_revision: int = Field(ge=0)
-    items: list[RevisedItem] = Field(min_length=1, max_length=8)
+    items: list[RevisedItem] = Field(max_length=8)
 
 
 def revised_plan(original, payload, catalog):
+    is_current = original.get("planning_target") == "current_workout"
+    if not payload.items and not is_current:
+        raise ValueError("Next workout revisions require work items")
     old = {item["exercise"]["id"]: item for item in original["items"]}
     items = []
     seen = set()
@@ -55,12 +59,20 @@ def revised_plan(original, payload, catalog):
             }
         )
     total = (
-        original["preparation_minutes"]
-        + original["finish_minutes"]
-        + sum(item["estimated_seconds"] for item in items) / 60
+        (
+            original["preparation_minutes"]
+            + original["finish_minutes"]
+            + sum(item["estimated_seconds"] for item in items) / 60
+        )
+        if items
+        else 0
     )
-    upper = math.ceil(total + original["buffer_minutes"])
-    budget = original.get("profile_snapshot", {}).get("session_minutes")
+    upper = math.ceil(total + original["buffer_minutes"]) if items else 0
+    budget = (
+        original.get("remaining_minutes")
+        if is_current
+        else original.get("profile_snapshot", {}).get("session_minutes")
+    )
     if budget is not None and upper > budget:
         raise ValueError(
             "Adjusted plan exceeds available time; reduce sets or replan with more time"
@@ -72,6 +84,10 @@ def revised_plan(original, payload, catalog):
         parent_plan_id=original["id"],
         status="proposed",
         items=items,
+        outcome=plan_outcome(
+            "rest" if not items and original.get("outcome") == "rest" else "maintain",
+            items,
+        ),
         working_sets=sum(item["sets"] for item in items),
         estimated_minutes_min=math.ceil(total),
         estimated_minutes_max=upper,
@@ -89,6 +105,8 @@ def revised_plan(original, payload, catalog):
             "卡片保存目标值，开始训练后仍需按实际表现记录。",
         ],
     )
+    if not items:
+        result.update(preparation_minutes=0, finish_minutes=0, buffer_minutes=0)
     return result
 
 
