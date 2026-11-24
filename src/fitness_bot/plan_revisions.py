@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
+from fitness_bot.plan_semantics import ACTIVITY_ROLES, phase_summaries, validate_structure
 from fitness_bot.planning import plan_outcome
 from fitness_bot.prescriptions import SetPrescription, summarize_sets, validate_user_sets
 from fitness_bot.storage import ObjectNotFound, TurnConflict, utcnow
@@ -16,6 +17,7 @@ from fitness_bot.training_storage import PlanEventRow, SessionPlanRow, plan_snap
 
 class RevisedItem(BaseModel):
     model_config = ConfigDict(extra="forbid")
+    item_id: str | None = Field(default=None, min_length=1, max_length=64)
     exercise_id: str = Field(min_length=1, max_length=64)
     set_prescriptions: list[SetPrescription] = Field(min_length=1, max_length=12)
 
@@ -24,29 +26,47 @@ class PlanRevisionInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     revision_id: UUID
     expected_revision: int = Field(ge=0)
-    items: list[RevisedItem] = Field(max_length=8)
+    items: list[RevisedItem] = Field(max_length=20)
 
 
 def revised_plan(original, payload, catalog):
     is_current = original.get("planning_target") == "current_workout"
     if not payload.items and not is_current:
         raise ValueError("Next workout revisions require work items")
-    old = {item["exercise"]["id"]: item for item in original["items"]}
+    semantic = original.get("semantics_version") == 1
+    old = {
+        item["item_id"] if semantic else item["exercise"]["id"]: item for item in original["items"]
+    }
     items = []
     seen = set()
     for change in payload.items:
         exercise = catalog.get(change.exercise_id)
-        if not exercise or not exercise.is_active or exercise.id in seen:
-            raise ValueError("Plan requires unique active catalog exercises")
-        if exercise.id not in old:
+        identity = change.item_id if semantic else change.exercise_id
+        if semantic and identity is None:
+            matching = [key for key, i in old.items() if i["exercise"]["id"] == change.exercise_id]
+            if len(matching) != 1:
+                raise ValueError("An ambiguous exercise requires item_id")
+            identity = matching[0]
+        if not exercise or not exercise.is_active or identity in seen:
+            raise ValueError("Plan requires unique active catalog occurrences")
+        if identity not in old or old[identity]["exercise"]["id"] != change.exercise_id:
             raise ValueError("Replacing an exercise requires a newly generated plan")
-        seen.add(exercise.id)
-        previous = old[exercise.id]
-        rows = validate_user_sets([r.model_dump() for r in change.set_prescriptions], exercise)
+        seen.add(identity)
+        previous = old[identity]
+        activity = semantic and previous["purpose_role"] in ACTIVITY_ROLES
+        from fitness_bot.prescriptions import legacy_sets
+
+        rows = validate_user_sets(
+            [r.model_dump() for r in change.set_prescriptions],
+            exercise,
+            original_rows=legacy_sets(previous),
+            allow_activity=activity,
+        )
         summary = summarize_sets(
             rows,
             seconds_per_rep=previous.get("seconds_per_rep", 4),
             switch_seconds=previous.get("switch_seconds", 90),
+            allow_activity=activity,
         )
         work = [row for row in rows if row["kind"] == "working"]
         items.append(
@@ -54,14 +74,16 @@ def revised_plan(original, payload, catalog):
                 **deepcopy(previous),
                 **summary,
                 "set_prescriptions": rows,
-                "load": deepcopy(work[0]["load"]),
+                "load": deepcopy((work or rows)[0]["load"]),
                 "effort": "按每组设置执行，记录时填写实际表现。",
             }
         )
+    if semantic:
+        validate_structure(items, current=is_current, allow_empty=is_current)
+    phase_totals = phase_summaries(items) if semantic else []
     total = (
         (
-            original["preparation_minutes"]
-            + original["finish_minutes"]
+            (0 if semantic else original["preparation_minutes"] + original["finish_minutes"])
             + sum(item["estimated_seconds"] for item in items) / 60
         )
         if items
@@ -97,7 +119,16 @@ def revised_plan(original, payload, catalog):
         suggested_adjustment="user_modified",
         progression_basis=None,
         adjustment_reason="这是用户调整后的目标，未被认定为基于历史证据的自动递增。",
-        load_evidence=[],
+        load_evidence=[
+            o
+            for o in original.get("load_evidence", [])
+            if o["id"]
+            in {
+                row["load"].get("observation_id")
+                for item in items
+                for row in item["set_prescriptions"]
+            }
+        ],
         ordering_checks=[],
         removed_items=[],
         limitations=[
@@ -105,6 +136,18 @@ def revised_plan(original, payload, catalog):
             "卡片保存目标值，开始训练后仍需按实际表现记录。",
         ],
     )
+    if semantic:
+        result.update(
+            phase_summaries=phase_totals,
+            preparation_minutes=sum(
+                p["estimated_seconds"] for p in phase_totals if p["phase"] == "warmup"
+            )
+            / 60,
+            finish_minutes=sum(
+                p["estimated_seconds"] for p in phase_totals if p["phase"] == "cooldown"
+            )
+            / 60,
+        )
     if not items:
         result.update(preparation_minutes=0, finish_minutes=0, buffer_minutes=0)
     return result
@@ -138,6 +181,9 @@ async def save_revision(store, user_id, plan_id, payload, catalog):
             if (await plan_snapshot(session, parent))["superseded_by"]:
                 raise TurnConflict("A newer plan exists; revise that version instead")
             child_plan = revised_plan(parent.plan, payload, catalog)
+            from fitness_bot.training_evidence import revalidate_plan_evidence
+
+            await revalidate_plan_evidence(session, user_id, child_plan)
             changed = await session.execute(
                 update(SessionPlanRow)
                 .where(

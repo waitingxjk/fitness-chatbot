@@ -75,3 +75,17 @@
 Flutter 全量回归 505 项通过、2 项原有跳过，静态分析无问题；另有实际 Flutter 客户端 → 隔离 HTTP 后端 → Drift 生命周期测试 1 项通过，覆盖本次追加、原记录保留、幂等确认、下次保存、当前运动阻止开启及结束后只开启一次。该跨仓库测试需 `FITNESS_LIVE_PLAN_HTTP=1` 启用，默认跳过，使用注入模型和临时 SQLite。
 
 待开始计划和本次应用回执由 App 本地持久化管理；服务端 accepted 状态恢复不会自动向本次运动追加动作。模拟器已构建运行；锁屏限制了最后的手动点击检查，页面入口与流转由路由/widget 测试覆盖。本轮自动联调不验证真实 LLM 输出质量。
+
+## 单轮完整候选计划（2026-09-22）
+
+明确请求整次训练时，一轮返回完整 `session_plan`，不因未填写目标、经验、时长、器械或当天状态而退回多步问卷。本轮明确输入 > 本会话明确条件 > 已保存资料 > 历史/标明的默认值。本会话条件只来自服务端解析记录，不信任客户端提供的档案；推断不写入长期档案。器械优先参考历史，其他常见器械暂按可用，用户明确限制后严格遵守。动作数量按历史训练量和时间分配，不固定为四项。
+
+`planning_assumptions` 为 `{field, source, value, explanation}` 数组，标明历史推断、默认值或未知状态；App 在概览及详情显示。`planning_history_summary` 描述近期样本的动作数、完成组数和熟悉器械，供模型分配训练量。未知状态不会被补成“正常”，也不能据此获得自动进阶资格；明确疼痛仍阻止生成负重方案。补全本次训练仍需要最新 App 快照及明确的新增时间预算。
+
+逐组 `load.strategy` 新增 `history_reference`：同动作已完成记录中的原始数值、单位、`observation_id` 和说明；未核实的 `convention` 保留 `unknown`，附加/辅助负荷保留 `added`/`assistance`。它不同于已确认可比记录，不授权自动递增，也不能跨动作搬用。没有有效同动作数据则展示待试重。生成、修订和首次确认会核对每个引用组的原始快照版本；历史变化返回 409，已成功操作的相同请求仍幂等重放。
+
+调整次数、休息、顺序时可保留原始参考负荷，无需再逐组确认。改动重量、单位或口径后转为 `user` 且清除旧来源；不得伪造 `history_reference`。聊天卡片和完整详情都显示“确认并保存计划”，只在点击后成为正式待开始计划；生成、编辑、保存均不自动开始训练。
+
+### Three phases and eight purpose roles (2026-09-22)
+
+New complete plans use `semantics_version: 1` with occurrence `item_id`, `phase`, and `purpose_role` across the complete ordered `items` list. Activity rows use `kind: activity` and do not count as strength working sets. Read [plan-phase-roles.md](plan-phase-roles.md) for the full mapping, phase completeness, time accounting, editing and legacy rules; [the synthetic example](examples/phase-plan.json) is shared with Flutter parsing tests. Existing save/start separation is unchanged.

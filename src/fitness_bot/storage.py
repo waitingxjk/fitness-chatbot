@@ -235,11 +235,14 @@ class ConversationStore:
                 (cards for turn in previous if (cards := (turn.response or {}).get("cards"))),
                 [],
             )
+            from fitness_bot.plan_inputs import restore_conversation_inputs
             from fitness_bot.training_review import load_training_review
             from fitness_bot.training_storage import load_session_plans, load_training_profile
             from fitness_bot.workout_context import load_workout_history
 
-            profile = await load_training_profile(session, user_id)
+            profile = restore_conversation_inputs(
+                await load_training_profile(session, user_id), previous
+            )
             # Restore only intent/date. App-owned snapshots and remaining time
             # must come from this request, never a stale saved conversation turn.
             prior_planning = next(

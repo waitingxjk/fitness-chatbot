@@ -4,6 +4,9 @@
 Python **3.12**，**uv** 管理依赖，**LangGraph** 编排 agent，**FastAPI** 提供普通 HTTP 接口。
 聊天返回 **NDJSON 流**，iOS 直接请求 `/v1/chat`，无 MCP 握手或 `/mcp` 路由。
 
+App 接入请先读 [Chatbot 能力与输出接口交接](docs/handoff/chatbot-app-handoff.md)，
+内含流式状态机、跨端图表、动作草稿/计划保存边界及可直接用于渲染测试的 JSON 样例。
+
 复盘与整次训练推荐的设计资料见 [训练方法知识库](docs/knowledge/training/README.md)。
 运行时已接入带版本的研究原则与产品规则子集。Boyle 正文阅读暂缓，未将未读内容作为依据。
 具体剂量仍是候选方案；尚未验证的恢复评分、精确疲劳矩阵和历史负重口径不由模型补造。

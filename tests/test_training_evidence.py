@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import UTC, datetime
 
 import pytest
 from fastapi.testclient import TestClient
@@ -12,7 +13,15 @@ from fitness_bot.config import Settings
 
 
 @pytest.fixture
-def client():
+def client(monkeypatch):
+    # These fixtures deliberately describe early September; keep the 14-day
+    # progression window deterministic instead of expiring as wall time passes.
+    class ReviewClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 9, 9, tzinfo=UTC).astimezone(tz)
+
+    monkeypatch.setattr("fitness_bot.training_review.datetime", ReviewClock)
     with TestClient(
         create_app(Settings(_env_file=None), CompanionAgent(Catalog.load(), OfflineModel()))
     ) as connection:

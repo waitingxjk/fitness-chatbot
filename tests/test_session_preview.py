@@ -1,4 +1,4 @@
-"""An incomplete session request still has ordered, non-executable catalog cards."""
+"""A current-workout request missing its addition budget remains a non-executable preview."""
 
 import json
 from datetime import UTC, datetime
@@ -39,12 +39,22 @@ class PreviewModel:
         raise AssertionError("Incomplete profile cannot create an executable plan")
 
 
-def test_incomplete_session_returns_ordered_preview_cards_and_persists_them():
+def missing_current_budget():
+    from test_planning_targets import current_context
+
+    context = current_context(remaining_minutes=None)
+    context["current_workout"]["workout"]["records"] = []
+    return context
+
+
+def test_missing_current_budget_returns_ordered_preview_cards_and_persists_them():
     model = PreviewModel()
     with TestClient(
         create_app(Settings(_env_file=None), CompanionAgent(Catalog.load(), model))
     ) as c:
-        r = c.post("/v1/chat", json={"message": "推荐我明天的训练日程"})
+        r = c.post(
+            "/v1/chat", json={"message": "补全本次训练", "context": missing_current_budget()}
+        )
         events = [json.loads(line) for line in r.text.splitlines()]
         done = events[-1]
         assert done["type"] == "done"
@@ -55,7 +65,7 @@ def test_incomplete_session_returns_ordered_preview_cards_and_persists_them():
         assert response["session_plan"] is None
         assert response["suggestion_kind"] is None
         assert response["plan_preview"]["status"] == "needs_input"
-        assert "训练目标" in response["plan_preview"]["next_question"]
+        assert "新增安排" in response["plan_preview"]["next_question"]
         assert "待完善" in response["text"]
         assert "旧版纯文字" not in response["text"]
         assert model.preview_calls == 1
@@ -74,7 +84,9 @@ def test_preview_excludes_unknown_exercises_without_failing_the_turn():
     ) as c:
         events = [
             json.loads(line)
-            for line in c.post("/v1/chat", json={"message": "安排训练"}).text.splitlines()
+            for line in c.post(
+                "/v1/chat", json={"message": "安排训练", "context": missing_current_budget()}
+            ).text.splitlines()
         ]
         assert events[-1]["type"] == "done"
         assert events[-1]["response"]["cards"] == []
@@ -95,7 +107,11 @@ def test_preview_preserves_valid_cards_when_other_model_ids_are_invalid_or_dupli
     with TestClient(
         create_app(Settings(_env_file=None), CompanionAgent(Catalog.load(), model))
     ) as c:
-        done = json.loads(c.post("/v1/chat", json={"message": "重新生成"}).text.splitlines()[-1])
+        done = json.loads(
+            c.post(
+                "/v1/chat", json={"message": "重新生成", "context": missing_current_budget()}
+            ).text.splitlines()[-1]
+        )
         assert done["type"] == "done"
         cards = done["response"]["cards"]
         assert [card["exercise"]["id"] for card in cards] == ["0289", "0180"]

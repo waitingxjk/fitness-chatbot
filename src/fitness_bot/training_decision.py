@@ -2,10 +2,11 @@
 
 import math
 import re
-from datetime import UTC, datetime, timedelta
+from datetime import datetime
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
+from fitness_bot.plan_errors import PlanConstraintError
 from fitness_bot.planning import (
     current_exercise_ids,
     plan_outcome,
@@ -14,7 +15,7 @@ from fitness_bot.planning import (
 )
 from fitness_bot.training_schemas import TrainingProfile
 
-RULES_VERSION = "training-decision-v1.1"
+RULES_VERSION = "training-decision-v1.3"
 LOAD_LABELS = {
     "total": "总重量",
     "per_hand": "每只重量",
@@ -81,20 +82,11 @@ def plan_question(request):
     if not profile.equipment:
         return "这次可以使用哪些器械？"
     readiness = profile.readiness
-    now = datetime.now(UTC)
-    if readiness is None or not timedelta(0) <= now - readiness.observed_at <= timedelta(hours=36):
-        return "请补充当前状态：有无疼痛、明显疲劳，以及最近睡眠如何？"
-    if readiness.pain == "present":
+    if readiness is not None and readiness.pain == "present":
         return (
             "先停止引发疼痛的动作；当前不生成负重训练方案。"
             "请说明不适情况，持续或明显不适时寻求专业评估。"
         )
-    if (
-        readiness.pain == "unknown"
-        or readiness.fatigue == "unknown"
-        or readiness.sleep == "unknown"
-    ):
-        return "请补充当前状态：有无疼痛、明显疲劳，以及最近睡眠如何？"
     return None
 
 
@@ -204,6 +196,9 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         raise ValueError(f"Missing planning inputs: {question}")
     profile = effective_profile(request)
     is_current = planning_target(request) == "current_workout"
+    semantic = draft.semantics_version == 1
+    from fitness_bot.plan_semantics import ACTIVITY_ROLES, phase_summaries, validate_structure
+
     time_budget = request.context.remaining_minutes if is_current else profile.session_minutes
     existing_ids = current_exercise_ids(request)
 
@@ -257,11 +252,22 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
     evidence = evidence_index(facts)
     if any(key not in evidence for key in draft.evidence_ids):
         raise ValueError("Unknown plan evidence")
-    low_readiness = profile.readiness.fatigue == "high" or profile.readiness.sleep == "poor"
+    from fitness_bot.plan_inputs import fresh_readiness
+
+    readiness = fresh_readiness(profile)
+    low_readiness = readiness is not None and (
+        readiness.fatigue == "high" or readiness.sleep == "poor"
+    )
     if low_readiness and draft.adjustment not in {"reduce", "rest"}:
         raise ValueError("High fatigue requires reduced demands or rest")
     progression = None
     if draft.adjustment.startswith("increase"):
+        if readiness is None or (readiness.pain, readiness.fatigue, readiness.sleep) != (
+            "none",
+            "normal",
+            "normal",
+        ):
+            raise ValueError("Readiness must be explicitly current before suggesting progression")
         progression = next(
             (
                 s
@@ -276,11 +282,18 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         if not required <= set(draft.evidence_ids):
             raise ValueError("Progression must cite both performance records")
         candidate = next(
-            (i for i in draft.items if i.exercise_id == draft.progression_exercise_id), None
+            (
+                i
+                for i in draft.items
+                if i.exercise_id == draft.progression_exercise_id
+                and (not semantic or (i.phase == "main" and i.purpose_role == "primary"))
+            ),
+            None,
         )
         if (
             not candidate
             or candidate.role != "priority"
+            or (semantic and candidate.purpose_role != "primary")
             or candidate.load_strategy != "history"
             or candidate.load_observation_id != progression["latest_observation_id"]
         ):
@@ -320,14 +333,26 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         ),
         None,
     )
+    if original and original.get("semantics_version") == 1 and not semantic:
+        raise ValueError("A semantic plan cannot downgrade its version")
+    legacy_parent = semantic and original and original.get("semantics_version") != 1
     if draft.adjustment == "reduce" and original:
-        original_items = {i["exercise"]["id"]: i for i in original["items"]}
-        if sum(i.sets for i in draft.items) >= original["working_sets"] and not (
-            is_current and not draft.items
+        original_items = {
+            (i.get("phase") or "main", i["exercise"]["id"]) if semantic else i["exercise"]["id"]: i
+            for i in original["items"]
+        }
+        if (
+            original["working_sets"] > 0
+            and sum(i.sets for i in draft.items) >= original["working_sets"]
+            and not (is_current and not draft.items)
         ):
             raise ValueError("Reduced plan must decrease work sets from the original")
         for item in draft.items:
-            previous = original_items.get(item.exercise_id)
+            if legacy_parent and item.phase != "main":
+                continue  # Make old preparation/finish reservations concrete below.
+            previous = original_items.get(
+                (item.phase, item.exercise_id) if semantic else item.exercise_id
+            )
             if previous is None or item.sets > previous["sets"]:
                 raise ValueError("Reduced plan cannot add new or more demanding work")
             if item.repetitions and item.repetitions > (previous["repetitions"] or 0):
@@ -340,19 +365,36 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
                 raise ValueError("Reduced plan cannot increase effort")
     items = []
     seen = set()
-    for item in draft.items:
+    for item_index, item in enumerate(draft.items):
         if item.exercise_id in existing_ids:
             raise ValueError(
                 "Exercise already exists in the current workout; only new exercises allowed"
             )
         exercise = catalog.get(item.exercise_id)
-        if exercise is None or not exercise.is_active or exercise.id in seen:
-            raise ValueError("Plan requires unique active catalog exercises")
-        seen.add(exercise.id)
+        occurrence = (item.phase, item.exercise_id) if semantic else item.exercise_id
+        if exercise is None or not exercise.is_active:
+            raise PlanConstraintError(
+                "Plan requires unique active catalog exercises within each phase",
+                ["items", item_index, "exercise_id"],
+                "Unknown/inactive ID: use an exact catalog ID, preserving leading zeros",
+            )
+        if occurrence in seen:
+            raise PlanConstraintError(
+                "Plan requires unique active catalog exercises within each phase",
+                ["items", item_index, "exercise_id"],
+                "Duplicate in this phase: choose another catalog exercise or remove it",
+            )
+        seen.add(occurrence)
+        activity = semantic and item.purpose_role in ACTIVITY_ROLES
         if exercise.equipment_code not in profile.equipment:
             raise ValueError("Unavailable equipment")
         if (exercise.detail_type == "duration") != (item.duration_seconds is not None):
-            raise ValueError("Dose incompatible with catalog detail type")
+            field = "duration_seconds" if exercise.detail_type == "duration" else "repetitions"
+            raise PlanConstraintError(
+                "Dose incompatible with catalog detail type",
+                ["items", item_index, "set_prescriptions"],
+                f"Every row requires {field}; the other dose field must be null",
+            )
         load = {
             "strategy": "trial",
             "value": None,
@@ -361,25 +403,40 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
                 "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
             ),
         }
-        if item.load_strategy == "history":
+        if not activity and item.load_strategy == "trial" and draft.adjustment == "maintain":
+            from fitness_bot.history_loads import historical_reference
+
+            reference = historical_reference(exercise, facts.get("observations", []))
+            if reference is not None:
+                load = reference
+        if not activity and item.load_strategy == "history":
             observation = next(
                 (o for o in facts.get("observations", []) if o["id"] == item.load_observation_id),
                 None,
             )
-            if (
-                not observation
-                or observation["exercise_id"] != exercise.id
-                or not observation.get("comparison_eligible")
-            ):
-                raise ValueError("Historical load requires a comparable same-exercise observation")
-            load = {
-                "strategy": "history",
-                "value": observation["load_value"],
-                "unit": observation["load_unit"],
-                "observation_id": observation["id"],
-                "explanation": "同一动作和已确认口径的历史记录，仅作为当天试做起点。",
-            }
-            load["convention"] = observation["load_convention"]
+            if not observation or observation["exercise_id"] != exercise.id:
+                raise ValueError("Historical load requires a known same-exercise observation")
+            if not observation.get("comparison_eligible"):
+                if draft.adjustment.startswith("increase"):
+                    raise ValueError("Progression requires comparable same-exercise history")
+                # Models sometimes label any recorded weight as `history`. The
+                # server owns eligibility: retain a labeled same-exercise
+                # reference, or trial load, without discarding a complete plan.
+                if draft.adjustment == "maintain":
+                    from fitness_bot.history_loads import historical_reference
+
+                    reference = historical_reference(exercise, facts.get("observations", []))
+                    if reference is not None:
+                        load = reference
+            else:
+                load = {
+                    "strategy": "history",
+                    "value": observation["load_value"],
+                    "unit": observation["load_unit"],
+                    "observation_id": observation["id"],
+                    "explanation": "同一动作和已确认口径的历史记录，仅作为当天试做起点。",
+                    "convention": observation["load_convention"],
+                }
             if (
                 progression
                 and item.exercise_id == draft.progression_exercise_id
@@ -428,7 +485,10 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
 
         rows = model_sets(item, exercise, load)
         summary = summarize_sets(
-            rows, seconds_per_rep=item.seconds_per_rep, switch_seconds=item.switch_seconds
+            rows,
+            seconds_per_rep=item.seconds_per_rep,
+            switch_seconds=item.switch_seconds,
+            allow_activity=activity,
         )
         items.append(
             {
@@ -440,12 +500,21 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
                         "alternative_exercise_ids",
                     }
                 ),
+                **({"item_id": str(uuid4())} if semantic else {}),
                 "exercise": exercise.model_dump(mode="json", by_alias=True),
                 "equipment_label": catalog.label("equipment", exercise.equipment_code),
                 "body_part_label": catalog.label("bodyPart", exercise.body_part_code),
                 "effort": (
-                    f"保留约 {item.target_rir_min}–{item.target_rir_max} 次余力，"
-                    "以动作控制和当天感受为准。"
+                    (
+                        item.effort
+                        if not re.search(r"(?i)RIR|余力", item.effort)
+                        else "按所列次数或时长完成，以动作控制和当天感受为准。"
+                    )
+                    if activity
+                    else (
+                        f"保留约 {item.target_rir_min}–{item.target_rir_max} 次余力，"
+                        "以动作控制和当天感受为准。"
+                    )
                 ),
                 "alternative_condition": (
                     "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。"
@@ -459,11 +528,24 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
             }
         )
     if draft.adjustment == "reduce" and original:
+        if (
+            original["working_sets"] == 0
+            and items
+            and sum(i["estimated_seconds"] for i in items)
+            >= sum(i["estimated_seconds"] for i in original["items"])
+        ):
+            raise ValueError("Reduced activity plan must decrease prescribed duration")
         from fitness_bot.prescriptions import legacy_sets
 
         for item in items:
+            if legacy_parent and item["phase"] != "main":
+                continue
             rows = item["set_prescriptions"]
-            before = legacy_sets(original_items[item["exercise"]["id"]])
+            before = legacy_sets(
+                original_items[
+                    (item["phase"], item["exercise"]["id"]) if semantic else item["exercise"]["id"]
+                ]
+            )
             if len(rows) > len(before):
                 raise ValueError("Reduced plan cannot add warmup or working sets")
             for field in ("repetitions", "duration_seconds"):
@@ -479,31 +561,99 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
                 row["target_rir_min"] for row in before
             ):
                 raise ValueError("Reduced plan cannot increase effort including warmups")
+    if legacy_parent and draft.adjustment == "reduce":
+        for phase, key in (("warmup", "preparation_minutes"), ("cooldown", "finish_minutes")):
+            seconds = sum(i["estimated_seconds"] for i in items if i["phase"] == phase)
+            if seconds > original.get(key, 0) * 60:
+                raise ValueError("Reduced legacy plan cannot expand preparation or finish time")
+    if semantic:
+        validate_structure(
+            items, current=is_current, allow_empty=is_current or draft.adjustment == "rest"
+        )
+    main_items = [i for i in items if i.get("phase") == "main"] if semantic else items
     ranks = {"priority": 0, "assistance": 1, "supplement": 2}
-    if [ranks[i["role"]] for i in items] != sorted(ranks[i["role"]] for i in items):
+    if [ranks[i["role"]] for i in main_items] != sorted(ranks[i["role"]] for i in main_items):
         raise ValueError("Protect priority items before assistance and supplements")
-    preferred = [i for i in items if i["exercise"]["id"] in profile.priority_exercise_ids]
-    if preferred and items[0] not in preferred:
+    preferred = [i for i in main_items if i["exercise"]["id"] in profile.priority_exercise_ids]
+    if preferred and main_items[0] not in preferred:
         raise ValueError("Configured priority exercise must come first when included")
-    if items and items[0]["role"] != "priority":
+    if main_items and main_items[0]["role"] != "priority":
         raise ValueError("Identify and protect the session priority")
-    fixed = draft.preparation_minutes + draft.finish_minutes if items else 0
+    fixed = draft.preparation_minutes + draft.finish_minutes if items and not semantic else 0
     buffer_minutes = draft.buffer_minutes if items else 0
 
     def duration():
         return fixed + sum(i["estimated_seconds"] for i in items) / 60
 
     removed = []
+    reduced_sets = False
     while duration() + buffer_minutes > time_budget:
-        removable = next((i for i in reversed(items) if i["role"] != "priority"), None)
-        if removable is None:
+        # Product fallback: keep movement coverage before extra working sets.
+        # Two is a conservative allocation floor, not an efficacy threshold.
+        # Priority/progression work, warmups, and remaining rests are immutable.
+        trimmable = next(
+            (
+                i
+                for i in reversed(items)
+                if i["role"] != "priority"
+                and i["sets"] > 2
+                and (not semantic or i["phase"] == "main")
+            ),
+            None,
+        )
+        if trimmable is not None:
+            rows = trimmable["set_prescriptions"]
+            index = max(n for n, row in enumerate(rows) if row["kind"] == "working")
+            rows.pop(index)
+            trimmable.update(
+                summarize_sets(
+                    rows,
+                    seconds_per_rep=trimmable["seconds_per_rep"],
+                    switch_seconds=trimmable["switch_seconds"],
+                )
+            )
+            reduced_sets = True
+            continue
+        removable_items = [
+            (n, i)
+            for n, i in enumerate(items)
+            if i["role"] != "priority" and (not semantic or i["phase"] == "main")
+        ]
+        if not removable_items:
             raise ValueError("Time budget cannot fit preparation, priority work and rest")
+        # Coarse catalog coverage is preferable to blindly deleting the last
+        # exercise (which could be the only chest or shoulder movement).
+        _, removable = max(
+            removable_items,
+            key=lambda pair: (
+                sum(
+                    other["exercise"]["bodyPartCode"] == pair[1]["exercise"]["bodyPartCode"]
+                    for other in items
+                    if not semantic or other["phase"] == "main"
+                )
+                > 1,
+                ranks[pair[1]["role"]],
+                pair[0],
+            ),
+        )
         items.remove(removable)
         removed.append(
             {
                 "exercise_id": removable["exercise"]["id"],
                 "name": removable["exercise"]["displayNameZhHans"],
-                "reason": "时间不足，优先保留重点动作和组间休息。",
+                "reason": "时间不足，保留重点动作、组间休息，并优先保留不同部位的训练覆盖。",
+            }
+        )
+    allocation_notes = []
+    if reduced_sets:
+        allocation_notes.append(
+            {
+                "field": "time_allocation",
+                "source": "time_budget",
+                "value": time_budget,
+                "explanation": (
+                    "为适配本次时长，先减少非重点动作的额外工作组，保留动作覆盖、热身和组间休息。"
+                ),
             }
         )
     checks = [
@@ -536,12 +686,18 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
                         ),
                     }
                 )
+    if semantic:
+        validate_structure(
+            items, current=is_current, allow_empty=is_current or draft.adjustment == "rest"
+        )
+    phase_totals = phase_summaries(items) if semantic else []
     today = target_date or datetime.now(ZoneInfo(profile.time_zone)).date()
     confirmed = profile.confirmed_cycle
     if confirmed and not confirmed.starts_on <= today <= confirmed.ends_on:
         confirmed = None
     return {
         **planning_metadata(request),
+        **({"semantics_version": 1, "phase_summaries": phase_totals} if semantic else {}),
         "outcome": plan_outcome(draft.adjustment, items),
         "id": str(uuid4()),
         "version": 1,
@@ -552,7 +708,7 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         else (
             "依据本次目标和时间上限，最终保留"
             + "、".join(i["exercise"]["displayNameZhHans"] for i in items)
-            + "；保留重点项目与休息，移除低优先级内容。"
+            + "；保留重点项目与休息，优先保留不同部位的训练覆盖。"
             + draft.adjustment_reason
         ),
         "proposal_rationale": draft.rationale,
@@ -567,13 +723,32 @@ def validate_session_plan(draft, request, catalog, *, target_date=None, original
         "catalog_version": catalog.version,
         "profile_version": (request.context.training_profile or {}).get("version", 0),
         "profile_snapshot": profile.model_dump(mode="json"),
+        "planning_assumptions": (request.context.training_profile or {}).get(
+            "planning_assumptions", []
+        )
+        + allocation_notes,
+        "planning_history_summary": (request.context.training_profile or {}).get(
+            "planning_history_summary", {}
+        ),
         "confirmed_cycle": confirmed.model_dump(mode="json") if confirmed else None,
         "suggested_adjustment": draft.adjustment,
         "progression_basis": progression,
         "adjustment_reason": draft.adjustment_reason,
         "preparation": draft.preparation,
-        "preparation_minutes": draft.preparation_minutes if items else 0,
-        "finish_minutes": draft.finish_minutes if items else 0,
+        "preparation_minutes": (
+            sum(p["estimated_seconds"] for p in phase_totals if p["phase"] == "warmup") / 60
+            if semantic
+            else draft.preparation_minutes
+            if items
+            else 0
+        ),
+        "finish_minutes": (
+            sum(p["estimated_seconds"] for p in phase_totals if p["phase"] == "cooldown") / 60
+            if semantic
+            else draft.finish_minutes
+            if items
+            else 0
+        ),
         "buffer_minutes": buffer_minutes,
         "items": items,
         "working_sets": sum(i["sets"] for i in items),
@@ -695,9 +870,11 @@ def render_session(plan):
                 f"保留约 {row['target_rir_min']}–{row['target_rir_max']} 次余力"
                 for item in plan["items"]
                 for row in legacy_sets(item)
+                if row["kind"] != "activity"
             )
         )
-        lines.append("用力目标：" + "；".join(efforts) + "。各组目标以卡片设置为准。")
+        if efforts:
+            lines.append("力量组用力目标：" + "；".join(efforts) + "。各组目标以卡片设置为准。")
         lines.append(
             "下方仅列新增动作。确认后由 App 校验最新快照并追加，原有动作和组保持不变。"
             if is_current

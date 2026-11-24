@@ -1,0 +1,3567 @@
+{
+  "description": "离线合成联调数据；由当前 HTTP 接口、模型替身和隔离 SQLite 生成，无真实用户数据。ID 仅供渲染测试，不可直接向其他实例保存。",
+  "source_commit": "acd9cb5",
+  "scenarios": {
+    "chat": {
+      "request": {
+        "conversation_id": "a784bc3f-090d-4cd4-8f9c-f148598adbe9",
+        "request_id": "1679de51-78c6-4682-a627-735fffdd73a6",
+        "message": "卧推怎么做？"
+      },
+      "response": {
+        "conversation_id": "a784bc3f-090d-4cd4-8f9c-f148598adbe9",
+        "result_id": "065ade64-eb20-4cab-8c34-5665548ef80e",
+        "kind": "chat",
+        "text": "找到以下动作。\n可以查看动作详情。",
+        "cards": [],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为普通对话",
+            "data": {
+              "kind": "chat",
+              "recommendation_count": 3,
+              "query": "卧推",
+              "body_part": null,
+              "equipment": "dumbbell",
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "跳过动作检索",
+            "summary": "本轮无需动作卡",
+            "data": {
+              "matched_count": 0,
+              "returned_count": 0,
+              "exercise_ids": [],
+              "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "available_equipment": [],
+              "excluded_active_exercise_ids": []
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "开始生成回复",
+            "summary": "结合会话历史、0 次已同步训练和 0 张动作卡生成文本",
+            "data": {
+              "plan_generation_deferred": false,
+              "saved_workout_count": 0,
+              "saved_workout_total": 0,
+              "saved_workout_history_truncated": false,
+              "history_message_count": 0,
+              "image_count": 0,
+              "history_image_count": 0,
+              "previous_result_ids": []
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": null,
+        "review": null,
+        "session_plan": null,
+        "plan_preview": null,
+        "suggestion_kind": null
+      }
+    },
+    "search": {
+      "request": {
+        "conversation_id": "8315d3a4-a18e-488b-aa00-9f9f2a377014",
+        "request_id": "bec5928e-8845-4191-9502-1fc8ec9be219",
+        "message": "找两个哑铃卧推动作"
+      },
+      "response": {
+        "conversation_id": "8315d3a4-a18e-488b-aa00-9f9f2a377014",
+        "result_id": "9b46f4f8-c62e-4b39-82b4-01180c98daea",
+        "kind": "search",
+        "text": "找到以下动作。\n可以查看动作详情。",
+        "cards": [
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "0289",
+              "sourceName": "dumbbell bench press",
+              "displayNameZhHans": "哑铃卧推",
+              "aliasesZhHans": [
+                "哑铃平板卧推"
+              ],
+              "bodyPartCode": "chest",
+              "equipmentCode": "dumbbell",
+              "targetMuscleCode": "pectorals",
+              "secondaryMuscleCodes": [
+                "triceps",
+                "shoulders"
+              ],
+              "instructionStepsZhHans": [
+                "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                "双手各握一个哑铃，手掌朝前，双臂伸至胸部上方。",
+                "慢慢地将哑铃降低到胸部两侧，保持肘部呈 90 度角。",
+                "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "SpYC0Kp",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.877684Z",
+              "updatedAt": "2026-03-18T12:31:32.877684Z"
+            },
+            "equipment_label": "哑铃",
+            "body_part_label": "胸部",
+            "context": "匹配：胸部 · 哑铃 · 卧推",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": []
+          },
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "0352",
+              "sourceName": "dumbbell neutral grip bench press",
+              "displayNameZhHans": "哑铃中立握卧推",
+              "aliasesZhHans": [],
+              "bodyPartCode": "upper arms",
+              "equipmentCode": "dumbbell",
+              "targetMuscleCode": "triceps",
+              "secondaryMuscleCodes": [
+                "chest",
+                "shoulders"
+              ],
+              "instructionStepsZhHans": [
+                "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                "每只手握一个哑铃，中立握法（手掌相对），双臂伸直越过胸部。",
+                "慢慢地将哑铃降低到胸部，保持肘部靠近身体。",
+                "在底部停顿片刻，然后将哑铃推回起始位置，完全伸展手臂。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "pP8wP2P",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.879672Z",
+              "updatedAt": "2026-03-18T12:31:32.879672Z"
+            },
+            "equipment_label": "哑铃",
+            "body_part_label": "上臂",
+            "context": "匹配：上臂 · 哑铃 · 卧推",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": []
+          }
+        ],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为动作搜索",
+            "data": {
+              "kind": "search",
+              "recommendation_count": 3,
+              "query": "卧推",
+              "body_part": null,
+              "equipment": "dumbbell",
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "本地动作库检索完成",
+            "summary": "筛选后匹配 4 个动作，返回 2 张动作卡",
+            "data": {
+              "matched_count": 4,
+              "returned_count": 2,
+              "exercise_ids": [
+                "0289",
+                "0352"
+              ],
+              "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "available_equipment": [],
+              "excluded_active_exercise_ids": []
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "开始生成回复",
+            "summary": "结合会话历史、0 次已同步训练和 2 张动作卡生成文本",
+            "data": {
+              "plan_generation_deferred": false,
+              "saved_workout_count": 0,
+              "saved_workout_total": 0,
+              "saved_workout_history_truncated": false,
+              "history_message_count": 0,
+              "image_count": 0,
+              "history_image_count": 0,
+              "previous_result_ids": []
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": null,
+        "review": null,
+        "session_plan": null,
+        "plan_preview": null,
+        "suggestion_kind": null
+      }
+    },
+    "recommendation": {
+      "request": {
+        "conversation_id": "c4c3171e-1508-4b3f-ae43-28d5dba66bc6",
+        "request_id": "2b2d6008-e9cb-46c3-b009-0d566311fcce",
+        "message": "推荐哑铃卧推动作备选"
+      },
+      "response": {
+        "conversation_id": "c4c3171e-1508-4b3f-ae43-28d5dba66bc6",
+        "result_id": "b4e1b3d6-9983-4532-80cd-e647f63250b0",
+        "kind": "recommendation",
+        "text": "找到以下动作。\n可以查看动作详情。",
+        "cards": [
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "0289",
+              "sourceName": "dumbbell bench press",
+              "displayNameZhHans": "哑铃卧推",
+              "aliasesZhHans": [
+                "哑铃平板卧推"
+              ],
+              "bodyPartCode": "chest",
+              "equipmentCode": "dumbbell",
+              "targetMuscleCode": "pectorals",
+              "secondaryMuscleCodes": [
+                "triceps",
+                "shoulders"
+              ],
+              "instructionStepsZhHans": [
+                "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                "双手各握一个哑铃，手掌朝前，双臂伸至胸部上方。",
+                "慢慢地将哑铃降低到胸部两侧，保持肘部呈 90 度角。",
+                "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "SpYC0Kp",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.877684Z",
+              "updatedAt": "2026-03-18T12:31:32.877684Z"
+            },
+            "equipment_label": "哑铃",
+            "body_part_label": "胸部",
+            "context": "作为推类动作的备选，任选其一。",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": [
+              {
+                "kind": "working",
+                "repetitions": 8,
+                "duration_seconds": null,
+                "rest_seconds": 120,
+                "target_rir_min": 2,
+                "target_rir_max": 3,
+                "load": {
+                  "strategy": "trial",
+                  "value": null,
+                  "unit": "kg",
+                  "convention": null,
+                  "explanation": "重量待试做确认，以动作控制和目标余力为准。",
+                  "observation_id": null
+                }
+              },
+              {
+                "kind": "working",
+                "repetitions": 8,
+                "duration_seconds": null,
+                "rest_seconds": 120,
+                "target_rir_min": 2,
+                "target_rir_max": 3,
+                "load": {
+                  "strategy": "trial",
+                  "value": null,
+                  "unit": "kg",
+                  "convention": null,
+                  "explanation": "重量待试做确认，以动作控制和目标余力为准。",
+                  "observation_id": null
+                }
+              }
+            ]
+          },
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "0352",
+              "sourceName": "dumbbell neutral grip bench press",
+              "displayNameZhHans": "哑铃中立握卧推",
+              "aliasesZhHans": [],
+              "bodyPartCode": "upper arms",
+              "equipmentCode": "dumbbell",
+              "targetMuscleCode": "triceps",
+              "secondaryMuscleCodes": [
+                "chest",
+                "shoulders"
+              ],
+              "instructionStepsZhHans": [
+                "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                "每只手握一个哑铃，中立握法（手掌相对），双臂伸直越过胸部。",
+                "慢慢地将哑铃降低到胸部，保持肘部靠近身体。",
+                "在底部停顿片刻，然后将哑铃推回起始位置，完全伸展手臂。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "pP8wP2P",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.879672Z",
+              "updatedAt": "2026-03-18T12:31:32.879672Z"
+            },
+            "equipment_label": "哑铃",
+            "body_part_label": "上臂",
+            "context": "作为推类动作的备选，任选其一。",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": [
+              {
+                "kind": "working",
+                "repetitions": 8,
+                "duration_seconds": null,
+                "rest_seconds": 120,
+                "target_rir_min": 2,
+                "target_rir_max": 3,
+                "load": {
+                  "strategy": "trial",
+                  "value": null,
+                  "unit": "kg",
+                  "convention": null,
+                  "explanation": "重量待试做确认，以动作控制和目标余力为准。",
+                  "observation_id": null
+                }
+              },
+              {
+                "kind": "working",
+                "repetitions": 8,
+                "duration_seconds": null,
+                "rest_seconds": 120,
+                "target_rir_min": 2,
+                "target_rir_max": 3,
+                "load": {
+                  "strategy": "trial",
+                  "value": null,
+                  "unit": "kg",
+                  "convention": null,
+                  "explanation": "重量待试做确认，以动作控制和目标余力为准。",
+                  "observation_id": null
+                }
+              }
+            ]
+          },
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "1624",
+              "sourceName": "dumbbell reverse bench press",
+              "displayNameZhHans": "哑铃反向卧推",
+              "aliasesZhHans": [],
+              "bodyPartCode": "chest",
+              "equipmentCode": "dumbbell",
+              "targetMuscleCode": "pectorals",
+              "secondaryMuscleCodes": [
+                "triceps",
+                "shoulders"
+              ],
+              "instructionStepsZhHans": [
+                "平躺在长凳上，双脚平放在地上，膝盖弯曲。",
+                "双手各握一个哑铃，正手握住，手掌朝向脚部。",
+                "将手臂伸直向上伸向天花板，保持肘部轻微弯曲。",
+                "慢慢地将哑铃降低到胸部，让肘部向两侧张开。",
+                "在底部暂停片刻，然后将哑铃推回到起始位置。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "UIbGx6H",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.880809Z",
+              "updatedAt": "2026-03-18T12:31:32.880809Z"
+            },
+            "equipment_label": "哑铃",
+            "body_part_label": "胸部",
+            "context": "作为推类动作的备选，任选其一。",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": [
+              {
+                "kind": "working",
+                "repetitions": 8,
+                "duration_seconds": null,
+                "rest_seconds": 120,
+                "target_rir_min": 2,
+                "target_rir_max": 3,
+                "load": {
+                  "strategy": "trial",
+                  "value": null,
+                  "unit": "kg",
+                  "convention": null,
+                  "explanation": "重量待试做确认，以动作控制和目标余力为准。",
+                  "observation_id": null
+                }
+              },
+              {
+                "kind": "working",
+                "repetitions": 8,
+                "duration_seconds": null,
+                "rest_seconds": 120,
+                "target_rir_min": 2,
+                "target_rir_max": 3,
+                "load": {
+                  "strategy": "trial",
+                  "value": null,
+                  "unit": "kg",
+                  "convention": null,
+                  "explanation": "重量待试做确认，以动作控制和目标余力为准。",
+                  "observation_id": null
+                }
+              }
+            ]
+          }
+        ],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为动作推荐",
+            "data": {
+              "kind": "recommendation",
+              "recommendation_count": 3,
+              "query": "卧推",
+              "body_part": null,
+              "equipment": "dumbbell",
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "本地动作库检索完成",
+            "summary": "筛选后匹配 4 个动作，返回 3 张动作卡",
+            "data": {
+              "matched_count": 4,
+              "returned_count": 3,
+              "exercise_ids": [
+                "0289",
+                "0352",
+                "1624"
+              ],
+              "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "available_equipment": [],
+              "excluded_active_exercise_ids": []
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "开始生成回复",
+            "summary": "结合会话历史、0 次已同步训练和 3 张动作卡生成文本",
+            "data": {
+              "plan_generation_deferred": false,
+              "saved_workout_count": 0,
+              "saved_workout_total": 0,
+              "saved_workout_history_truncated": false,
+              "history_message_count": 0,
+              "image_count": 0,
+              "history_image_count": 0,
+              "previous_result_ids": []
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": null,
+        "review": null,
+        "session_plan": null,
+        "plan_preview": null,
+        "suggestion_kind": "alternatives"
+      }
+    },
+    "review": {
+      "request": {
+        "conversation_id": "2233b6e4-bf6f-444b-9065-81cd8806385f",
+        "request_id": "d2212dbd-aa29-47e3-a46a-ccebbaaa23db",
+        "message": "分析历史训练"
+      },
+      "response": {
+        "conversation_id": "2233b6e4-bf6f-444b-9065-81cd8806385f",
+        "result_id": "4cd6f64d-2570-456d-aa99-52591a0a5ee5",
+        "kind": "review",
+        "text": "本次分析最近 7 次已完成训练（当前已同步记录仅有 2 次，全部纳入），记录日期 2025-01-01 至 2025-01-03；共 2 个已完成组。\n\n记录包含 2 次训练，可以先观察训练安排。\n\n## 部位分布\n\n结合目标关注重点安排。",
+        "cards": [],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为训练复盘",
+            "data": {
+              "kind": "review",
+              "recommendation_count": 3,
+              "query": "",
+              "body_part": null,
+              "equipment": null,
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "训练决策资料已准备",
+            "summary": "使用完整日期窗口统计、用户目标与状态；完整方案独立校验，不使用动作卡片数量上限。",
+            "data": {
+              "snapshot_count": 2
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "报告结构已编排",
+            "summary": "已确定文字与图表顺序，图表数据已与本次记录绑定。",
+            "data": {
+              "block_count": 4,
+              "chart_count": 2,
+              "layout_fallback": false,
+              "fallback_reason": null
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "训练决策已生成",
+            "summary": "统计事实与推断分别呈现；完整方案通过目录、顺序和时间检查。",
+            "data": {
+              "review": true,
+              "session_plan": false
+            }
+          }
+        ],
+        "schema_version": 1,
+        "outline": [
+          {
+            "id": "block_3936223a",
+            "type": "markdown",
+            "purposes": [
+              "主要判断",
+              "训练节奏"
+            ],
+            "evidence_ids": [
+              "recent.frequency",
+              "cadence.spacing"
+            ],
+            "fact_ids": [
+              "fact_db7cc5b0",
+              "fact_48689c56",
+              "fact_83a5449b",
+              "fact_a566c872",
+              "fact_54723c9b"
+            ]
+          },
+          {
+            "id": "block_e8c9d5ea",
+            "type": "chart_ref",
+            "artifact_id": "chart_e6d6a83e"
+          },
+          {
+            "id": "block_b258e2c1",
+            "type": "markdown",
+            "purposes": [
+              "部位分布"
+            ],
+            "evidence_ids": [
+              "recent.distribution"
+            ],
+            "fact_ids": [
+              "fact_2d8b6ab4"
+            ]
+          },
+          {
+            "id": "block_7c35d52d",
+            "type": "chart_ref",
+            "artifact_id": "chart_3aa92829"
+          }
+        ],
+        "blocks": [
+          {
+            "id": "block_3936223a",
+            "type": "markdown",
+            "content": "本次分析最近 7 次已完成训练（当前已同步记录仅有 2 次，全部纳入），记录日期 2025-01-01 至 2025-01-03；共 2 个已完成组。\n\n记录包含 2 次训练，可以先观察训练安排。",
+            "parts": [
+              {
+                "type": "text",
+                "text": "本次分析最近 7 次已完成训练（当前已同步记录仅有 2 次，全部纳入），记录日期 2025-01-01 至 2025-01-03；共 2 个已完成组。"
+              },
+              {
+                "type": "text",
+                "text": "\n\n"
+              },
+              {
+                "type": "text",
+                "text": "记录包含 "
+              },
+              {
+                "type": "fact_ref",
+                "fact_id": "fact_db7cc5b0"
+              },
+              {
+                "type": "text",
+                "text": "，可以先观察训练安排。"
+              }
+            ]
+          },
+          {
+            "id": "block_e8c9d5ea",
+            "type": "chart_ref",
+            "artifact_id": "chart_e6d6a83e"
+          },
+          {
+            "id": "block_b258e2c1",
+            "type": "markdown",
+            "content": "## 部位分布\n\n结合目标关注重点安排。",
+            "parts": [
+              {
+                "type": "text",
+                "text": "## 部位分布\n\n结合目标关注重点安排。"
+              }
+            ]
+          },
+          {
+            "id": "block_7c35d52d",
+            "type": "chart_ref",
+            "artifact_id": "chart_3aa92829"
+          }
+        ],
+        "artifacts": {
+          "chart_e6d6a83e": {
+            "format": "chart-spec/v1",
+            "chart_type": "timeline",
+            "title": "训练节奏",
+            "description": "按实际日期间隔排列 · UTC",
+            "unit": "次",
+            "dataset_id": "data_3ba2f872",
+            "encoding": {
+              "label": "label",
+              "value": "value",
+              "at": "at"
+            },
+            "truncated": false
+          },
+          "chart_3aa92829": {
+            "format": "chart-spec/v1",
+            "chart_type": "bars",
+            "title": "训练部位分布",
+            "description": "按目录主部位统计已完成组；辅助肌群不重复计数",
+            "unit": "组",
+            "dataset_id": "data_a79b4f4d",
+            "encoding": {
+              "label": "label",
+              "value": "value",
+              "at": "at"
+            },
+            "truncated": false
+          }
+        },
+        "datasets": {
+          "data_3ba2f872": {
+            "rows": [
+              {
+                "label": "01-01",
+                "at": "2025-01-01T01:00:00Z",
+                "value": 1,
+                "source": {
+                  "source_id": "local-install-001",
+                  "workout_id": "one",
+                  "version": 1
+                }
+              },
+              {
+                "label": "01-03",
+                "at": "2025-01-03T01:00:00Z",
+                "value": 1,
+                "source": {
+                  "source_id": "local-install-001",
+                  "workout_id": "two",
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "data_a79b4f4d": {
+            "rows": [
+              {
+                "label": "胸部",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "facts": {
+          "fact_db7cc5b0": {
+            "source_key": "recent.workouts",
+            "value": "2 次训练",
+            "evidence_id": "recent.frequency"
+          },
+          "fact_48689c56": {
+            "source_key": "recent.sets",
+            "value": "2 个已完成组",
+            "evidence_id": "recent.frequency"
+          },
+          "fact_83a5449b": {
+            "source_key": "recent.dates",
+            "value": "2025-01-01 至 2025-01-03",
+            "evidence_id": "recent.frequency"
+          },
+          "fact_2d8b6ab4": {
+            "source_key": "recent.part.chest",
+            "value": "胸部 2 个已完成组",
+            "evidence_id": "recent.distribution"
+          },
+          "fact_a566c872": {
+            "source_key": "cadence.workouts",
+            "value": "2 次训练",
+            "evidence_id": "cadence.spacing"
+          },
+          "fact_54723c9b": {
+            "source_key": "cadence.gaps",
+            "value": "48–48 小时",
+            "evidence_id": "cadence.spacing"
+          }
+        },
+        "custom_exercise": null,
+        "review": {
+          "facts": {
+            "rules_version": "training-review-v3",
+            "selection": {
+              "mode": "recent_workouts",
+              "requested_count": 7,
+              "selected_count": 2,
+              "insufficient_history": true,
+              "baseline_included": false
+            },
+            "scope": "multiple",
+            "body_part_labels": {
+              "chest": "胸部"
+            },
+            "session": null,
+            "cadence": {
+              "sessions": [
+                {
+                  "source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "one",
+                    "version": 1
+                  },
+                  "started_at": "2025-01-01T01:00:00Z",
+                  "body_parts": [
+                    "chest"
+                  ],
+                  "completed_sets": 1
+                },
+                {
+                  "source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "two",
+                    "version": 1
+                  },
+                  "started_at": "2025-01-03T01:00:00Z",
+                  "body_parts": [
+                    "chest"
+                  ],
+                  "completed_sets": 1
+                }
+              ],
+              "intervals": [
+                {
+                  "from_source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "one",
+                    "version": 1
+                  },
+                  "to_source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "two",
+                    "version": 1
+                  },
+                  "start_gap_seconds": 172800.0,
+                  "start_gap_hours": 48.0
+                }
+              ],
+              "body_part_intervals": {
+                "chest": [
+                  {
+                    "from_source": {
+                      "source_id": "local-install-001",
+                      "workout_id": "one",
+                      "version": 1
+                    },
+                    "to_source": {
+                      "source_id": "local-install-001",
+                      "workout_id": "two",
+                      "version": 1
+                    },
+                    "start_gap_seconds": 172800.0,
+                    "start_gap_hours": 48.0
+                  }
+                ]
+              },
+              "total_workouts": 2,
+              "truncated": false
+            },
+            "cycle": {
+              "status": "unknown",
+              "confirmed_cycle": null,
+              "overlaps_review_window": false
+            },
+            "generated_at": "2026-09-18T07:54:44.125286+00:00",
+            "time_zone": "UTC",
+            "recent": {
+              "start_date": "2025-01-01",
+              "end_date_exclusive": "2025-01-04",
+              "days": 3,
+              "completed_workouts": 2,
+              "completed_sets": 2,
+              "valid_sets": 2,
+              "invalid_sets": 0,
+              "primary_body_part_sets": {
+                "chest": 2
+              },
+              "primary_body_part_workouts": {
+                "chest": 2
+              },
+              "training_dates": [
+                "2025-01-01",
+                "2025-01-03"
+              ],
+              "date_gaps_days": [
+                2
+              ],
+              "workouts_per_week": null,
+              "sets_per_week": null,
+              "sources": [
+                {
+                  "source_id": "local-install-001",
+                  "workout_id": "two",
+                  "version": 1
+                },
+                {
+                  "source_id": "local-install-001",
+                  "workout_id": "one",
+                  "version": 1
+                }
+              ],
+              "sources_truncated": false,
+              "body_part_coverage": {
+                "catalog_matched_sets": 2,
+                "unclassified_sets": 0,
+                "total_completed_sets": 2
+              },
+              "selection_mode": "recent_workouts"
+            },
+            "baseline": {
+              "start_date": "2025-01-01",
+              "end_date_exclusive": "2025-01-01",
+              "days": 0,
+              "completed_workouts": 0,
+              "completed_sets": 0,
+              "valid_sets": 0,
+              "invalid_sets": 0,
+              "primary_body_part_sets": {},
+              "primary_body_part_workouts": {},
+              "training_dates": [],
+              "date_gaps_days": [],
+              "workouts_per_week": null,
+              "sets_per_week": null,
+              "sources": [],
+              "sources_truncated": false,
+              "body_part_coverage": {
+                "catalog_matched_sets": 0,
+                "unclassified_sets": 0,
+                "total_completed_sets": 0
+              },
+              "selection_mode": "recent_workouts"
+            },
+            "snapshot_count": 2,
+            "observations": [
+              {
+                "id": "17520664b6631134be54302d",
+                "period": "recent",
+                "source": {
+                  "source_id": "local-install-001",
+                  "workout_id": "two",
+                  "version": 1,
+                  "record_id": "local-record-001"
+                },
+                "exercise_id": "0289",
+                "exercise_name": "哑铃卧推",
+                "performed_at": "2025-01-03T01:00:00Z",
+                "detail_type": "weightedReps",
+                "load_type": "external",
+                "load_unit": "kg",
+                "load_value": 20.0,
+                "load_convention": "unknown",
+                "comparison_eligible": false,
+                "progression_blocked": false,
+                "completed_sets": 1,
+                "repetitions": 8,
+                "duration_seconds": 0,
+                "set_ids": [
+                  "local-set-001"
+                ],
+                "set_doses": [
+                  8
+                ],
+                "set_refs_truncated": false,
+                "effort_scale": "unknown",
+                "effort_timing": "unknown",
+                "attestation": null
+              },
+              {
+                "id": "186ba13fb497551f3c9b1940",
+                "period": "recent",
+                "source": {
+                  "source_id": "local-install-001",
+                  "workout_id": "one",
+                  "version": 1,
+                  "record_id": "local-record-001"
+                },
+                "exercise_id": "0289",
+                "exercise_name": "哑铃卧推",
+                "performed_at": "2025-01-01T01:00:00Z",
+                "detail_type": "weightedReps",
+                "load_type": "external",
+                "load_unit": "kg",
+                "load_value": 20.0,
+                "load_convention": "unknown",
+                "comparison_eligible": false,
+                "progression_blocked": false,
+                "completed_sets": 1,
+                "repetitions": 8,
+                "duration_seconds": 0,
+                "set_ids": [
+                  "local-set-001"
+                ],
+                "set_doses": [
+                  8
+                ],
+                "set_refs_truncated": false,
+                "effort_scale": "unknown",
+                "effort_timing": "unknown",
+                "attestation": null
+              }
+            ],
+            "progression_signals": [],
+            "observation_count": 2,
+            "observations_truncated": false,
+            "synchronization_complete": null,
+            "plan_completion_rate": null,
+            "movement_pattern_distribution": null,
+            "limitations": [
+              "仅覆盖当前账号已同步的已完成训练；无法确认设备同步是否完整，空档不等于停训。",
+              "按最近已完成训练次数取样，日期仅描述样本跨度；未进行固定日期窗口或此前窗口对照。",
+              "组数是记录为已完成的组数，不代表有效组；部位按目录主部位归属，不重复计入辅助肌群。",
+              "只有用户逐条确认的记录带有负重口径和条件依据；其余历史即使单位相同也不能自动认定可比。",
+              "计划执行关联与全部处方达标分开统计；没有已审阅动作模式标签，不推断模式分布。",
+              "没有逐组开始与结束时间，无法计算实际组间或动作间休息；记录录入间隔不等于休息时间。",
+              "训练间隔只描述已同步记录的节奏，不据此判断恢复充分或已进入训练周期。"
+            ]
+          },
+          "charts": [
+            {
+              "id": "training-timeline",
+              "kind": "timeline",
+              "title": "训练节奏",
+              "description": "按实际日期间隔排列 · UTC",
+              "unit": "次",
+              "points": [
+                {
+                  "label": "01-01",
+                  "at": "2025-01-01T01:00:00Z",
+                  "value": 1,
+                  "source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "one",
+                    "version": 1
+                  }
+                },
+                {
+                  "label": "01-03",
+                  "at": "2025-01-03T01:00:00Z",
+                  "value": 1,
+                  "source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "two",
+                    "version": 1
+                  }
+                }
+              ],
+              "truncated": false
+            },
+            {
+              "id": "session-sets",
+              "kind": "columns",
+              "title": "每次训练完成组数",
+              "description": "按记录中的完成状态计数，不等同于有效组",
+              "unit": "组",
+              "points": [
+                {
+                  "label": "01-01",
+                  "at": "2025-01-01T01:00:00Z",
+                  "value": 1,
+                  "source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "one",
+                    "version": 1
+                  }
+                },
+                {
+                  "label": "01-03",
+                  "at": "2025-01-03T01:00:00Z",
+                  "value": 1,
+                  "source": {
+                    "source_id": "local-install-001",
+                    "workout_id": "two",
+                    "version": 1
+                  }
+                }
+              ],
+              "truncated": false
+            },
+            {
+              "id": "body-parts",
+              "kind": "bars",
+              "title": "训练部位分布",
+              "description": "按目录主部位统计已完成组；辅助肌群不重复计数",
+              "unit": "组",
+              "points": [
+                {
+                  "label": "胸部",
+                  "value": 2
+                }
+              ],
+              "truncated": false
+            }
+          ],
+          "findings": [
+            {
+              "title": "",
+              "conclusion": "记录包含 2 次训练，可以先观察训练安排。",
+              "evidence_ids": [
+                "recent.frequency",
+                "cadence.spacing"
+              ],
+              "comparison": "",
+              "possible_explanation": "",
+              "suggested_action": "",
+              "missing_information": [],
+              "kind": "inference",
+              "evidence": [
+                {
+                  "kind": "fact",
+                  "window": "recent",
+                  "metric": "frequency",
+                  "value": {
+                    "start_date": "2025-01-01",
+                    "end_date_exclusive": "2025-01-04",
+                    "days": 3,
+                    "completed_workouts": 2,
+                    "completed_sets": 2,
+                    "valid_sets": 2,
+                    "invalid_sets": 0,
+                    "primary_body_part_sets": {
+                      "chest": 2
+                    },
+                    "primary_body_part_workouts": {
+                      "chest": 2
+                    },
+                    "training_dates": [
+                      "2025-01-01",
+                      "2025-01-03"
+                    ],
+                    "date_gaps_days": [
+                      2
+                    ],
+                    "workouts_per_week": null,
+                    "sets_per_week": null,
+                    "sources": [
+                      {
+                        "source_id": "local-install-001",
+                        "workout_id": "two",
+                        "version": 1
+                      },
+                      {
+                        "source_id": "local-install-001",
+                        "workout_id": "one",
+                        "version": 1
+                      }
+                    ],
+                    "sources_truncated": false,
+                    "body_part_coverage": {
+                      "catalog_matched_sets": 2,
+                      "unclassified_sets": 0,
+                      "total_completed_sets": 2
+                    },
+                    "selection_mode": "recent_workouts"
+                  }
+                },
+                {
+                  "kind": "fact",
+                  "metric": "training_spacing",
+                  "value": {
+                    "sessions": [
+                      {
+                        "source": {
+                          "source_id": "local-install-001",
+                          "workout_id": "one",
+                          "version": 1
+                        },
+                        "started_at": "2025-01-01T01:00:00Z",
+                        "body_parts": [
+                          "chest"
+                        ],
+                        "completed_sets": 1
+                      },
+                      {
+                        "source": {
+                          "source_id": "local-install-001",
+                          "workout_id": "two",
+                          "version": 1
+                        },
+                        "started_at": "2025-01-03T01:00:00Z",
+                        "body_parts": [
+                          "chest"
+                        ],
+                        "completed_sets": 1
+                      }
+                    ],
+                    "intervals": [
+                      {
+                        "from_source": {
+                          "source_id": "local-install-001",
+                          "workout_id": "one",
+                          "version": 1
+                        },
+                        "to_source": {
+                          "source_id": "local-install-001",
+                          "workout_id": "two",
+                          "version": 1
+                        },
+                        "start_gap_seconds": 172800.0,
+                        "start_gap_hours": 48.0
+                      }
+                    ],
+                    "body_part_intervals": {
+                      "chest": [
+                        {
+                          "from_source": {
+                            "source_id": "local-install-001",
+                            "workout_id": "one",
+                            "version": 1
+                          },
+                          "to_source": {
+                            "source_id": "local-install-001",
+                            "workout_id": "two",
+                            "version": 1
+                          },
+                          "start_gap_seconds": 172800.0,
+                          "start_gap_hours": 48.0
+                        }
+                      ]
+                    },
+                    "total_workouts": 2,
+                    "truncated": false
+                  }
+                }
+              ]
+            },
+            {
+              "title": "",
+              "conclusion": "## 部位分布\n\n结合目标关注重点安排。",
+              "evidence_ids": [
+                "recent.distribution"
+              ],
+              "comparison": "",
+              "possible_explanation": "",
+              "suggested_action": "",
+              "missing_information": [],
+              "kind": "inference",
+              "evidence": [
+                {
+                  "kind": "fact",
+                  "window": "recent",
+                  "metric": "primary_body_part_sets",
+                  "value": {
+                    "chest": 2
+                  }
+                }
+              ]
+            }
+          ],
+          "keep": [],
+          "next_adjustments": [],
+          "question": null,
+          "rules_version": "training-decision-v1.1",
+          "sources": [
+            {
+              "id": "E1",
+              "title": "ACSM 抗阻训练立场文件（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/"
+            },
+            {
+              "id": "E2",
+              "title": "动作顺序系统综述（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/32077380/"
+            },
+            {
+              "id": "E3",
+              "title": "自由重量与固定器械系统综述（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/"
+            },
+            {
+              "id": "E5",
+              "title": "减量安排专家共识",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/37730925/"
+            }
+          ],
+          "omitted_findings": 0,
+          "repaired_findings": 0
+        },
+        "session_plan": null,
+        "plan_preview": null,
+        "suggestion_kind": null
+      },
+      "replayed_events": [
+        {
+          "type": "done",
+          "response": {
+            "conversation_id": "2233b6e4-bf6f-444b-9065-81cd8806385f",
+            "result_id": "4cd6f64d-2570-456d-aa99-52591a0a5ee5",
+            "kind": "review",
+            "text": "本次分析最近 7 次已完成训练（当前已同步记录仅有 2 次，全部纳入），记录日期 2025-01-01 至 2025-01-03；共 2 个已完成组。\n\n记录包含 2 次训练，可以先观察训练安排。\n\n## 部位分布\n\n结合目标关注重点安排。",
+            "cards": [],
+            "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+            "trace": [
+              {
+                "stage": "understanding",
+                "title": "请求解析完成",
+                "summary": "识别为训练复盘",
+                "data": {
+                  "kind": "review",
+                  "recommendation_count": 3,
+                  "query": "",
+                  "body_part": null,
+                  "equipment": null,
+                  "target_muscle": null,
+                  "review_options": null,
+                  "session_inputs": null,
+                  "parent_plan_id": null,
+                  "image_count": 0
+                }
+              },
+              {
+                "stage": "retrieving",
+                "title": "训练决策资料已准备",
+                "summary": "使用完整日期窗口统计、用户目标与状态；完整方案独立校验，不使用动作卡片数量上限。",
+                "data": {
+                  "snapshot_count": 2
+                }
+              },
+              {
+                "stage": "responding",
+                "title": "报告结构已编排",
+                "summary": "已确定文字与图表顺序，图表数据已与本次记录绑定。",
+                "data": {
+                  "block_count": 4,
+                  "chart_count": 2,
+                  "layout_fallback": false,
+                  "fallback_reason": null
+                }
+              },
+              {
+                "stage": "responding",
+                "title": "训练决策已生成",
+                "summary": "统计事实与推断分别呈现；完整方案通过目录、顺序和时间检查。",
+                "data": {
+                  "review": true,
+                  "session_plan": false
+                }
+              }
+            ],
+            "schema_version": 1,
+            "outline": [
+              {
+                "id": "block_3936223a",
+                "type": "markdown",
+                "purposes": [
+                  "主要判断",
+                  "训练节奏"
+                ],
+                "evidence_ids": [
+                  "recent.frequency",
+                  "cadence.spacing"
+                ],
+                "fact_ids": [
+                  "fact_db7cc5b0",
+                  "fact_48689c56",
+                  "fact_83a5449b",
+                  "fact_a566c872",
+                  "fact_54723c9b"
+                ]
+              },
+              {
+                "id": "block_e8c9d5ea",
+                "type": "chart_ref",
+                "artifact_id": "chart_e6d6a83e"
+              },
+              {
+                "id": "block_b258e2c1",
+                "type": "markdown",
+                "purposes": [
+                  "部位分布"
+                ],
+                "evidence_ids": [
+                  "recent.distribution"
+                ],
+                "fact_ids": [
+                  "fact_2d8b6ab4"
+                ]
+              },
+              {
+                "id": "block_7c35d52d",
+                "type": "chart_ref",
+                "artifact_id": "chart_3aa92829"
+              }
+            ],
+            "blocks": [
+              {
+                "id": "block_3936223a",
+                "type": "markdown",
+                "content": "本次分析最近 7 次已完成训练（当前已同步记录仅有 2 次，全部纳入），记录日期 2025-01-01 至 2025-01-03；共 2 个已完成组。\n\n记录包含 2 次训练，可以先观察训练安排。",
+                "parts": [
+                  {
+                    "type": "text",
+                    "text": "本次分析最近 7 次已完成训练（当前已同步记录仅有 2 次，全部纳入），记录日期 2025-01-01 至 2025-01-03；共 2 个已完成组。"
+                  },
+                  {
+                    "type": "text",
+                    "text": "\n\n"
+                  },
+                  {
+                    "type": "text",
+                    "text": "记录包含 "
+                  },
+                  {
+                    "type": "fact_ref",
+                    "fact_id": "fact_db7cc5b0"
+                  },
+                  {
+                    "type": "text",
+                    "text": "，可以先观察训练安排。"
+                  }
+                ]
+              },
+              {
+                "id": "block_e8c9d5ea",
+                "type": "chart_ref",
+                "artifact_id": "chart_e6d6a83e"
+              },
+              {
+                "id": "block_b258e2c1",
+                "type": "markdown",
+                "content": "## 部位分布\n\n结合目标关注重点安排。",
+                "parts": [
+                  {
+                    "type": "text",
+                    "text": "## 部位分布\n\n结合目标关注重点安排。"
+                  }
+                ]
+              },
+              {
+                "id": "block_7c35d52d",
+                "type": "chart_ref",
+                "artifact_id": "chart_3aa92829"
+              }
+            ],
+            "artifacts": {
+              "chart_e6d6a83e": {
+                "format": "chart-spec/v1",
+                "chart_type": "timeline",
+                "title": "训练节奏",
+                "description": "按实际日期间隔排列 · UTC",
+                "unit": "次",
+                "dataset_id": "data_3ba2f872",
+                "encoding": {
+                  "label": "label",
+                  "value": "value",
+                  "at": "at"
+                },
+                "truncated": false
+              },
+              "chart_3aa92829": {
+                "format": "chart-spec/v1",
+                "chart_type": "bars",
+                "title": "训练部位分布",
+                "description": "按目录主部位统计已完成组；辅助肌群不重复计数",
+                "unit": "组",
+                "dataset_id": "data_a79b4f4d",
+                "encoding": {
+                  "label": "label",
+                  "value": "value",
+                  "at": "at"
+                },
+                "truncated": false
+              }
+            },
+            "datasets": {
+              "data_3ba2f872": {
+                "rows": [
+                  {
+                    "label": "01-01",
+                    "at": "2025-01-01T01:00:00Z",
+                    "value": 1,
+                    "source": {
+                      "source_id": "local-install-001",
+                      "workout_id": "one",
+                      "version": 1
+                    }
+                  },
+                  {
+                    "label": "01-03",
+                    "at": "2025-01-03T01:00:00Z",
+                    "value": 1,
+                    "source": {
+                      "source_id": "local-install-001",
+                      "workout_id": "two",
+                      "version": 1
+                    }
+                  }
+                ]
+              },
+              "data_a79b4f4d": {
+                "rows": [
+                  {
+                    "label": "胸部",
+                    "value": 2
+                  }
+                ]
+              }
+            },
+            "facts": {
+              "fact_db7cc5b0": {
+                "source_key": "recent.workouts",
+                "value": "2 次训练",
+                "evidence_id": "recent.frequency"
+              },
+              "fact_48689c56": {
+                "source_key": "recent.sets",
+                "value": "2 个已完成组",
+                "evidence_id": "recent.frequency"
+              },
+              "fact_83a5449b": {
+                "source_key": "recent.dates",
+                "value": "2025-01-01 至 2025-01-03",
+                "evidence_id": "recent.frequency"
+              },
+              "fact_2d8b6ab4": {
+                "source_key": "recent.part.chest",
+                "value": "胸部 2 个已完成组",
+                "evidence_id": "recent.distribution"
+              },
+              "fact_a566c872": {
+                "source_key": "cadence.workouts",
+                "value": "2 次训练",
+                "evidence_id": "cadence.spacing"
+              },
+              "fact_54723c9b": {
+                "source_key": "cadence.gaps",
+                "value": "48–48 小时",
+                "evidence_id": "cadence.spacing"
+              }
+            },
+            "custom_exercise": null,
+            "review": {
+              "facts": {
+                "rules_version": "training-review-v3",
+                "selection": {
+                  "mode": "recent_workouts",
+                  "requested_count": 7,
+                  "selected_count": 2,
+                  "insufficient_history": true,
+                  "baseline_included": false
+                },
+                "scope": "multiple",
+                "body_part_labels": {
+                  "chest": "胸部"
+                },
+                "session": null,
+                "cadence": {
+                  "sessions": [
+                    {
+                      "source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "one",
+                        "version": 1
+                      },
+                      "started_at": "2025-01-01T01:00:00Z",
+                      "body_parts": [
+                        "chest"
+                      ],
+                      "completed_sets": 1
+                    },
+                    {
+                      "source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "two",
+                        "version": 1
+                      },
+                      "started_at": "2025-01-03T01:00:00Z",
+                      "body_parts": [
+                        "chest"
+                      ],
+                      "completed_sets": 1
+                    }
+                  ],
+                  "intervals": [
+                    {
+                      "from_source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "one",
+                        "version": 1
+                      },
+                      "to_source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "two",
+                        "version": 1
+                      },
+                      "start_gap_seconds": 172800.0,
+                      "start_gap_hours": 48.0
+                    }
+                  ],
+                  "body_part_intervals": {
+                    "chest": [
+                      {
+                        "from_source": {
+                          "source_id": "local-install-001",
+                          "workout_id": "one",
+                          "version": 1
+                        },
+                        "to_source": {
+                          "source_id": "local-install-001",
+                          "workout_id": "two",
+                          "version": 1
+                        },
+                        "start_gap_seconds": 172800.0,
+                        "start_gap_hours": 48.0
+                      }
+                    ]
+                  },
+                  "total_workouts": 2,
+                  "truncated": false
+                },
+                "cycle": {
+                  "status": "unknown",
+                  "confirmed_cycle": null,
+                  "overlaps_review_window": false
+                },
+                "generated_at": "2026-09-18T07:54:44.125286+00:00",
+                "time_zone": "UTC",
+                "recent": {
+                  "start_date": "2025-01-01",
+                  "end_date_exclusive": "2025-01-04",
+                  "days": 3,
+                  "completed_workouts": 2,
+                  "completed_sets": 2,
+                  "valid_sets": 2,
+                  "invalid_sets": 0,
+                  "primary_body_part_sets": {
+                    "chest": 2
+                  },
+                  "primary_body_part_workouts": {
+                    "chest": 2
+                  },
+                  "training_dates": [
+                    "2025-01-01",
+                    "2025-01-03"
+                  ],
+                  "date_gaps_days": [
+                    2
+                  ],
+                  "workouts_per_week": null,
+                  "sets_per_week": null,
+                  "sources": [
+                    {
+                      "source_id": "local-install-001",
+                      "workout_id": "two",
+                      "version": 1
+                    },
+                    {
+                      "source_id": "local-install-001",
+                      "workout_id": "one",
+                      "version": 1
+                    }
+                  ],
+                  "sources_truncated": false,
+                  "body_part_coverage": {
+                    "catalog_matched_sets": 2,
+                    "unclassified_sets": 0,
+                    "total_completed_sets": 2
+                  },
+                  "selection_mode": "recent_workouts"
+                },
+                "baseline": {
+                  "start_date": "2025-01-01",
+                  "end_date_exclusive": "2025-01-01",
+                  "days": 0,
+                  "completed_workouts": 0,
+                  "completed_sets": 0,
+                  "valid_sets": 0,
+                  "invalid_sets": 0,
+                  "primary_body_part_sets": {},
+                  "primary_body_part_workouts": {},
+                  "training_dates": [],
+                  "date_gaps_days": [],
+                  "workouts_per_week": null,
+                  "sets_per_week": null,
+                  "sources": [],
+                  "sources_truncated": false,
+                  "body_part_coverage": {
+                    "catalog_matched_sets": 0,
+                    "unclassified_sets": 0,
+                    "total_completed_sets": 0
+                  },
+                  "selection_mode": "recent_workouts"
+                },
+                "snapshot_count": 2,
+                "observations": [
+                  {
+                    "id": "17520664b6631134be54302d",
+                    "period": "recent",
+                    "source": {
+                      "source_id": "local-install-001",
+                      "workout_id": "two",
+                      "version": 1,
+                      "record_id": "local-record-001"
+                    },
+                    "exercise_id": "0289",
+                    "exercise_name": "哑铃卧推",
+                    "performed_at": "2025-01-03T01:00:00Z",
+                    "detail_type": "weightedReps",
+                    "load_type": "external",
+                    "load_unit": "kg",
+                    "load_value": 20.0,
+                    "load_convention": "unknown",
+                    "comparison_eligible": false,
+                    "progression_blocked": false,
+                    "completed_sets": 1,
+                    "repetitions": 8,
+                    "duration_seconds": 0,
+                    "set_ids": [
+                      "local-set-001"
+                    ],
+                    "set_doses": [
+                      8
+                    ],
+                    "set_refs_truncated": false,
+                    "effort_scale": "unknown",
+                    "effort_timing": "unknown",
+                    "attestation": null
+                  },
+                  {
+                    "id": "186ba13fb497551f3c9b1940",
+                    "period": "recent",
+                    "source": {
+                      "source_id": "local-install-001",
+                      "workout_id": "one",
+                      "version": 1,
+                      "record_id": "local-record-001"
+                    },
+                    "exercise_id": "0289",
+                    "exercise_name": "哑铃卧推",
+                    "performed_at": "2025-01-01T01:00:00Z",
+                    "detail_type": "weightedReps",
+                    "load_type": "external",
+                    "load_unit": "kg",
+                    "load_value": 20.0,
+                    "load_convention": "unknown",
+                    "comparison_eligible": false,
+                    "progression_blocked": false,
+                    "completed_sets": 1,
+                    "repetitions": 8,
+                    "duration_seconds": 0,
+                    "set_ids": [
+                      "local-set-001"
+                    ],
+                    "set_doses": [
+                      8
+                    ],
+                    "set_refs_truncated": false,
+                    "effort_scale": "unknown",
+                    "effort_timing": "unknown",
+                    "attestation": null
+                  }
+                ],
+                "progression_signals": [],
+                "observation_count": 2,
+                "observations_truncated": false,
+                "synchronization_complete": null,
+                "plan_completion_rate": null,
+                "movement_pattern_distribution": null,
+                "limitations": [
+                  "仅覆盖当前账号已同步的已完成训练；无法确认设备同步是否完整，空档不等于停训。",
+                  "按最近已完成训练次数取样，日期仅描述样本跨度；未进行固定日期窗口或此前窗口对照。",
+                  "组数是记录为已完成的组数，不代表有效组；部位按目录主部位归属，不重复计入辅助肌群。",
+                  "只有用户逐条确认的记录带有负重口径和条件依据；其余历史即使单位相同也不能自动认定可比。",
+                  "计划执行关联与全部处方达标分开统计；没有已审阅动作模式标签，不推断模式分布。",
+                  "没有逐组开始与结束时间，无法计算实际组间或动作间休息；记录录入间隔不等于休息时间。",
+                  "训练间隔只描述已同步记录的节奏，不据此判断恢复充分或已进入训练周期。"
+                ]
+              },
+              "charts": [
+                {
+                  "id": "training-timeline",
+                  "kind": "timeline",
+                  "title": "训练节奏",
+                  "description": "按实际日期间隔排列 · UTC",
+                  "unit": "次",
+                  "points": [
+                    {
+                      "label": "01-01",
+                      "at": "2025-01-01T01:00:00Z",
+                      "value": 1,
+                      "source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "one",
+                        "version": 1
+                      }
+                    },
+                    {
+                      "label": "01-03",
+                      "at": "2025-01-03T01:00:00Z",
+                      "value": 1,
+                      "source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "two",
+                        "version": 1
+                      }
+                    }
+                  ],
+                  "truncated": false
+                },
+                {
+                  "id": "session-sets",
+                  "kind": "columns",
+                  "title": "每次训练完成组数",
+                  "description": "按记录中的完成状态计数，不等同于有效组",
+                  "unit": "组",
+                  "points": [
+                    {
+                      "label": "01-01",
+                      "at": "2025-01-01T01:00:00Z",
+                      "value": 1,
+                      "source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "one",
+                        "version": 1
+                      }
+                    },
+                    {
+                      "label": "01-03",
+                      "at": "2025-01-03T01:00:00Z",
+                      "value": 1,
+                      "source": {
+                        "source_id": "local-install-001",
+                        "workout_id": "two",
+                        "version": 1
+                      }
+                    }
+                  ],
+                  "truncated": false
+                },
+                {
+                  "id": "body-parts",
+                  "kind": "bars",
+                  "title": "训练部位分布",
+                  "description": "按目录主部位统计已完成组；辅助肌群不重复计数",
+                  "unit": "组",
+                  "points": [
+                    {
+                      "label": "胸部",
+                      "value": 2
+                    }
+                  ],
+                  "truncated": false
+                }
+              ],
+              "findings": [
+                {
+                  "title": "",
+                  "conclusion": "记录包含 2 次训练，可以先观察训练安排。",
+                  "evidence_ids": [
+                    "recent.frequency",
+                    "cadence.spacing"
+                  ],
+                  "comparison": "",
+                  "possible_explanation": "",
+                  "suggested_action": "",
+                  "missing_information": [],
+                  "kind": "inference",
+                  "evidence": [
+                    {
+                      "kind": "fact",
+                      "window": "recent",
+                      "metric": "frequency",
+                      "value": {
+                        "start_date": "2025-01-01",
+                        "end_date_exclusive": "2025-01-04",
+                        "days": 3,
+                        "completed_workouts": 2,
+                        "completed_sets": 2,
+                        "valid_sets": 2,
+                        "invalid_sets": 0,
+                        "primary_body_part_sets": {
+                          "chest": 2
+                        },
+                        "primary_body_part_workouts": {
+                          "chest": 2
+                        },
+                        "training_dates": [
+                          "2025-01-01",
+                          "2025-01-03"
+                        ],
+                        "date_gaps_days": [
+                          2
+                        ],
+                        "workouts_per_week": null,
+                        "sets_per_week": null,
+                        "sources": [
+                          {
+                            "source_id": "local-install-001",
+                            "workout_id": "two",
+                            "version": 1
+                          },
+                          {
+                            "source_id": "local-install-001",
+                            "workout_id": "one",
+                            "version": 1
+                          }
+                        ],
+                        "sources_truncated": false,
+                        "body_part_coverage": {
+                          "catalog_matched_sets": 2,
+                          "unclassified_sets": 0,
+                          "total_completed_sets": 2
+                        },
+                        "selection_mode": "recent_workouts"
+                      }
+                    },
+                    {
+                      "kind": "fact",
+                      "metric": "training_spacing",
+                      "value": {
+                        "sessions": [
+                          {
+                            "source": {
+                              "source_id": "local-install-001",
+                              "workout_id": "one",
+                              "version": 1
+                            },
+                            "started_at": "2025-01-01T01:00:00Z",
+                            "body_parts": [
+                              "chest"
+                            ],
+                            "completed_sets": 1
+                          },
+                          {
+                            "source": {
+                              "source_id": "local-install-001",
+                              "workout_id": "two",
+                              "version": 1
+                            },
+                            "started_at": "2025-01-03T01:00:00Z",
+                            "body_parts": [
+                              "chest"
+                            ],
+                            "completed_sets": 1
+                          }
+                        ],
+                        "intervals": [
+                          {
+                            "from_source": {
+                              "source_id": "local-install-001",
+                              "workout_id": "one",
+                              "version": 1
+                            },
+                            "to_source": {
+                              "source_id": "local-install-001",
+                              "workout_id": "two",
+                              "version": 1
+                            },
+                            "start_gap_seconds": 172800.0,
+                            "start_gap_hours": 48.0
+                          }
+                        ],
+                        "body_part_intervals": {
+                          "chest": [
+                            {
+                              "from_source": {
+                                "source_id": "local-install-001",
+                                "workout_id": "one",
+                                "version": 1
+                              },
+                              "to_source": {
+                                "source_id": "local-install-001",
+                                "workout_id": "two",
+                                "version": 1
+                              },
+                              "start_gap_seconds": 172800.0,
+                              "start_gap_hours": 48.0
+                            }
+                          ]
+                        },
+                        "total_workouts": 2,
+                        "truncated": false
+                      }
+                    }
+                  ]
+                },
+                {
+                  "title": "",
+                  "conclusion": "## 部位分布\n\n结合目标关注重点安排。",
+                  "evidence_ids": [
+                    "recent.distribution"
+                  ],
+                  "comparison": "",
+                  "possible_explanation": "",
+                  "suggested_action": "",
+                  "missing_information": [],
+                  "kind": "inference",
+                  "evidence": [
+                    {
+                      "kind": "fact",
+                      "window": "recent",
+                      "metric": "primary_body_part_sets",
+                      "value": {
+                        "chest": 2
+                      }
+                    }
+                  ]
+                }
+              ],
+              "keep": [],
+              "next_adjustments": [],
+              "question": null,
+              "rules_version": "training-decision-v1.1",
+              "sources": [
+                {
+                  "id": "E1",
+                  "title": "ACSM 抗阻训练立场文件（摘要）",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/"
+                },
+                {
+                  "id": "E2",
+                  "title": "动作顺序系统综述（摘要）",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/32077380/"
+                },
+                {
+                  "id": "E3",
+                  "title": "自由重量与固定器械系统综述（摘要）",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/"
+                },
+                {
+                  "id": "E5",
+                  "title": "减量安排专家共识",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/37730925/"
+                }
+              ],
+              "omitted_findings": 0,
+              "repaired_findings": 0
+            },
+            "session_plan": null,
+            "plan_preview": null,
+            "suggestion_kind": null
+          },
+          "replayed": true,
+          "request_id": "d2212dbd-aa29-47e3-a46a-ccebbaaa23db",
+          "conversation_id": "2233b6e4-bf6f-444b-9065-81cd8806385f",
+          "sequence": 1
+        }
+      ]
+    },
+    "plan_preview": {
+      "request": {
+        "conversation_id": "034f5b10-730e-4116-9ac7-ad06fd4b257f",
+        "request_id": "6562b359-3bfb-4307-8533-a9c35396a38d",
+        "message": "推荐我明天的训练日程"
+      },
+      "response": {
+        "conversation_id": "034f5b10-730e-4116-9ac7-ad06fd4b257f",
+        "result_id": "bf4d867c-560e-4611-908c-bc6d1108f264",
+        "kind": "session_plan",
+        "text": "**上肢训练候选 · 待完善**\n\n先讨论推拉搭配，具体需求待确认。\n\n下方按候选顺序展示动作卡。组次、重量和休息待条件明确后安排；当前不能确认或开始这份训练。\n\n你目前最希望改善的训练目标是什么：力量、增肌，还是保持整体体能？",
+        "cards": [
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "0289",
+              "sourceName": "dumbbell bench press",
+              "displayNameZhHans": "哑铃卧推",
+              "aliasesZhHans": [
+                "哑铃平板卧推"
+              ],
+              "bodyPartCode": "chest",
+              "equipmentCode": "dumbbell",
+              "targetMuscleCode": "pectorals",
+              "secondaryMuscleCodes": [
+                "triceps",
+                "shoulders"
+              ],
+              "instructionStepsZhHans": [
+                "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                "双手各握一个哑铃，手掌朝前，双臂伸至胸部上方。",
+                "慢慢地将哑铃降低到胸部两侧，保持肘部呈 90 度角。",
+                "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "SpYC0Kp",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.877684Z",
+              "updatedAt": "2026-03-18T12:31:32.877684Z"
+            },
+            "equipment_label": "哑铃",
+            "body_part_label": "胸部",
+            "context": "作为推的重点候选",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": []
+          },
+          {
+            "exercise": {
+              "sourceKind": "standard",
+              "trainingType": null,
+              "avatar": null,
+              "id": "0180",
+              "sourceName": "cable low seated row",
+              "displayNameZhHans": "绳索低位坐姿划船",
+              "aliasesZhHans": [],
+              "bodyPartCode": "back",
+              "equipmentCode": "cable",
+              "targetMuscleCode": "upper back",
+              "secondaryMuscleCodes": [
+                "biceps",
+                "forearms"
+              ],
+              "instructionStepsZhHans": [
+                "坐在机器上，双脚平放在脚踏板上，膝盖稍微弯曲。",
+                "正手握住手柄，手掌朝下。",
+                "保持背部挺直，稍微向前倾斜，肘部保持轻微弯曲。",
+                "将手柄拉向身体，将肩胛骨挤压在一起。",
+                "在动作的最高点暂停片刻，然后慢慢松开手柄回到起始位置。",
+                "重复所需的重复次数。"
+              ],
+              "mediaId": "hvV79Si",
+              "detailType": "weightedReps",
+              "defaultWeightUnit": "kg",
+              "isActive": true,
+              "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+              "createdAt": "2026-03-18T12:31:32.874859Z",
+              "updatedAt": "2026-03-18T12:31:32.874859Z"
+            },
+            "equipment_label": "绳索器械",
+            "body_part_label": "背部",
+            "context": "补充水平拉的候选",
+            "can_add_to_active_workout": false,
+            "set_prescriptions": []
+          }
+        ],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为整次训练方案",
+            "data": {
+              "kind": "session_plan",
+              "recommendation_count": 3,
+              "query": "",
+              "body_part": null,
+              "equipment": null,
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": {
+                "goal": null,
+                "experience": null,
+                "session_minutes": null,
+                "equipment": [
+                  "dumbbell",
+                  "cable"
+                ],
+                "readiness": null,
+                "target_date": null
+              },
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "训练决策资料已准备",
+            "summary": "使用完整日期窗口统计、用户目标与状态；完整方案独立校验，不使用动作卡片数量上限。",
+            "data": {
+              "snapshot_count": 0
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "训练候选卡已准备",
+            "summary": "返回 2 张非执行动作候选卡；未创建训练计划。",
+            "data": {
+              "plan_generation_deferred": true,
+              "preview_card_count": 2
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": null,
+        "review": null,
+        "session_plan": null,
+        "plan_preview": {
+          "status": "needs_input",
+          "theme": "上肢训练候选",
+          "next_question": "你目前最希望改善的训练目标是什么：力量、增肌，还是保持整体体能？",
+          "target_date": null
+        },
+        "suggestion_kind": null
+      }
+    },
+    "session_plan": {
+      "request": {
+        "conversation_id": "540ee17c-ce8d-4077-96e0-bd8475971742",
+        "request_id": "4fdbb54f-c18c-430c-adbb-af5f40bed75a",
+        "message": "给我整次训练方案"
+      },
+      "response": {
+        "conversation_id": "540ee17c-ce8d-4077-96e0-bd8475971742",
+        "result_id": "87476826-e8aa-407d-a8f1-5bd1841f0154",
+        "kind": "session_plan",
+        "text": "**上肢，卧推优先**\n\n优先支持明确的力量目标，先维持要求观察表现。\n\n本次调整建议：暂不同时增加重量和组数。\n\n当前确认阶段：未知；本次调整不代表已进入某个周期。\n\n准备约 8 分钟：熟悉的上肢动态准备和递增热身，不做到明显疲劳。\n\n用力目标：保留约 2–3 次余力。各组目标以卡片设置为准。\n\n动作已按执行顺序排在下方。展开卡片可查看或调整每组设置，确认整份计划后再开始训练。\n\n预计共 34–39 分钟，包含准备、执行、组间休息、切换、收尾与缓冲。\n\n排序依据：先安排本次重点动作；顺序原则关联 E2，具体方案是产品提案。 尚无经审阅的握力、腰背稳定和技术疲劳标签，不能保证后续项目完全不受影响。\n\n器械或时间变化时，请重新生成方案；替代动作需要重新试做选重。\n\n训练后反馈：实际完成哪些动作和组次？；最后工作组的余力或主观用力如何？；有无疼痛、提前结束或跳过项目，原因是什么？\n\n依据：[动作顺序综述](https://pubmed.ncbi.nlm.nih.gov/32077380/)；[减量专家共识](https://pubmed.ncbi.nlm.nih.gov/37730925/)。具体剂量是待评估的产品提案。",
+        "cards": [],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为整次训练方案",
+            "data": {
+              "kind": "session_plan",
+              "recommendation_count": 3,
+              "query": "",
+              "body_part": null,
+              "equipment": null,
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "训练决策资料已准备",
+            "summary": "使用完整日期窗口统计、用户目标与状态；完整方案独立校验，不使用动作卡片数量上限。",
+            "data": {
+              "snapshot_count": 0
+            }
+          },
+          {
+            "stage": "responding",
+            "title": "训练决策已生成",
+            "summary": "统计事实与推断分别呈现；完整方案通过目录、顺序和时间检查。",
+            "data": {
+              "review": false,
+              "session_plan": true
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": null,
+        "review": null,
+        "session_plan": {
+          "id": "35465d49-a602-4562-bcba-ebe9102c8f86",
+          "version": 1,
+          "status": "proposed",
+          "theme": "上肢，卧推优先",
+          "rationale": "优先支持明确的力量目标，先维持要求观察表现。",
+          "proposal_rationale": "优先支持明确的力量目标，先维持要求观察表现。",
+          "evidence_ids": [
+            "recent.frequency"
+          ],
+          "evidence": [
+            {
+              "kind": "fact",
+              "window": "recent",
+              "metric": "frequency",
+              "value": {
+                "start_date": "2026-09-19",
+                "end_date_exclusive": "2026-09-19",
+                "days": 0,
+                "completed_workouts": 0,
+                "completed_sets": 0,
+                "valid_sets": 0,
+                "invalid_sets": 0,
+                "primary_body_part_sets": {},
+                "primary_body_part_workouts": {},
+                "training_dates": [],
+                "date_gaps_days": [],
+                "workouts_per_week": null,
+                "sets_per_week": null,
+                "sources": [],
+                "sources_truncated": false,
+                "body_part_coverage": {
+                  "catalog_matched_sets": 0,
+                  "unclassified_sets": 0,
+                  "total_completed_sets": 0
+                },
+                "selection_mode": "recent_workouts"
+              }
+            }
+          ],
+          "load_evidence": [],
+          "rules_version": "training-decision-v1.1",
+          "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+          "profile_version": 1,
+          "profile_snapshot": {
+            "goal": "strength",
+            "goal_notes": "",
+            "priority_exercise_ids": [
+              "0289"
+            ],
+            "experience": "experienced",
+            "weekly_sessions": 3,
+            "session_minutes": 50,
+            "equipment": [
+              "dumbbell",
+              "cable"
+            ],
+            "time_zone": "Asia/Singapore",
+            "readiness": {
+              "observed_at": "2026-09-18T07:54:44.240872Z",
+              "pain": "none",
+              "fatigue": "normal",
+              "sleep": "normal",
+              "notes": ""
+            },
+            "confirmed_cycle": null
+          },
+          "confirmed_cycle": null,
+          "suggested_adjustment": "maintain",
+          "progression_basis": null,
+          "adjustment_reason": "暂不同时增加重量和组数。",
+          "preparation": "熟悉的上肢动态准备和递增热身，不做到明显疲劳。",
+          "preparation_minutes": 8,
+          "finish_minutes": 3,
+          "buffer_minutes": 5,
+          "items": [
+            {
+              "role": "priority",
+              "purpose": "提高卧推表现",
+              "sets": 3,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 8,
+                  "duration_seconds": null,
+                  "rest_seconds": 120,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 8,
+                  "duration_seconds": null,
+                  "rest_seconds": 120,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 8,
+                  "duration_seconds": null,
+                  "rest_seconds": 120,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 8,
+              "duration_seconds": null,
+              "rest_seconds": 120,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0289",
+                "sourceName": "dumbbell bench press",
+                "displayNameZhHans": "哑铃卧推",
+                "aliasesZhHans": [
+                  "哑铃平板卧推"
+                ],
+                "bodyPartCode": "chest",
+                "equipmentCode": "dumbbell",
+                "targetMuscleCode": "pectorals",
+                "secondaryMuscleCodes": [
+                  "triceps",
+                  "shoulders"
+                ],
+                "instructionStepsZhHans": [
+                  "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                  "双手各握一个哑铃，手掌朝前，双臂伸至胸部上方。",
+                  "慢慢地将哑铃降低到胸部两侧，保持肘部呈 90 度角。",
+                  "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "SpYC0Kp",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.877684Z",
+                "updatedAt": "2026-03-18T12:31:32.877684Z"
+              },
+              "equipment_label": "哑铃",
+              "body_part_label": "胸部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 3,
+              "estimated_seconds": 426
+            },
+            {
+              "role": "assistance",
+              "purpose": "上肢拉",
+              "sets": 3,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 10,
+              "duration_seconds": null,
+              "rest_seconds": 90,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0180",
+                "sourceName": "cable low seated row",
+                "displayNameZhHans": "绳索低位坐姿划船",
+                "aliasesZhHans": [],
+                "bodyPartCode": "back",
+                "equipmentCode": "cable",
+                "targetMuscleCode": "upper back",
+                "secondaryMuscleCodes": [
+                  "biceps",
+                  "forearms"
+                ],
+                "instructionStepsZhHans": [
+                  "坐在机器上，双脚平放在脚踏板上，膝盖稍微弯曲。",
+                  "正手握住手柄，手掌朝下。",
+                  "保持背部挺直，稍微向前倾斜，肘部保持轻微弯曲。",
+                  "将手柄拉向身体，将肩胛骨挤压在一起。",
+                  "在动作的最高点暂停片刻，然后慢慢松开手柄回到起始位置。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "hvV79Si",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.874859Z",
+                "updatedAt": "2026-03-18T12:31:32.874859Z"
+              },
+              "equipment_label": "绳索器械",
+              "body_part_label": "背部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 3,
+              "estimated_seconds": 390
+            },
+            {
+              "role": "assistance",
+              "purpose": "垂直拉",
+              "sets": 2,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 10,
+              "duration_seconds": null,
+              "rest_seconds": 90,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0150",
+                "sourceName": "cable bar lateral pulldown",
+                "displayNameZhHans": "绳索杆高位下拉",
+                "aliasesZhHans": [],
+                "bodyPartCode": "back",
+                "equipmentCode": "cable",
+                "targetMuscleCode": "lats",
+                "secondaryMuscleCodes": [
+                  "biceps",
+                  "rhomboids",
+                  "rear deltoids"
+                ],
+                "instructionStepsZhHans": [
+                  "将电缆滑轮调整至较高位置并安装直杆。",
+                  "面向缆绳机坐着，双脚平放在地面上，膝盖稍微弯曲。",
+                  "正手握住杠铃，握距略宽于肩宽。",
+                  "稍微向后倾斜，挺胸，保持下背部轻微的拱形。",
+                  "将杠铃向下拉向胸部，用肘部引导并将肩胛骨挤压在一起。",
+                  "在动作底部暂停片刻，然后慢慢地将杠铃返回到起始位置。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "eYnzaCm",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.874157Z",
+                "updatedAt": "2026-03-18T12:31:32.874157Z"
+              },
+              "equipment_label": "绳索器械",
+              "body_part_label": "背部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 2,
+              "estimated_seconds": 260
+            },
+            {
+              "role": "supplement",
+              "purpose": "肩部补充",
+              "sets": 2,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 12,
+                  "duration_seconds": null,
+                  "rest_seconds": 60,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 12,
+                  "duration_seconds": null,
+                  "rest_seconds": 60,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 12,
+              "duration_seconds": null,
+              "rest_seconds": 60,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0334",
+                "sourceName": "dumbbell lateral raise",
+                "displayNameZhHans": "哑铃侧平举",
+                "aliasesZhHans": [],
+                "bodyPartCode": "shoulders",
+                "equipmentCode": "dumbbell",
+                "targetMuscleCode": "delts",
+                "secondaryMuscleCodes": [
+                  "traps"
+                ],
+                "instructionStepsZhHans": [
+                  "双脚分开与肩同宽站立，双手各握一个哑铃，手掌朝向身体。",
+                  "保持背部挺直并启动核心肌群。",
+                  "将手臂向两侧抬起，直到与地板平行，保持肘部稍微弯曲。",
+                  "在顶部暂停片刻，然后慢慢将手臂放回起始位置。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "DsgkuIt",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.879137Z",
+                "updatedAt": "2026-03-18T12:31:32.879137Z"
+              },
+              "equipment_label": "哑铃",
+              "body_part_label": "肩部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 2,
+              "estimated_seconds": 246
+            }
+          ],
+          "working_sets": 10,
+          "estimated_minutes_min": 34,
+          "estimated_minutes_max": 39,
+          "removed_items": [],
+          "ordering_checks": [
+            {
+              "type": "priority",
+              "explanation": "先安排本次重点动作；顺序原则关联 E2，具体方案是产品提案。"
+            },
+            {
+              "type": "unknown",
+              "explanation": "尚无经审阅的握力、腰背稳定和技术疲劳标签，不能保证后续项目完全不受影响。"
+            },
+            {
+              "type": "catalog_muscle_overlap",
+              "first": "0180",
+              "second": "0150",
+              "muscles": [
+                "biceps"
+              ],
+              "explanation": "目录肌群有重叠，后续动作需按实际用力调整；这不是精确疲劳预测。"
+            }
+          ],
+          "feedback_questions": [
+            "实际完成哪些动作和组次？",
+            "最后工作组的余力或主观用力如何？",
+            "有无疼痛、提前结束或跳过项目，原因是什么？"
+          ],
+          "sources": [
+            {
+              "id": "E1",
+              "title": "ACSM 抗阻训练立场文件（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/"
+            },
+            {
+              "id": "E2",
+              "title": "动作顺序系统综述（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/32077380/"
+            },
+            {
+              "id": "E3",
+              "title": "自由重量与固定器械系统综述（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/"
+            },
+            {
+              "id": "E5",
+              "title": "减量安排专家共识",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/37730925/"
+            }
+          ],
+          "limitations": [
+            "这是依据研究原则和产品规则生成的候选方案，具体剂量尚未经过专业个体审阅。",
+            "当天再次确认状态；出现疼痛或明显不适时停止相关动作。"
+          ],
+          "parent_plan_id": null,
+          "target_date": null
+        },
+        "plan_preview": null,
+        "suggestion_kind": "session_plan"
+      },
+      "plan_state": {
+        "plan": {
+          "id": "35465d49-a602-4562-bcba-ebe9102c8f86",
+          "version": 1,
+          "status": "proposed",
+          "theme": "上肢，卧推优先",
+          "rationale": "优先支持明确的力量目标，先维持要求观察表现。",
+          "proposal_rationale": "优先支持明确的力量目标，先维持要求观察表现。",
+          "evidence_ids": [
+            "recent.frequency"
+          ],
+          "evidence": [
+            {
+              "kind": "fact",
+              "window": "recent",
+              "metric": "frequency",
+              "value": {
+                "start_date": "2026-09-19",
+                "end_date_exclusive": "2026-09-19",
+                "days": 0,
+                "completed_workouts": 0,
+                "completed_sets": 0,
+                "valid_sets": 0,
+                "invalid_sets": 0,
+                "primary_body_part_sets": {},
+                "primary_body_part_workouts": {},
+                "training_dates": [],
+                "date_gaps_days": [],
+                "workouts_per_week": null,
+                "sets_per_week": null,
+                "sources": [],
+                "sources_truncated": false,
+                "body_part_coverage": {
+                  "catalog_matched_sets": 0,
+                  "unclassified_sets": 0,
+                  "total_completed_sets": 0
+                },
+                "selection_mode": "recent_workouts"
+              }
+            }
+          ],
+          "load_evidence": [],
+          "rules_version": "training-decision-v1.1",
+          "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+          "profile_version": 1,
+          "profile_snapshot": {
+            "goal": "strength",
+            "goal_notes": "",
+            "priority_exercise_ids": [
+              "0289"
+            ],
+            "experience": "experienced",
+            "weekly_sessions": 3,
+            "session_minutes": 50,
+            "equipment": [
+              "dumbbell",
+              "cable"
+            ],
+            "time_zone": "Asia/Singapore",
+            "readiness": {
+              "observed_at": "2026-09-18T07:54:44.240872Z",
+              "pain": "none",
+              "fatigue": "normal",
+              "sleep": "normal",
+              "notes": ""
+            },
+            "confirmed_cycle": null
+          },
+          "confirmed_cycle": null,
+          "suggested_adjustment": "maintain",
+          "progression_basis": null,
+          "adjustment_reason": "暂不同时增加重量和组数。",
+          "preparation": "熟悉的上肢动态准备和递增热身，不做到明显疲劳。",
+          "preparation_minutes": 8,
+          "finish_minutes": 3,
+          "buffer_minutes": 5,
+          "items": [
+            {
+              "role": "priority",
+              "purpose": "提高卧推表现",
+              "sets": 3,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 8,
+                  "duration_seconds": null,
+                  "rest_seconds": 120,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 8,
+                  "duration_seconds": null,
+                  "rest_seconds": 120,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 8,
+                  "duration_seconds": null,
+                  "rest_seconds": 120,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 8,
+              "duration_seconds": null,
+              "rest_seconds": 120,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0289",
+                "sourceName": "dumbbell bench press",
+                "displayNameZhHans": "哑铃卧推",
+                "aliasesZhHans": [
+                  "哑铃平板卧推"
+                ],
+                "bodyPartCode": "chest",
+                "equipmentCode": "dumbbell",
+                "targetMuscleCode": "pectorals",
+                "secondaryMuscleCodes": [
+                  "triceps",
+                  "shoulders"
+                ],
+                "instructionStepsZhHans": [
+                  "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+                  "双手各握一个哑铃，手掌朝前，双臂伸至胸部上方。",
+                  "慢慢地将哑铃降低到胸部两侧，保持肘部呈 90 度角。",
+                  "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "SpYC0Kp",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.877684Z",
+                "updatedAt": "2026-03-18T12:31:32.877684Z"
+              },
+              "equipment_label": "哑铃",
+              "body_part_label": "胸部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 3,
+              "estimated_seconds": 426
+            },
+            {
+              "role": "assistance",
+              "purpose": "上肢拉",
+              "sets": 3,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 10,
+              "duration_seconds": null,
+              "rest_seconds": 90,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0180",
+                "sourceName": "cable low seated row",
+                "displayNameZhHans": "绳索低位坐姿划船",
+                "aliasesZhHans": [],
+                "bodyPartCode": "back",
+                "equipmentCode": "cable",
+                "targetMuscleCode": "upper back",
+                "secondaryMuscleCodes": [
+                  "biceps",
+                  "forearms"
+                ],
+                "instructionStepsZhHans": [
+                  "坐在机器上，双脚平放在脚踏板上，膝盖稍微弯曲。",
+                  "正手握住手柄，手掌朝下。",
+                  "保持背部挺直，稍微向前倾斜，肘部保持轻微弯曲。",
+                  "将手柄拉向身体，将肩胛骨挤压在一起。",
+                  "在动作的最高点暂停片刻，然后慢慢松开手柄回到起始位置。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "hvV79Si",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.874859Z",
+                "updatedAt": "2026-03-18T12:31:32.874859Z"
+              },
+              "equipment_label": "绳索器械",
+              "body_part_label": "背部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 3,
+              "estimated_seconds": 390
+            },
+            {
+              "role": "assistance",
+              "purpose": "垂直拉",
+              "sets": 2,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 10,
+                  "duration_seconds": null,
+                  "rest_seconds": 90,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 10,
+              "duration_seconds": null,
+              "rest_seconds": 90,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0150",
+                "sourceName": "cable bar lateral pulldown",
+                "displayNameZhHans": "绳索杆高位下拉",
+                "aliasesZhHans": [],
+                "bodyPartCode": "back",
+                "equipmentCode": "cable",
+                "targetMuscleCode": "lats",
+                "secondaryMuscleCodes": [
+                  "biceps",
+                  "rhomboids",
+                  "rear deltoids"
+                ],
+                "instructionStepsZhHans": [
+                  "将电缆滑轮调整至较高位置并安装直杆。",
+                  "面向缆绳机坐着，双脚平放在地面上，膝盖稍微弯曲。",
+                  "正手握住杠铃，握距略宽于肩宽。",
+                  "稍微向后倾斜，挺胸，保持下背部轻微的拱形。",
+                  "将杠铃向下拉向胸部，用肘部引导并将肩胛骨挤压在一起。",
+                  "在动作底部暂停片刻，然后慢慢地将杠铃返回到起始位置。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "eYnzaCm",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.874157Z",
+                "updatedAt": "2026-03-18T12:31:32.874157Z"
+              },
+              "equipment_label": "绳索器械",
+              "body_part_label": "背部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 2,
+              "estimated_seconds": 260
+            },
+            {
+              "role": "supplement",
+              "purpose": "肩部补充",
+              "sets": 2,
+              "set_prescriptions": [
+                {
+                  "kind": "working",
+                  "repetitions": 12,
+                  "duration_seconds": null,
+                  "rest_seconds": 60,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                },
+                {
+                  "kind": "working",
+                  "repetitions": 12,
+                  "duration_seconds": null,
+                  "rest_seconds": 60,
+                  "target_rir_min": 2,
+                  "target_rir_max": 3,
+                  "load": {
+                    "strategy": "trial",
+                    "value": null,
+                    "unit": null,
+                    "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+                  }
+                }
+              ],
+              "repetitions": 12,
+              "duration_seconds": null,
+              "rest_seconds": 60,
+              "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+              "target_rir_min": 2,
+              "target_rir_max": 3,
+              "seconds_per_rep": 4,
+              "switch_seconds": 90,
+              "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+              "exercise": {
+                "sourceKind": "standard",
+                "trainingType": null,
+                "avatar": null,
+                "id": "0334",
+                "sourceName": "dumbbell lateral raise",
+                "displayNameZhHans": "哑铃侧平举",
+                "aliasesZhHans": [],
+                "bodyPartCode": "shoulders",
+                "equipmentCode": "dumbbell",
+                "targetMuscleCode": "delts",
+                "secondaryMuscleCodes": [
+                  "traps"
+                ],
+                "instructionStepsZhHans": [
+                  "双脚分开与肩同宽站立，双手各握一个哑铃，手掌朝向身体。",
+                  "保持背部挺直并启动核心肌群。",
+                  "将手臂向两侧抬起，直到与地板平行，保持肘部稍微弯曲。",
+                  "在顶部暂停片刻，然后慢慢将手臂放回起始位置。",
+                  "重复所需的重复次数。"
+                ],
+                "mediaId": "DsgkuIt",
+                "detailType": "weightedReps",
+                "defaultWeightUnit": "kg",
+                "isActive": true,
+                "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+                "createdAt": "2026-03-18T12:31:32.879137Z",
+                "updatedAt": "2026-03-18T12:31:32.879137Z"
+              },
+              "equipment_label": "哑铃",
+              "body_part_label": "肩部",
+              "load": {
+                "strategy": "trial",
+                "value": null,
+                "unit": null,
+                "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+              },
+              "alternatives": [],
+              "discarded_alternatives": [],
+              "total_sets": 2,
+              "estimated_seconds": 246
+            }
+          ],
+          "working_sets": 10,
+          "estimated_minutes_min": 34,
+          "estimated_minutes_max": 39,
+          "removed_items": [],
+          "ordering_checks": [
+            {
+              "type": "priority",
+              "explanation": "先安排本次重点动作；顺序原则关联 E2，具体方案是产品提案。"
+            },
+            {
+              "type": "unknown",
+              "explanation": "尚无经审阅的握力、腰背稳定和技术疲劳标签，不能保证后续项目完全不受影响。"
+            },
+            {
+              "type": "catalog_muscle_overlap",
+              "first": "0180",
+              "second": "0150",
+              "muscles": [
+                "biceps"
+              ],
+              "explanation": "目录肌群有重叠，后续动作需按实际用力调整；这不是精确疲劳预测。"
+            }
+          ],
+          "feedback_questions": [
+            "实际完成哪些动作和组次？",
+            "最后工作组的余力或主观用力如何？",
+            "有无疼痛、提前结束或跳过项目，原因是什么？"
+          ],
+          "sources": [
+            {
+              "id": "E1",
+              "title": "ACSM 抗阻训练立场文件（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/"
+            },
+            {
+              "id": "E2",
+              "title": "动作顺序系统综述（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/32077380/"
+            },
+            {
+              "id": "E3",
+              "title": "自由重量与固定器械系统综述（摘要）",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/"
+            },
+            {
+              "id": "E5",
+              "title": "减量安排专家共识",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/37730925/"
+            }
+          ],
+          "limitations": [
+            "这是依据研究原则和产品规则生成的候选方案，具体剂量尚未经过专业个体审阅。",
+            "当天再次确认状态；出现疼痛或明显不适时停止相关动作。"
+          ],
+          "parent_plan_id": null,
+          "target_date": null
+        },
+        "status": "proposed",
+        "revision": 0,
+        "created_at": "2026-09-18T07:54:44.269980Z",
+        "superseded_by": null,
+        "events": [],
+        "events_truncated": false,
+        "execution": null
+      }
+    },
+    "custom_exercise_draft": {
+      "request": {
+        "conversation_id": "c615cc46-f77f-4b9e-8111-4a0788bdb9e5",
+        "request_id": "488bd747-9cc3-4fa8-8ca2-59197a1214ff",
+        "message": "创建一个强天使动作"
+      },
+      "response": {
+        "conversation_id": "c615cc46-f77f-4b9e-8111-4a0788bdb9e5",
+        "result_id": "64fb280b-4f0f-4360-b8b3-87c639cf8e4c",
+        "kind": "custom_exercise",
+        "text": "我按「墙天使」理解这个动作。已整理「墙天使」的动作信息，目前未保存。请查看下方草稿，确认后保存到个人动作库。",
+        "cards": [],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为自定义动作建档",
+            "data": {
+              "kind": "custom_exercise",
+              "recommendation_count": 3,
+              "query": "墙天使",
+              "body_part": null,
+              "equipment": null,
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "动作目录已准备",
+            "summary": "对照标准库和当前账号个人库查重，并准备建档术语。",
+            "data": {}
+          },
+          {
+            "stage": "responding",
+            "title": "动作建档信息已整理",
+            "summary": "已完成动作识别与信息检查；新动作只返回草稿，等待用户确认保存。",
+            "data": {
+              "status": "draft"
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": {
+          "status": "draft",
+          "draft_id": "488bd747-9cc3-4fa8-8ca2-59197a1214ff",
+          "version": 1,
+          "definition": {
+            "name": "墙天使",
+            "detail_type": "bodyweightReps",
+            "aliases": [
+              "Wall Angel"
+            ],
+            "body_part_code": "back",
+            "equipment_code": "body weight",
+            "target_muscle_code": "unknown",
+            "secondary_muscle_codes": [],
+            "training_type": "mobility",
+            "instructions": [
+              "背靠墙，按舒适范围缓慢举落双臂。"
+            ],
+            "default_weight_unit": null,
+            "inferred_fields": [
+              "body_part_code",
+              "training_type",
+              "instructions"
+            ]
+          },
+          "avatar": {
+            "kind": "builtin",
+            "key": "mobility",
+            "url": "/v1/custom-exercises/avatars/mobility"
+          },
+          "labels": {
+            "body_part": "背部",
+            "equipment": "徒手",
+            "target_muscle": "待补充",
+            "secondary_muscles": []
+          },
+          "name_correction": {
+            "input_name": "强天使",
+            "resolved_name": "墙天使"
+          }
+        },
+        "review": null,
+        "session_plan": null,
+        "plan_preview": null,
+        "suggestion_kind": null
+      },
+      "edit_request": {
+        "version": 1,
+        "exercise": {
+          "name": "墙天使",
+          "detail_type": "bodyweightReps",
+          "aliases": [
+            "Wall Angel",
+            "靠墙天使"
+          ],
+          "body_part_code": "back",
+          "equipment_code": "body weight",
+          "target_muscle_code": "unknown",
+          "secondary_muscle_codes": [],
+          "training_type": "mobility",
+          "instructions": [
+            "背靠墙，按舒适范围缓慢举落双臂。"
+          ],
+          "default_weight_unit": null,
+          "inferred_fields": [
+            "body_part_code",
+            "training_type",
+            "instructions"
+          ]
+        }
+      },
+      "edited_draft": {
+        "status": "draft",
+        "draft_id": "488bd747-9cc3-4fa8-8ca2-59197a1214ff",
+        "version": 2,
+        "definition": {
+          "name": "墙天使",
+          "detail_type": "bodyweightReps",
+          "aliases": [
+            "Wall Angel",
+            "靠墙天使"
+          ],
+          "body_part_code": "back",
+          "equipment_code": "body weight",
+          "target_muscle_code": "unknown",
+          "secondary_muscle_codes": [],
+          "training_type": "mobility",
+          "instructions": [
+            "背靠墙，按舒适范围缓慢举落双臂。"
+          ],
+          "default_weight_unit": null,
+          "inferred_fields": [
+            "body_part_code",
+            "training_type",
+            "instructions"
+          ]
+        },
+        "avatar": {
+          "kind": "builtin",
+          "key": "mobility",
+          "url": "/v1/custom-exercises/avatars/mobility"
+        },
+        "labels": {
+          "body_part": "背部",
+          "equipment": "徒手",
+          "target_muscle": "待补充",
+          "secondary_muscles": []
+        },
+        "name_correction": {
+          "input_name": "强天使",
+          "resolved_name": "墙天使"
+        }
+      },
+      "save_request": {
+        "version": 2
+      },
+      "save_response": {
+        "status": "created",
+        "exercise": {
+          "sourceKind": "custom",
+          "trainingType": "mobility",
+          "avatar": {
+            "kind": "builtin",
+            "key": "mobility",
+            "url": "/v1/exercises/cx_ea523d1c/thumbnail"
+          },
+          "id": "cx_ea523d1c",
+          "sourceName": "墙天使",
+          "displayNameZhHans": "墙天使",
+          "aliasesZhHans": [
+            "Wall Angel",
+            "靠墙天使"
+          ],
+          "bodyPartCode": "back",
+          "equipmentCode": "body weight",
+          "targetMuscleCode": "unknown",
+          "secondaryMuscleCodes": [],
+          "instructionStepsZhHans": [
+            "背靠墙，按舒适范围缓慢举落双臂。"
+          ],
+          "mediaId": "",
+          "detailType": "bodyweightReps",
+          "defaultWeightUnit": null,
+          "isActive": true,
+          "catalogVersion": "personal-v1",
+          "createdAt": "2026-09-18T07:54:44.358662Z",
+          "updatedAt": "2026-09-18T07:54:44.358662Z"
+        },
+        "definition": {
+          "name": "墙天使",
+          "detail_type": "bodyweightReps",
+          "aliases": [
+            "Wall Angel",
+            "靠墙天使"
+          ],
+          "body_part_code": "back",
+          "equipment_code": "body weight",
+          "target_muscle_code": "unknown",
+          "secondary_muscle_codes": [],
+          "training_type": "mobility",
+          "instructions": [
+            "背靠墙，按舒适范围缓慢举落双臂。"
+          ],
+          "default_weight_unit": null,
+          "inferred_fields": [
+            "body_part_code",
+            "training_type",
+            "instructions"
+          ]
+        },
+        "version": 1
+      }
+    },
+    "custom_exercise_needs_input": {
+      "request": {
+        "conversation_id": "648ca33c-4863-4cd4-b88e-7075f7ec4afd",
+        "request_id": "2bb74b66-ab67-4514-ac0f-8d8504138361",
+        "message": "创建一个我自编的动作"
+      },
+      "response": {
+        "conversation_id": "648ca33c-4863-4cd4-b88e-7075f7ec4afd",
+        "result_id": "20730995-fe6a-46bb-a7a4-4fef3cd93b32",
+        "kind": "custom_exercise",
+        "text": "请描述这个动作的姿势和移动方式。",
+        "cards": [],
+        "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "trace": [
+          {
+            "stage": "understanding",
+            "title": "请求解析完成",
+            "summary": "识别为自定义动作建档",
+            "data": {
+              "kind": "custom_exercise",
+              "recommendation_count": 3,
+              "query": "墙天使",
+              "body_part": null,
+              "equipment": null,
+              "target_muscle": null,
+              "review_options": null,
+              "session_inputs": null,
+              "parent_plan_id": null,
+              "image_count": 0
+            }
+          },
+          {
+            "stage": "retrieving",
+            "title": "动作目录已准备",
+            "summary": "对照标准库和当前账号个人库查重，并准备建档术语。",
+            "data": {}
+          },
+          {
+            "stage": "responding",
+            "title": "动作建档信息已整理",
+            "summary": "已完成动作识别与信息检查；新动作只返回草稿，等待用户确认保存。",
+            "data": {
+              "status": "needs_input"
+            }
+          }
+        ],
+        "schema_version": null,
+        "outline": [],
+        "blocks": [],
+        "artifacts": {},
+        "datasets": {},
+        "facts": {},
+        "custom_exercise": {
+          "status": "needs_input",
+          "question": "请描述这个动作的姿势和移动方式。"
+        },
+        "review": null,
+        "session_plan": null,
+        "plan_preview": null,
+        "suggestion_kind": null
+      }
+    }
+  }
+}

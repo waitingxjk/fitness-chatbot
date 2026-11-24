@@ -10,10 +10,10 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 class SetDose(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    kind: Literal["warmup", "working"] = "working"
+    kind: Literal["warmup", "working", "activity"] = "working"
     repetitions: int | None = Field(default=None, ge=1, le=30)
     duration_seconds: int | None = Field(default=None, ge=10, le=600)
-    rest_seconds: int = Field(default=90, ge=60, le=300)
+    rest_seconds: int = Field(default=90, ge=0, le=300)
     target_rir_min: int = Field(default=2, ge=2, le=6)
     target_rir_max: int = Field(default=3, ge=2, le=6)
 
@@ -21,6 +21,8 @@ class SetDose(BaseModel):
     def valid_dose(self):
         if (self.repetitions is None) == (self.duration_seconds is None):
             raise ValueError("Exactly one of repetitions or duration_seconds required")
+        if type(self) is SetDose and self.kind != "activity" and self.rest_seconds < 60:
+            raise ValueError("Model strength sets require at least sixty seconds rest")
         if self.target_rir_max < self.target_rir_min:
             raise ValueError("RIR range must be ordered")
         return self
@@ -29,7 +31,9 @@ class SetDose(BaseModel):
 class PrescriptionLoad(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    strategy: Literal["trial", "history", "trial_increment", "user", "bodyweight", "none"] = "trial"
+    strategy: Literal[
+        "trial", "history", "history_reference", "trial_increment", "user", "bodyweight", "none"
+    ] = "trial"
     value: float | None = Field(default=None, gt=0, le=10000, allow_inf_nan=False)
     unit: Literal["kg", "lb", "level"] | None = None
     convention: (
@@ -54,8 +58,13 @@ class PrescriptionLoad(BaseModel):
             raise ValueError("A load value requires a unit")
         if self.strategy in {"trial", "none", "bodyweight"} and self.value is not None:
             raise ValueError("Unknown or bodyweight load cannot contain a numeric value")
-        if self.strategy in {"history", "trial_increment", "user"} and self.value is None:
+        if (
+            self.strategy in {"history", "history_reference", "trial_increment", "user"}
+            and self.value is None
+        ):
             raise ValueError("A specified load requires a value")
+        if self.strategy == "history_reference" and not self.observation_id:
+            raise ValueError("A historical reference requires an observation")
         return self
 
 
@@ -109,7 +118,10 @@ def model_sets(item, exercise, load):
     rows = []
     for dose in doses:
         chosen_load = load
-        if dose.kind == "warmup" or exercise.detail_type in {"duration", "bodyweightReps"}:
+        if dose.kind in {"warmup", "activity"} or exercise.detail_type in {
+            "duration",
+            "bodyweightReps",
+        }:
             chosen_load = trial_load(exercise)
         rows.append({**dose.model_dump(), "load": deepcopy(chosen_load)})
     validate_dose_type(rows, exercise)
@@ -136,23 +148,24 @@ def legacy_sets(item):
     ]
 
 
-def summarize_sets(rows, *, seconds_per_rep=4, switch_seconds=90):
+def summarize_sets(rows, *, seconds_per_rep=4, switch_seconds=90, allow_activity=False):
     work = [row for row in rows if row["kind"] == "working"]
-    if not work:
+    if not work and not (allow_activity and rows and all(r["kind"] == "activity" for r in rows)):
         raise ValueError("At least one working set is required")
+    dose_rows = work or rows
     return {
         "sets": len(work),
         "total_sets": len(rows),
         "repetitions": max(
-            (r["repetitions"] for r in work if r.get("repetitions") is not None), default=None
+            (r["repetitions"] for r in dose_rows if r.get("repetitions") is not None), default=None
         ),
         "duration_seconds": max(
-            (r["duration_seconds"] for r in work if r.get("duration_seconds") is not None),
+            (r["duration_seconds"] for r in dose_rows if r.get("duration_seconds") is not None),
             default=None,
         ),
-        "rest_seconds": max(row["rest_seconds"] for row in work),
-        "target_rir_min": min(row["target_rir_min"] for row in work),
-        "target_rir_max": max(row["target_rir_max"] for row in work),
+        "rest_seconds": max(row["rest_seconds"] for row in dose_rows),
+        "target_rir_min": min(row["target_rir_min"] for row in dose_rows),
+        "target_rir_max": max(row["target_rir_max"] for row in dose_rows),
         "estimated_seconds": sum(
             (r.get("duration_seconds") or r["repetitions"] * seconds_per_rep) for r in rows
         )
@@ -161,13 +174,20 @@ def summarize_sets(rows, *, seconds_per_rep=4, switch_seconds=90):
     }
 
 
-def validate_user_sets(values, exercise):
+def validate_user_sets(values, exercise, *, original_rows=(), allow_activity=False):
     if not 1 <= len(values) <= 12:
         raise ValueError("Each exercise needs 1–12 sets")
     rows = [SetPrescription.model_validate(row).model_dump() for row in values]
     validate_dose_type(rows, exercise)
-    if not any(row["kind"] == "working" for row in rows):
+    if not any(row["kind"] == "working" for row in rows) and not (
+        allow_activity and all(row["kind"] == "activity" for row in rows)
+    ):
         raise ValueError("At least one working set is required")
+    original_references = [
+        PrescriptionLoad.model_validate(row["load"]).model_dump()
+        for row in original_rows
+        if row.get("load", {}).get("strategy") == "history_reference"
+    ]
     units = set()
     conventions = set()
     for row in rows:
@@ -181,10 +201,13 @@ def validate_user_sets(values, exercise):
         allowed = {"level"} if detail_type == "machineLevelReps" else {"kg", "lb"}
         if load["unit"] not in allowed and not (load["value"] is None and load["unit"] is None):
             raise ValueError("Load unit incompatible with catalog detail type")
+        preserved_reference = load["strategy"] == "history_reference"
+        if preserved_reference and load not in original_references:
+            raise ValueError("Historical reference must match the original plan load")
         if load["value"] is not None:
             if detail_type == "machineLevelReps" and not load["value"].is_integer():
                 raise ValueError("Machine level must be a whole number")
-            if load["convention"] in {None, "unknown"}:
+            if load["convention"] in {None, "unknown"} and not preserved_reference:
                 raise ValueError("Specify load convention before confirming a numeric load")
             if detail_type == "machineLevelReps" and load["convention"] != "machine_level":
                 raise ValueError("Machine level requires machine_level convention")
@@ -196,11 +219,12 @@ def validate_user_sets(values, exercise):
             units.add(load["unit"])
             conventions.add(load["convention"])
             # Edits are user choices, never new evidence-backed machine recommendations.
-            load.update(
-                strategy="user",
-                observation_id=None,
-                explanation="用户调整的计划目标；完成后另行记录实际表现。",
-            )
+            if not preserved_reference:
+                load.update(
+                    strategy="user",
+                    observation_id=None,
+                    explanation="用户调整的计划目标；完成后另行记录实际表现。",
+                )
         else:
             row["load"] = trial_load(exercise)
     if len(units) > 1 or len(conventions) > 1:

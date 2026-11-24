@@ -1,0 +1,16 @@
+{
+  "runs": [
+    {
+      "date": "2026-09-17T07:55:11.005184+00:00",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "files": 108,
+      "status": "usage_unavailable",
+      "semantic_agents": 2
+    }
+  ],
+  "total_input_tokens": 0,
+  "total_output_tokens": 0,
+  "unmetered_semantic_runs": 1,
+  "note": "Host subagent tools expose no token usage. Do not interpret placeholder extraction zeros as free semantic extraction."
+}

@@ -24,6 +24,7 @@ from fitness_bot.identity import (
 )
 from fitness_bot.images import IMAGE_TYPES, MAX_IMAGE_BYTES, ImageStore
 from fitness_bot.model import OpenAICompanionModel
+from fitness_bot.plan_errors import validation_issues
 from fitness_bot.report_delivery import PartialReport
 from fitness_bot.schemas import ChatRequest, Exercise, SearchPlan
 from fitness_bot.storage import ConversationStore, ObjectNotFound, TurnConflict
@@ -334,10 +335,12 @@ def create_app(settings: Settings | None = None, agent: CompanionAgent | None = 
                     if Path(frame.filename).parent == Path(__file__).parent
                 ]
                 logger.warning(
-                    "Chat failed request_id=%s exception_type=%s failure_site=%s",
+                    "Chat failed request_id=%s exception_type=%s failure_site=%s "
+                    "validation_issues=%s",
                     request_id,
                     type(exc).__name__,
                     sites[-1] if sites else "external",
+                    validation_issues(exc),
                 )
                 try:
                     await app.state.store.fail(

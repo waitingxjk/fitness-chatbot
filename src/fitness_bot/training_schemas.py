@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from fitness_bot.plan_semantics import ACTIVITY_ROLES, PlanPhase, PurposeRole, validate_role
 from fitness_bot.prescriptions import SetDose, summarize_sets, validate_prescription_reason
 
 
@@ -183,29 +184,36 @@ class SessionPreviewDraft(TrainingInput):
 
 
 class SessionItem(TrainingInput):
+    phase: PlanPhase | None = None
+    purpose_role: PurposeRole | None = None
     exercise_id: str = Field(min_length=1, max_length=64)
     role: Literal["priority", "assistance", "supplement"]
     purpose: str = Field(min_length=1, max_length=500)
-    sets: int = Field(default=1, ge=1, le=6)
+    sets: int = Field(default=1, ge=0, le=6)
     set_prescriptions: list[SetDose] | None = Field(default=None, min_length=1, max_length=12)
     repetitions: int | None = Field(default=None, ge=1, le=30)
     duration_seconds: int | None = Field(default=None, ge=10, le=600)
-    rest_seconds: int = Field(ge=60, le=300)
+    rest_seconds: int = Field(ge=0, le=300)
     effort: str = Field(min_length=1, max_length=500)
     target_rir_min: int = Field(default=2, ge=2, le=6)
     target_rir_max: int = Field(default=3, ge=2, le=6)
     load_strategy: Literal["trial", "history"] = "trial"
     load_observation_id: str | None = Field(default=None, max_length=64)
     seconds_per_rep: int = Field(default=4, ge=3, le=10)
-    switch_seconds: int = Field(default=90, ge=60, le=300)
+    switch_seconds: int = Field(default=90, ge=0, le=300)
     alternative_exercise_ids: list[str] = Field(default_factory=list, max_length=2)
     alternative_condition: str = Field(min_length=1, max_length=500)
 
     @model_validator(mode="after")
     def one_dose(self):
+        if self.phase is not None or self.purpose_role is not None:
+            validate_role(self.phase, self.purpose_role)
+        activity = self.purpose_role in ACTIVITY_ROLES
+        if not activity and (self.rest_seconds < 60 or self.switch_seconds < 60):
+            raise ValueError("Strength work requires rest and transition time")
         if self.set_prescriptions is not None:
             rows = [row.model_dump() for row in self.set_prescriptions]
-            summary = summarize_sets(rows)
+            summary = summarize_sets(rows, allow_activity=activity)
             if summary["sets"] > 6:
                 raise ValueError("Model proposals allow at most six working sets")
             for key in (
@@ -217,6 +225,8 @@ class SessionItem(TrainingInput):
                 "target_rir_max",
             ):
                 setattr(self, key, summary[key])
+        if not activity and self.sets == 0:
+            raise ValueError("Strength work requires working sets")
         if (self.repetitions is None) == (self.duration_seconds is None):
             raise ValueError("Exactly one of repetitions or duration_seconds required")
         if self.target_rir_max < self.target_rir_min:
@@ -225,6 +235,7 @@ class SessionItem(TrainingInput):
 
 
 class SessionDraft(TrainingInput):
+    semantics_version: Literal[0, 1] = 0
     progression_exercise_id: str | None = Field(default=None, max_length=64)
     theme: str = Field(min_length=1, max_length=200)
     rationale: str = Field(min_length=1, max_length=1200)
@@ -237,8 +248,21 @@ class SessionDraft(TrainingInput):
     preparation_minutes: int = Field(ge=5, le=20)
     finish_minutes: int = Field(ge=2, le=10)
     buffer_minutes: int = Field(ge=3, le=20)
-    items: list[SessionItem] = Field(default_factory=list, max_length=8)
+    items: list[SessionItem] = Field(default_factory=list, max_length=20)
     feedback_questions: list[str] = Field(min_length=1, max_length=4)
+
+
+class SemanticSessionItem(SessionItem):
+    phase: PlanPhase
+    purpose_role: PurposeRole
+    set_prescriptions: list[SetDose] = Field(min_length=1, max_length=12)
+
+
+class SemanticSessionDraft(SessionDraft):
+    semantics_version: Literal[1] = 1
+    preparation_minutes: int = Field(default=0, ge=0, le=20)
+    finish_minutes: int = Field(default=0, ge=0, le=10)
+    items: list[SemanticSessionItem] = Field(default_factory=list, max_length=20)
 
 
 class WorkoutLink(TrainingInput):

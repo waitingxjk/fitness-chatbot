@@ -11,6 +11,7 @@ from langgraph.graph import END, START, StateGraph
 
 from fitness_bot.catalog import Catalog
 from fitness_bot.model import CompanionModel
+from fitness_bot.plan_generation import generate_session_plan
 from fitness_bot.planning import planning_metadata, planning_target, planning_view
 from fitness_bot.schemas import (
     ChatRequest,
@@ -27,7 +28,6 @@ from fitness_bot.training_decision import (
     render_review,
     render_session,
     validate_review,
-    validate_session_plan,
 )
 
 
@@ -150,8 +150,12 @@ class CompanionAgent:
             request.context.training_profile = {
                 **saved,
                 "profile": {**saved["profile"], **overrides},
-                "turn_overrides": overrides,
+                "turn_overrides": {**saved.get("turn_overrides", {}), **overrides},
             }
+        if plan.kind == "session_plan":
+            from fitness_bot.plan_inputs import resolve_candidate_inputs
+
+            resolve_candidate_inputs(request, self.catalog)
         step = ProcessingStep(
             stage="understanding",
             title="请求解析完成",
@@ -545,17 +549,12 @@ class CompanionAgent:
             return await self._respond(state, training_discussion=True)
         else:
             parent = state.get("parent_plan")
-            if hasattr(self.model, "session_plan_with_progress"):
-                draft = await self.model.session_plan_with_progress(
-                    request, self.catalog, on_progress=self._plan_progress_writer()
-                )
-            else:
-                draft = await self.model.session_plan(request, self.catalog)
             target_date = request.context.planning_target_date
-            session_plan = validate_session_plan(
-                draft,
+            session_plan = await generate_session_plan(
+                self.model,
                 request,
                 self.catalog,
+                on_progress=self._plan_progress_writer(),
                 target_date=target_date,
                 original_plan=parent["plan"] if parent else None,
             )

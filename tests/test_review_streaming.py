@@ -112,9 +112,9 @@ async def test_truncated_stream_must_not_be_reported_as_complete():
 async def test_plan_generation_streams_closed_qualitative_fields_without_doses():
     from types import SimpleNamespace
 
-    from fitness_bot.training_schemas import SessionDraft
+    from fitness_bot.training_schemas import SemanticSessionDraft
 
-    final = SessionDraft(
+    final = SemanticSessionDraft(
         theme="恢复安排",
         rationale="结合当前反馈调整",
         adjustment="rest",

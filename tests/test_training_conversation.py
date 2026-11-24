@@ -18,9 +18,9 @@ def test_missing_profile_uses_history_aware_dialogue_instead_of_repeating_gate()
             self.requests = []
 
         async def plan(self, request, reference):
-            # Even if the planner retains this intent, missing fields must not
-            # turn the conversation into a fixed questionnaire.
-            return SearchPlan(kind="session_plan")
+            # A question about the method stays a discussion; an actual plan
+            # request now generates a complete candidate with defaults.
+            return SearchPlan(kind="chat")
 
         async def stream_reply(self, request, plan, cards, previous):
             self.requests.append(request)
@@ -95,6 +95,20 @@ def test_accepting_previous_offer_with_target_date_streams_successfully():
                 yield AIMessageChunk(content="我可以继续帮你分析明天的训练安排。")
 
     model = OpenAICompanionModel(Settings(_env_file=None, openai_api_key="test-key"))
+
+    async def full_candidate(request, catalog, **kwargs):
+        from test_training_decision import draft
+
+        from fitness_bot.training_decision import evidence_index
+        from fitness_bot.training_schemas import SessionDraft
+
+        value = draft()
+        value["evidence_ids"] = [
+            k for k in value["evidence_ids"] if k in evidence_index(request.context.training_review)
+        ]
+        return SessionDraft.model_validate(value)
+
+    model.session_plan = full_candidate
     model.planner = Planner()
     model.llm = ReplyModel()
     with TestClient(
@@ -108,6 +122,6 @@ def test_accepting_previous_offer_with_target_date_streams_successfully():
         events = [json.loads(line) for line in response.text.splitlines()]
         assert events[-1]["type"] == "done"
         assert any(event["type"] == "text_delta" for event in events)
-        assert events[-1]["response"]["plan_preview"]["target_date"] == "2026-09-09"
-        assert events[-1]["response"]["plan_preview"]["status"] == "needs_input"
-        assert events[-1]["response"]["session_plan"] is None
+        assert events[-1]["response"]["session_plan"]["target_date"] == "2026-09-09"
+        assert events[-1]["response"]["session_plan"]["status"] == "proposed"
+        assert events[-1]["response"]["plan_preview"] is None

@@ -8,9 +8,11 @@ from typing import Protocol
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+from pydantic import ValidationError
 
 from fitness_bot.config import Settings
 from fitness_bot.images import ImageStore
+from fitness_bot.plan_errors import SessionPlanOutputError
 from fitness_bot.planning import (
     current_exercise_ids,
     planning_metadata,
@@ -25,6 +27,7 @@ from fitness_bot.training_decision import RULES, evidence_index, plan_question
 from fitness_bot.training_schemas import (
     RecommendationDraft,
     ReviewDraft,
+    SemanticSessionDraft,
     SessionDraft,
     SessionPreviewDraft,
 )
@@ -92,6 +95,12 @@ class OpenAICompanionModel(ReviewCompositionModel):
         )
         self.planner = self.llm.with_structured_output(SearchPlan, method="function_calling")
         self.decision_llm = self.llm.model_copy(update={"max_tokens": 6000})
+        self._default_plan_reasoning = (
+            "low"
+            if settings.openai_model.startswith("gpt-5")
+            and settings.openai_reasoning_effort is None
+            else None
+        )
 
     async def _history(self, request):
         # Bound vision input independently of the persisted, complete history.
@@ -127,7 +136,9 @@ kind: 指定名称/条件查找为 search，单个动作推荐为 recommendation
 “先根据历史分析再决定要不要问”应先分析和回应，可用 chat 或 review，不沿用固定追问流程。
 recommendation_count：明确只要一个动作设为1；请求几个备选设为对应数量（最多3）。
 需要一起完成的一组运动必须使用 session_plan，不当成备选动作。
-真正请求复盘或生成方案时仍使用对应类型；缺少资料时可先讨论已有依据，不强制填写问卷。
+真正请求生成方案时使用 session_plan；目标/时长/器械/状态缺失不能把明确的生成请求降为 chat。
+用户在方案后问“怎么确定计划”“接下来做什么”时，应继续给完整候选方案和保存入口，不追加条件清单。
+仅用户明确询问方法/依据而没有要求产出时用 chat。服务器会为缺失条件标明候选默认值，不强制问卷。
 session_inputs 只提取用户在本轮或会话中明确说明的条件，未说明的字段为 null，不能猜测。
 状态 observed_at 使用当前资料的 generated_at，只有用户明确报告当前状态时才设置 readiness。
 不得把历史的无疼痛或昨晚状态当成用户本轮明确反馈。target_date 可按用户时区解析明天等日期。
@@ -200,14 +211,23 @@ query 仅包含标准动作名、别名或共有名称片段（例如 卧推）�
             ),
         ]
 
-    async def _decision(self, request, schema, instruction, extra=None, *, skill, on_progress=None):
+    async def _decision(
+        self, request, schema, instruction, extra=None, *, skill, on_progress=None, llm=None
+    ):
         if on_progress is not None:
             from fitness_bot.review_streaming import qualitative_sections
 
             last, emitted = None, set()
             wire_schema = schema if isinstance(schema, dict) else schema.model_json_schema()
             async with aclosing(
-                self._decision_snapshots(request, wire_schema, instruction, extra, skill=skill)
+                self._decision_snapshots(
+                    request,
+                    wire_schema,
+                    instruction,
+                    extra,
+                    skill=skill,
+                    **({"llm": llm} if llm is not None else {}),
+                )
             ) as snapshots:
                 async for snapshot in snapshots:
                     last = snapshot
@@ -217,8 +237,15 @@ query 仅包含标准动作名、别名或共有名称片段（例如 卧推）�
                             emitted.add(key)
             if last is None:
                 raise ValueError("Decision stream returned no structured content")
-            return last if isinstance(schema, dict) else schema.model_validate(last)
-        structured = self.decision_llm.with_structured_output(schema, method="function_calling")
+            try:
+                return last if isinstance(schema, dict) else schema.model_validate(last)
+            except ValidationError as error:
+                if schema is SemanticSessionDraft:
+                    raise SessionPlanOutputError(error, last) from error
+                raise
+        structured = (llm if llm is not None else self.decision_llm).with_structured_output(
+            schema, method="function_calling"
+        )
         result = await structured.ainvoke(
             await self._decision_messages(request, instruction, extra, skill)
         )
@@ -226,8 +253,12 @@ query 仅包含标准动作名、别名或共有名称片段（例如 卧推）�
             raise ValueError("Model did not return a valid training decision")
         return result
 
-    async def _decision_snapshots(self, request, schema, instruction, extra=None, *, skill):
-        structured = self.decision_llm.with_structured_output(schema, method="function_calling")
+    async def _decision_snapshots(
+        self, request, schema, instruction, extra=None, *, skill, llm=None
+    ):
+        structured = (llm if llm is not None else self.decision_llm).with_structured_output(
+            schema, method="function_calling"
+        )
         async with aclosing(
             structured.astream(await self._decision_messages(request, instruction, extra, skill))
         ) as snapshots:
@@ -367,7 +398,7 @@ next_workout 仅以已同步历史为训练记录依据，不依据客户端当�
         )
         return qualitative_preview(result)
 
-    async def session_plan(self, request, catalog, *, on_progress=None):
+    async def session_plan(self, request, catalog, *, on_progress=None, repair_feedback=None):
         request = planning_view(request)
         existing = current_exercise_ids(request)
         profile = (request.context.training_profile or {}).get("profile", {})
@@ -381,15 +412,83 @@ next_workout 仅以已同步历史为训练记录依据，不依据客户端当�
                 "target": e.target_muscle_code,
                 "secondary": e.secondary_muscle_codes,
                 "detail_type": e.detail_type,
+                "dose_field": "duration_seconds" if e.detail_type == "duration" else "repetitions",
             }
             for e in catalog.exercises
             if e.is_active and e.equipment_code in equipment and e.id not in existing
         ]
+        if repair_feedback and isinstance(repair_feedback.get("rejected_draft"), dict):
+            rejected_items = repair_feedback["rejected_draft"].get("items", [])
+            if isinstance(rejected_items, list) and all(
+                isinstance(i, dict)
+                and isinstance(i.get("exercise_id"), str)
+                and bool(i["exercise_id"])
+                for i in rejected_items
+            ):
+                selected_ids = {
+                    value
+                    for item in rejected_items
+                    for value in [
+                        item.get("exercise_id"),
+                        *(
+                            item.get("alternative_exercise_ids")
+                            if isinstance(item.get("alternative_exercise_ids"), list)
+                            else []
+                        ),
+                    ]
+                    if isinstance(value, str)
+                }
+                # Preserve exact catalog IDs; this is candidate selection, not ID rewriting.
+                focused = [
+                    item
+                    for item in candidates
+                    if item["id"] in selected_ids
+                    or any(
+                        value.isascii()
+                        and value.isdigit()
+                        and item["id"].lstrip("0") == value.lstrip("0")
+                        for value in selected_ids
+                    )
+                ]
+                phases = {i.get("phase") for i in rejected_items if isinstance(i.get("phase"), str)}
+                matched = {
+                    value
+                    for value in selected_ids
+                    if any(
+                        value == item["id"]
+                        or (
+                            value.isascii()
+                            and value.isdigit()
+                            and value.lstrip("0") == item["id"].lstrip("0")
+                        )
+                        for item in focused
+                    )
+                }
+                if focused and matched == selected_ids and phases == {"warmup", "main", "cooldown"}:
+                    candidates = focused
         return await self._decision(
             request,
-            SessionDraft,
+            SemanticSessionDraft,
             """输出一次完整训练候选方案。
-只用 supplied catalog 中的真实候选。
+只用 supplied catalog 中的真实候选。exercise_id 是字符串，必须逐字保留前导零，
+例如 0289 不能写成 289。
+如果存在 repair_feedback，这是同一请求内部的最后一次校正，不向用户追问。
+根据 issues 中的字段路径/错误类型和 rule 修复；rejected_draft 如有则作为待修草稿，
+仍必须重新输出符合完整 schema 的整个方案，不返回补丁或解释错误的对话。
+修正后自查全部字段、阶段作用、剂量类型、证据、顺序和时间预算，不能只修第一个错误。
+若 rule 提示 Dose/load narrative，逐一清理 theme、rationale、adjustment_reason、preparation、
+feedback_questions、items.purpose、items.alternative_condition 中的数字、单位、百分比与剂量。
+例如 rationale 中“时长约束为50分钟”改为“按可用时长安排”，不能只改标题；保留结构剂量字段。
+这是字段一致性要求，不是要求删除活动、减少阶段或把计划改成休息。
+
+动作目录 dose_field 为 repetitions 时，即使是静态拉伸，也必须按次数提供活动段，
+duration_seconds=null；为 duration_seconds 时 repetitions=null。不要把秒数直接改成同数值次数。
+若按次数表达不适合本次安排，选择目录内可按相应类型记录的其他活动。
+力量动作每个 warmup/working 行都必须 rest_seconds>=60，热身组也不能用零或较短休息。
+technique 等六种非力量作用必须所有行 kind=activity，不能混用 warmup/working。
+activity 的 RIR 兼容字段使用默认 target_rir_min=2、target_rir_max=3，不填 null/0，产品不会展示它。
+不要把任何其余必填字符串字段设为 null；没有替代动作也提供简短 alternative_condition。
+
 planning_target=current_workout 时，current_workout 是 App 拥有的不可修改快照。
 综合其中所有已完成和待完成组的整体训练量、动作分布和疲劳考虑是否需要新增；不能只看未做完的组。
 items 只返回需要新增的动作，绝不能包含已有动作，也不改变已有记录、目标或完成状态。
@@ -398,7 +497,13 @@ maintain/reduce 表示无需新增，rest 表示建议停止新增。
 remaining_minutes 仅是现有待完成内容之外给新增安排的预算；不要把它当作整次训练时长。
 新增安排的准备、执行、休息、切换、收尾和缓冲都要纳入该预算；已有待完成内容不消耗此预算。
 planning_target=next_workout 时，仅以服务端已同步的已完成历史为训练记录依据。
-输出待保存供下次使用的完整计划。
+输出待保存供下次使用的完整计划，一轮给出全部动作与逐组设置，不要求用户先补齐资料。
+context.training_profile.planning_assumptions 是明确标注的假设，不是已确认的用户事实。
+采用已解析的目标/经验/时长/器械；器械未明确限制时已按历史和常见器械可用处理，优先熟悉动作，缺少时用户会指出。
+readiness 未知或过期不阻止生成候选，不推断无疼痛/恢复正常，不自动进阶。
+按 planning_history_summary 的近期动作数、完成组数、训练时长和本轮目标分配总量；
+解释明显减少或增加的原因。
+完整训练不是三选四个备选：充分覆盖本次训练主题，数量由时间、组数和历史决定，不固定四项，也不为凑数增加无关动作。
 状态明显疲劳或睡眠差时 adjustment 必须 reduce 或 rest；不能推断已处于减量周期。
 increase_* 仅限 progression_signals 指定的动作，并用 progression_exercise_id 指明。
 adjustment 为 maintain、reduce 或 rest 时，progression_exercise_id 必须为 null；
@@ -410,21 +515,44 @@ increase_reps 仅每组增加一次，increase_sets 仅增加一组。
 increase_load 保持组次，程序提供历史起点及最小增量试做指示。
 这些是保守产品规则，不代表科学阈值；没有信号默认 maintain，按状态 reduce/rest。
 减量/恢复周期不建议增加。
-每个动作必须填写 set_prescriptions 数组，一行一组；kind 区分 warmup/working。
+semantics_version=1。items 按 phase=warmup 热身准备 → main 主体训练 → cooldown 整理放松排序。
+每次安排都提供 phase、purpose_role 和一句 purpose，作用属于本次安排，不是动作库固定标签。
+purpose_role 固定八种：general_warmup 一般热身(warmup)、mobility 活动准备(warmup)、
+technique 技术练习(warmup/main)、primary 重点训练(main)、accessory 辅助训练(main)、
+conditioning 体能训练(main)、cooldown 缓和活动(cooldown)、stretching 拉伸放松(main/cooldown)。
+完整下次训练必须三阶段都有真实目录活动，不能只写准备说明或预留结束分钟；不用凑齐八种作用。
+本次补全仅生成实际需要的阶段，不重复已有动作；rest 或无需新增时 items=[]。
+同一目录动作可以跨阶段出现且有不同作用，不允许同阶段重复同一动作。
+role 是独立的内部优先级，主体阶段 priority 在前、assistance 居中、supplement 在后；
+用户重点和自动进阶动作在主体阶段且 purpose_role=primary。一般热身等其他阶段 role=supplement。
+primary/accessory 的 set_prescriptions 每行一组，kind=warmup/working，保留热身组/工作组区分。
+其余六种作用每行一个活动段，kind=activity，按目录类型填写次数或时长，不伪造力量工作组。
+活动不照搬历史负重，load_strategy=trial，effort/purpose 简述轻松程度或控制方式，活动不展示RIR。
+活动可零休息、按真实切换需要填写 switch_seconds（可为零），力量组仍保留合理休息和切换。
+所有条目需要非空set_prescriptions。静态拉伸若目录只有次数记录，应按该类型安排，不能修改目录类型。
 支持每组不同次数、时长、休息和目标余力；组数与概览会由程序从该数组计算。
 热身组默认重新试重，不复制工作组历史重量。递增计划中各工作组须保持同样规定次数，
 不通过变化热身/工作组规避逐次加量限制。sets 是工作组数，不含热身组。
-数字是保守候选而非个体科学结论。duration 动作用时长，其余用次数，休息保留60–300秒。
-若没有已确认的同动作负重口径，load_strategy=trial，不提供历史负重数字；不可用文字绕过此限制。
+数字是保守候选而非个体科学结论。duration 动作用时长，其余用次数；
+力量组休息60–300秒，activity允许零休息。
+若没有已确认的同动作负重口径，load_strategy=trial；
+history 只允许引用 comparison_eligible=true 的同动作 observation ID；原始历史不等于已确认可比。
+程序会在有同动作有效记录时填入 history_reference 待核对重量，
+没有同动作参考则明确待试重。不要编造重量、跨动作搬用重量，也不要在文本隐藏重量。
 具体负重、剂量只放结构字段，rationale/purpose 不另写互相冲突的数字。
 所有叙述字段不要写任何数字、重量单位或百分比；组次、余力、分钟等都放结构字段。
 target_rir_min/max 填预计保留次数范围，effort 只写动作控制提示，服务端按结构字段呈现用力要求。
-准备5–20分钟、收尾2–10分钟、缓冲3–20分钟、每动作切换至少60秒，按每次至少3秒估算执行。
+preparation_minutes=0、finish_minutes=0；程序从阶段动作计算准备/结束分钟，不能再预留重复用时。
+缓冲3–20分钟；力量动作切换至少60秒，活动按实际需要切换；每次至少3秒估算执行。
+先计算整份计划的执行、组间休息、切换、准备、收尾和缓冲用时，再分配各动作组数。
+时间紧张时先减少非重点动作的额外工作组，保留主题需要的推、拉、下肢等覆盖；
+需要删动作时优先去掉重复覆盖，不能让全身或拉推主题只剩拉类动作。
 遵守可用时间，上限太短时减少低优先级项目或提出休息。rest 时 items 为空。
 alternatives 只列同主要肌群和记录类型、当前可用器械的真实动作，标记需要重算且不转移重量。
 """,
             {
                 "catalog": candidates,
+                "repair_feedback": repair_feedback,
                 "planning": planning_metadata(request),
                 "time_budget_minutes": request.context.remaining_minutes
                 if planning_target(request) == "current_workout"
@@ -432,7 +560,16 @@ alternatives 只列同主要肌群和记录类型、当前可用器械的真实�
             },
             skill="training-recommendation",
             on_progress=on_progress,
+            llm=self.decision_llm.model_copy(
+                update={"reasoning_effort": self._default_plan_reasoning}
+            )
+            if self._default_plan_reasoning
+            else None,
         )
+
+    async def repair_session_plan(self, request, catalog, *, feedback):
+        # No progress callback: a corrected draft cannot repeat or contradict streamed prose.
+        return await self.session_plan(request, catalog, repair_feedback=feedback)
 
     async def session_plan_with_progress(self, request, catalog, *, on_progress):
         return await self.session_plan(request, catalog, on_progress=on_progress)

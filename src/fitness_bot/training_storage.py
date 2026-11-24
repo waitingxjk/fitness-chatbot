@@ -245,6 +245,9 @@ class TrainingStore:
                     current = await plan_snapshot(session, row)
                     if current["superseded_by"]:
                         raise TurnConflict("A newer plan exists; confirm that version instead")
+                    from fitness_bot.training_evidence import revalidate_plan_evidence
+
+                    await revalidate_plan_evidence(session, user_id, row.plan)
                 next_states = {
                     "proposed": {"accepted", "skipped", "feedback"},
                     "accepted": {"executed", "skipped", "feedback"},

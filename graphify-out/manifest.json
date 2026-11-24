@@ -1,0 +1,650 @@
+{
+  "docs/catalog-token-counts.json": {
+    "mtime": 1788622234.8888402,
+    "seen": 1789631710.999014,
+    "ast_hash": "819451ad092b137077ca73876ef4f10d",
+    "semantic_hash": "819451ad092b137077ca73876ef4f10d"
+  },
+  "docs/knowledge/training/evaluations/2026-09-08-synthetic-samples.json": {
+    "mtime": 1788863071.893272,
+    "seen": 1789631710.999018,
+    "ast_hash": "6803fe06c29d15c6004b1dd6e295570b",
+    "semantic_hash": "6803fe06c29d15c6004b1dd6e295570b"
+  },
+  "pyproject.toml": {
+    "mtime": 1788788753.0652385,
+    "seen": 1789631710.999019,
+    "ast_hash": "02d7323a7019cb17fbe26d1c87a6111f",
+    "semantic_hash": "02d7323a7019cb17fbe26d1c87a6111f"
+  },
+  "scripts/chat.py": {
+    "mtime": 1788619672.6857183,
+    "seen": 1789631710.99902,
+    "ast_hash": "e43e1a6ed20b0462602595e57f1c1a91",
+    "semantic_hash": "e43e1a6ed20b0462602595e57f1c1a91"
+  },
+  "scripts/count_catalog_tokens.py": {
+    "mtime": 1788622238.827761,
+    "seen": 1789631710.99902,
+    "ast_hash": "aac1144e403d5dd76c5313e2d01f0eb3",
+    "semantic_hash": "aac1144e403d5dd76c5313e2d01f0eb3"
+  },
+  "scripts/manage_tokens.py": {
+    "mtime": 1788833848.97664,
+    "seen": 1789631710.999021,
+    "ast_hash": "ae18365f932c5bd6b209d16efd98d25d",
+    "semantic_hash": "ae18365f932c5bd6b209d16efd98d25d"
+  },
+  "scripts/setup_mysql.py": {
+    "mtime": 1788621423.2894733,
+    "seen": 1789631710.999021,
+    "ast_hash": "e3b6fcc8021cfc5ad9ed9d42abc37944",
+    "semantic_hash": "e3b6fcc8021cfc5ad9ed9d42abc37944"
+  },
+  "scripts/sync_catalog.py": {
+    "mtime": 1788619855.8741033,
+    "seen": 1789631710.999021,
+    "ast_hash": "33ea195d61e28315863c45a15cfdcfbc",
+    "semantic_hash": "33ea195d61e28315863c45a15cfdcfbc"
+  },
+  "scripts/training_decision_test_server.py": {
+    "mtime": 1789202718.3585184,
+    "seen": 1789631710.999022,
+    "ast_hash": "70ea95cdb849e09dae46a76e023b8318",
+    "semantic_hash": "70ea95cdb849e09dae46a76e023b8318"
+  },
+  "scripts/workout_sync_test_server.py": {
+    "mtime": 1788792424.9329538,
+    "seen": 1789631710.999022,
+    "ast_hash": "f3b67b8d7ff5abd048ba7ceee0c46343",
+    "semantic_hash": "f3b67b8d7ff5abd048ba7ceee0c46343"
+  },
+  "src/fitness_bot/__init__.py": {
+    "mtime": 1788619179.9052048,
+    "seen": 1789631710.999022,
+    "ast_hash": "fd24a76ca02dbbcfa464d4e42536a9c0",
+    "semantic_hash": "fd24a76ca02dbbcfa464d4e42536a9c0"
+  },
+  "src/fitness_bot/__main__.py": {
+    "mtime": 1788619542.7196035,
+    "seen": 1789631710.9990232,
+    "ast_hash": "01ec6344209624d0238e237692516d50",
+    "semantic_hash": "01ec6344209624d0238e237692516d50"
+  },
+  "src/fitness_bot/agent.py": {
+    "mtime": 1789207217.7063315,
+    "seen": 1789631710.9990232,
+    "ast_hash": "205e5c6b57b9e312533900065700d2c4",
+    "semantic_hash": "205e5c6b57b9e312533900065700d2c4"
+  },
+  "src/fitness_bot/app.py": {
+    "mtime": 1789209565.456384,
+    "seen": 1789631710.9990232,
+    "ast_hash": "aa60572d5b57c71947920ace1974e7dd",
+    "semantic_hash": "aa60572d5b57c71947920ace1974e7dd"
+  },
+  "src/fitness_bot/catalog.py": {
+    "mtime": 1788620530.2213922,
+    "seen": 1789631710.9990242,
+    "ast_hash": "a7a98023adbf697f8f6eb99d2fabbd98",
+    "semantic_hash": "a7a98023adbf697f8f6eb99d2fabbd98"
+  },
+  "src/fitness_bot/config.py": {
+    "mtime": 1789206009.5114768,
+    "seen": 1789631710.9990242,
+    "ast_hash": "89c72f58219f01f22c24a3f58d48e3a5",
+    "semantic_hash": "89c72f58219f01f22c24a3f58d48e3a5"
+  },
+  "src/fitness_bot/data/catalog_terms_zh_hans.json": {
+    "mtime": 1788619542.841403,
+    "seen": 1789631710.9990242,
+    "ast_hash": "f84dd781b77b7b8c4f30bc3a995c2ef6",
+    "semantic_hash": "f84dd781b77b7b8c4f30bc3a995c2ef6"
+  },
+  "src/fitness_bot/data/exercises_zh_hans.json": {
+    "mtime": 1788619542.8411047,
+    "seen": 1789631710.9990249,
+    "ast_hash": "135da31fd731422b42ba17c722a080fb",
+    "semantic_hash": "135da31fd731422b42ba17c722a080fb"
+  },
+  "src/fitness_bot/data/manifest.json": {
+    "mtime": 1788619542.8422492,
+    "seen": 1789631710.9990249,
+    "ast_hash": "65e2bbb180a0835002cea9ea99dfd99e",
+    "semantic_hash": "65e2bbb180a0835002cea9ea99dfd99e"
+  },
+  "src/fitness_bot/identity.py": {
+    "mtime": 1788833835.0273435,
+    "seen": 1789631710.9990249,
+    "ast_hash": "e3a3c4d0276ffbcd75cb63a20f3ed887",
+    "semantic_hash": "e3a3c4d0276ffbcd75cb63a20f3ed887"
+  },
+  "src/fitness_bot/images.py": {
+    "mtime": 1788788926.415918,
+    "seen": 1789631710.9990258,
+    "ast_hash": "1467285e6b112c2adfc503204d88272a",
+    "semantic_hash": "1467285e6b112c2adfc503204d88272a"
+  },
+  "src/fitness_bot/model.py": {
+    "mtime": 1789210096.4623575,
+    "seen": 1789631710.9990258,
+    "ast_hash": "1e379c3e85cb78800a67fae11d7c9fbe",
+    "semantic_hash": "1e379c3e85cb78800a67fae11d7c9fbe"
+  },
+  "src/fitness_bot/plan_revisions.py": {
+    "mtime": 1789201776.3540149,
+    "seen": 1789631710.999027,
+    "ast_hash": "471a0d98ccb18bccffefdd8290fb9cc5",
+    "semantic_hash": "471a0d98ccb18bccffefdd8290fb9cc5"
+  },
+  "src/fitness_bot/prescriptions.py": {
+    "mtime": 1789202132.2869244,
+    "seen": 1789631710.999027,
+    "ast_hash": "1d82442cb2e888454fe4bdec7f508ae3",
+    "semantic_hash": "1d82442cb2e888454fe4bdec7f508ae3"
+  },
+  "src/fitness_bot/schemas.py": {
+    "mtime": 1789207082.2368803,
+    "seen": 1789631710.999027,
+    "ast_hash": "aedfc9c9e6add74a3fd58d1c12760686",
+    "semantic_hash": "aedfc9c9e6add74a3fd58d1c12760686"
+  },
+  "src/fitness_bot/session_preview.py": {
+    "mtime": 1789210110.6176252,
+    "seen": 1789631710.999028,
+    "ast_hash": "9307c99c211212674655806cb595e613",
+    "semantic_hash": "9307c99c211212674655806cb595e613"
+  },
+  "src/fitness_bot/storage.py": {
+    "mtime": 1788853719.3738067,
+    "seen": 1789631710.999028,
+    "ast_hash": "1743f608df06ba4922b9591ba1dc09cd",
+    "semantic_hash": "1743f608df06ba4922b9591ba1dc09cd"
+  },
+  "src/fitness_bot/training_decision.py": {
+    "mtime": 1789202374.1211648,
+    "seen": 1789631710.999028,
+    "ast_hash": "4b40e12755c84d2f2365eb3e9d16afe5",
+    "semantic_hash": "4b40e12755c84d2f2365eb3e9d16afe5"
+  },
+  "src/fitness_bot/training_evidence.py": {
+    "mtime": 1788862914.773779,
+    "seen": 1789631710.999028,
+    "ast_hash": "43a34b64be8e576df6ab464156e069e2",
+    "semantic_hash": "43a34b64be8e576df6ab464156e069e2"
+  },
+  "src/fitness_bot/training_review.py": {
+    "mtime": 1788862914.7737813,
+    "seen": 1789631710.999029,
+    "ast_hash": "b7b548f39eaa8b695aa95b319a38a14c",
+    "semantic_hash": "b7b548f39eaa8b695aa95b319a38a14c"
+  },
+  "src/fitness_bot/training_routes.py": {
+    "mtime": 1789201517.6877759,
+    "seen": 1789631710.999029,
+    "ast_hash": "7d01935a486f7b6507f24bdc0fb9cf5c",
+    "semantic_hash": "7d01935a486f7b6507f24bdc0fb9cf5c"
+  },
+  "src/fitness_bot/training_schemas.py": {
+    "mtime": 1789207082.1660814,
+    "seen": 1789631710.999029,
+    "ast_hash": "8d7588ef4a0c4286d3e09603ea599180",
+    "semantic_hash": "8d7588ef4a0c4286d3e09603ea599180"
+  },
+  "src/fitness_bot/training_storage.py": {
+    "mtime": 1789201776.4121938,
+    "seen": 1789631710.99903,
+    "ast_hash": "e6828535c3c50992033e65f712911764",
+    "semantic_hash": "e6828535c3c50992033e65f712911764"
+  },
+  "src/fitness_bot/web/app.js": {
+    "mtime": 1789207172.3063674,
+    "seen": 1789631710.99903,
+    "ast_hash": "2dcfa45b6c8f3fd929aac0c92ceac979",
+    "semantic_hash": "2dcfa45b6c8f3fd929aac0c92ceac979"
+  },
+  "src/fitness_bot/web/evidence.mjs": {
+    "mtime": 1788862175.690767,
+    "seen": 1789631710.99903,
+    "ast_hash": "0ab777d4f37023d42a089db7e09f2fed",
+    "semantic_hash": "0ab777d4f37023d42a089db7e09f2fed"
+  },
+  "src/fitness_bot/web/identity.mjs": {
+    "mtime": 1788833810.8550873,
+    "seen": 1789631710.999031,
+    "ast_hash": "255b1a2f4b43cf109ea4d76b8fbd8ed9",
+    "semantic_hash": "255b1a2f4b43cf109ea4d76b8fbd8ed9"
+  },
+  "src/fitness_bot/web/images.mjs": {
+    "mtime": 1788789697.0360188,
+    "seen": 1789631710.999031,
+    "ast_hash": "893b27c629fbfcb4b7573607badbad8d",
+    "semantic_hash": "893b27c629fbfcb4b7573607badbad8d"
+  },
+  "src/fitness_bot/web/markdown.mjs": {
+    "mtime": 1788789653.7720778,
+    "seen": 1789631710.999032,
+    "ast_hash": "ad9593d5159477d5453cd96bd463db22",
+    "semantic_hash": "ad9593d5159477d5453cd96bd463db22"
+  },
+  "src/fitness_bot/web/plan-preview.mjs": {
+    "mtime": 1789207172.2439117,
+    "seen": 1789631710.999032,
+    "ast_hash": "2ab1eac3ce1c60d4053c57ac06b88ddf",
+    "semantic_hash": "2ab1eac3ce1c60d4053c57ac06b88ddf"
+  },
+  "src/fitness_bot/web/prescriptions.mjs": {
+    "mtime": 1789207172.3685002,
+    "seen": 1789631710.999032,
+    "ast_hash": "e1dbca10677c8156ed4b4365dfd0f4f3",
+    "semantic_hash": "e1dbca10677c8156ed4b4365dfd0f4f3"
+  },
+  "src/fitness_bot/web/session-plan.mjs": {
+    "mtime": 1789202374.063557,
+    "seen": 1789631710.999033,
+    "ast_hash": "9209f7a81f409d8a3dae5fff3669e127",
+    "semantic_hash": "9209f7a81f409d8a3dae5fff3669e127"
+  },
+  "src/fitness_bot/web/stream.mjs": {
+    "mtime": 1788787629.0017993,
+    "seen": 1789631710.999033,
+    "ast_hash": "0302738c6e23bcd364652a09acdc8f6a",
+    "semantic_hash": "0302738c6e23bcd364652a09acdc8f6a"
+  },
+  "src/fitness_bot/web/training.mjs": {
+    "mtime": 1789207172.427242,
+    "seen": 1789631710.999033,
+    "ast_hash": "ea187dcfa4d6e186e0b426692f0dc82c",
+    "semantic_hash": "ea187dcfa4d6e186e0b426692f0dc82c"
+  },
+  "src/fitness_bot/web/vendor/marked-16.4.2.mjs": {
+    "mtime": 1788789476.289721,
+    "seen": 1789631710.9990342,
+    "ast_hash": "8d09d2e2f14c1f93f495fb35a1383aa9",
+    "semantic_hash": "8d09d2e2f14c1f93f495fb35a1383aa9"
+  },
+  "src/fitness_bot/workout_context.py": {
+    "mtime": 1788848266.767358,
+    "seen": 1789631710.9990342,
+    "ast_hash": "347dd83e7e7867eab7e9f16e5928a9ee",
+    "semantic_hash": "347dd83e7e7867eab7e9f16e5928a9ee"
+  },
+  "src/fitness_bot/workout_routes.py": {
+    "mtime": 1788832472.97575,
+    "seen": 1789631710.999035,
+    "ast_hash": "aacdfb13bc2b42e8c02ac3ebafb7d2b2",
+    "semantic_hash": "aacdfb13bc2b42e8c02ac3ebafb7d2b2"
+  },
+  "src/fitness_bot/workout_schemas.py": {
+    "mtime": 1788832328.7057352,
+    "seen": 1789631710.999035,
+    "ast_hash": "e2226d165322bcf93245f82ba7c4822c",
+    "semantic_hash": "e2226d165322bcf93245f82ba7c4822c"
+  },
+  "src/fitness_bot/workout_storage.py": {
+    "mtime": 1788833834.9211886,
+    "seen": 1789631710.999035,
+    "ast_hash": "2ce57007c3e76d935c37f55af374ccfb",
+    "semantic_hash": "2ce57007c3e76d935c37f55af374ccfb"
+  },
+  "tests/conftest.py": {
+    "mtime": 1788788883.005178,
+    "seen": 1789631710.9990358,
+    "ast_hash": "a0d4a07b8b7a0960ab6acf8a21cadd07",
+    "semantic_hash": "a0d4a07b8b7a0960ab6acf8a21cadd07"
+  },
+  "tests/fixtures/workout_upload.json": {
+    "mtime": 1788791727.9614313,
+    "seen": 1789631710.9990358,
+    "ast_hash": "a69456688b10696925525404e054f64c",
+    "semantic_hash": "a69456688b10696925525404e054f64c"
+  },
+  "tests/test_chat.py": {
+    "mtime": 1788788387.5546796,
+    "seen": 1789631710.9990358,
+    "ast_hash": "6b293b3a418eaab1041ff35ff671e8d5",
+    "semantic_hash": "6b293b3a418eaab1041ff35ff671e8d5"
+  },
+  "tests/test_edges.py": {
+    "mtime": 1788788387.5556817,
+    "seen": 1789631710.999037,
+    "ast_hash": "d6905474e16a06c89b340e8a0ea84547",
+    "semantic_hash": "d6905474e16a06c89b340e8a0ea84547"
+  },
+  "tests/test_error_diagnostics.py": {
+    "mtime": 1789209565.4561868,
+    "seen": 1789631710.999037,
+    "ast_hash": "6af921987ad852ede45ad59f25470244",
+    "semantic_hash": "6af921987ad852ede45ad59f25470244"
+  },
+  "tests/test_history_api.py": {
+    "mtime": 1788788387.554031,
+    "seen": 1789631710.999037,
+    "ast_hash": "54307276765ffb0c56ca6ab4b2be4b9a",
+    "semantic_hash": "54307276765ffb0c56ca6ab4b2be4b9a"
+  },
+  "tests/test_identity.py": {
+    "mtime": 1788833913.5919352,
+    "seen": 1789631710.999038,
+    "ast_hash": "a5196231a4166f24c0efc61084743de0",
+    "semantic_hash": "a5196231a4166f24c0efc61084743de0"
+  },
+  "tests/test_images.py": {
+    "mtime": 1788832964.8331888,
+    "seen": 1789631710.999038,
+    "ast_hash": "c0cddb77a19772648ecb04a51d74c569",
+    "semantic_hash": "c0cddb77a19772648ecb04a51d74c569"
+  },
+  "tests/test_model_config.py": {
+    "mtime": 1789206009.781184,
+    "seen": 1789631710.999038,
+    "ast_hash": "fd3ecea1c7e3a769bbcebc164d21fec3",
+    "semantic_hash": "fd3ecea1c7e3a769bbcebc164d21fec3"
+  },
+  "tests/test_plan_revisions.py": {
+    "mtime": 1789201776.412518,
+    "seen": 1789631710.999038,
+    "ast_hash": "b3de39d1408f980b1a79a391f85ba249",
+    "semantic_hash": "b3de39d1408f980b1a79a391f85ba249"
+  },
+  "tests/test_playground.py": {
+    "mtime": 1789201517.6872911,
+    "seen": 1789631710.999039,
+    "ast_hash": "1c6a856913a73feb41dd23d8181ad44d",
+    "semantic_hash": "1c6a856913a73feb41dd23d8181ad44d"
+  },
+  "tests/test_prescriptions.py": {
+    "mtime": 1789202132.3397365,
+    "seen": 1789631710.999039,
+    "ast_hash": "f2f3051be31e765f699b6369ed555544",
+    "semantic_hash": "f2f3051be31e765f699b6369ed555544"
+  },
+  "tests/test_session_preview.py": {
+    "mtime": 1789210096.5907056,
+    "seen": 1789631710.99904,
+    "ast_hash": "5704b09b2fffdff2d6a09f873adb4915",
+    "semantic_hash": "5704b09b2fffdff2d6a09f873adb4915"
+  },
+  "tests/test_storage.py": {
+    "mtime": 1788788387.5544016,
+    "seen": 1789631710.99904,
+    "ast_hash": "2311d9cff38407f835a556cff4a74342",
+    "semantic_hash": "2311d9cff38407f835a556cff4a74342"
+  },
+  "tests/test_training_conversation.py": {
+    "mtime": 1789207096.4170377,
+    "seen": 1789631710.99904,
+    "ast_hash": "7e581105475084c483d9a3445813b965",
+    "semantic_hash": "7e581105475084c483d9a3445813b965"
+  },
+  "tests/test_training_decision.py": {
+    "mtime": 1788862738.7543123,
+    "seen": 1789631710.999041,
+    "ast_hash": "255d7ab6455b121f678d1baba8fbdb53",
+    "semantic_hash": "255d7ab6455b121f678d1baba8fbdb53"
+  },
+  "tests/test_training_evidence.py": {
+    "mtime": 1788862914.7735715,
+    "seen": 1789631710.999041,
+    "ast_hash": "10f8cbf838cc261345bde0a620fa3a4e",
+    "semantic_hash": "10f8cbf838cc261345bde0a620fa3a4e"
+  },
+  "tests/test_training_plan_review.py": {
+    "mtime": 1788859640.7653255,
+    "seen": 1789631710.999041,
+    "ast_hash": "e32e08a6e77f74e42991674c03f16821",
+    "semantic_hash": "e32e08a6e77f74e42991674c03f16821"
+  },
+  "tests/test_training_plans.py": {
+    "mtime": 1788859014.079634,
+    "seen": 1789631710.999041,
+    "ast_hash": "19576533a517ac1182faf85c91e95988",
+    "semantic_hash": "19576533a517ac1182faf85c91e95988"
+  },
+  "tests/test_training_profile.py": {
+    "mtime": 1788853400.2037592,
+    "seen": 1789631710.999042,
+    "ast_hash": "60168334baa0010732decfb9c14d9621",
+    "semantic_hash": "60168334baa0010732decfb9c14d9621"
+  },
+  "tests/test_training_review.py": {
+    "mtime": 1788853400.204701,
+    "seen": 1789631710.999042,
+    "ast_hash": "83f4111ad34aa2bf99eb1e445f916c82",
+    "semantic_hash": "83f4111ad34aa2bf99eb1e445f916c82"
+  },
+  "tests/test_user_bootstrap.py": {
+    "mtime": 1788833913.5573473,
+    "seen": 1789631710.999042,
+    "ast_hash": "21eced06a46d76a2eb4a892f8674261c",
+    "semantic_hash": "21eced06a46d76a2eb4a892f8674261c"
+  },
+  "tests/test_user_migration.py": {
+    "mtime": 1788848333.816966,
+    "seen": 1789631710.999043,
+    "ast_hash": "06a7954df8125a797adf40609b9ad76c",
+    "semantic_hash": "06a7954df8125a797adf40609b9ad76c"
+  },
+  "tests/test_wire.py": {
+    "mtime": 1788788387.5551662,
+    "seen": 1789631710.999043,
+    "ast_hash": "acd313b4de0ed3059e866b498a7191c9",
+    "semantic_hash": "acd313b4de0ed3059e866b498a7191c9"
+  },
+  "tests/test_workout_api.py": {
+    "mtime": 1788832395.6920516,
+    "seen": 1789631710.999043,
+    "ast_hash": "f70669b36029ff1f417df671e5e6491d",
+    "semantic_hash": "f70669b36029ff1f417df671e5e6491d"
+  },
+  "tests/test_workout_chat_context.py": {
+    "mtime": 1788848266.76741,
+    "seen": 1789631710.9990442,
+    "ast_hash": "1d8eba0bfc3e64dfe72709a4ddaa545d",
+    "semantic_hash": "1d8eba0bfc3e64dfe72709a4ddaa545d"
+  },
+  "tests/test_workout_storage.py": {
+    "mtime": 1788832472.8582294,
+    "seen": 1789631710.9990442,
+    "ast_hash": "586b4b73ea117e2e4bac1d9bfc5523a1",
+    "semantic_hash": "586b4b73ea117e2e4bac1d9bfc5523a1"
+  },
+  "tests/web/identity.test.mjs": {
+    "mtime": 1788833782.1714957,
+    "seen": 1789631710.9990442,
+    "ast_hash": "310cc35bf6a5a841f85815aa180e16f5",
+    "semantic_hash": "310cc35bf6a5a841f85815aa180e16f5"
+  },
+  "tests/web/images.test.mjs": {
+    "mtime": 1788789676.0260563,
+    "seen": 1789631710.9990451,
+    "ast_hash": "3a3fc31e48232b365f1d89c67eaecf70",
+    "semantic_hash": "3a3fc31e48232b365f1d89c67eaecf70"
+  },
+  "tests/web/markdown.test.mjs": {
+    "mtime": 1788789569.5145032,
+    "seen": 1789631710.9990451,
+    "ast_hash": "2778dd3013eed6f0364befd558194cce",
+    "semantic_hash": "2778dd3013eed6f0364befd558194cce"
+  },
+  "tests/web/plan-preview.test.mjs": {
+    "mtime": 1789207131.4319577,
+    "seen": 1789631710.9990458,
+    "ast_hash": "66e9ff227535717f7bec84ae0c10da6b",
+    "semantic_hash": "66e9ff227535717f7bec84ae0c10da6b"
+  },
+  "tests/web/prescriptions.test.mjs": {
+    "mtime": 1789201240.9082282,
+    "seen": 1789631710.9990458,
+    "ast_hash": "772bcf58c402f5a175549fa6dcfecd9e",
+    "semantic_hash": "772bcf58c402f5a175549fa6dcfecd9e"
+  },
+  "tests/web/stream.test.mjs": {
+    "mtime": 1788788114.4909701,
+    "seen": 1789631710.9990458,
+    "ast_hash": "cf2e69f1c01157dca223df5cb95ea1ae",
+    "semantic_hash": "cf2e69f1c01157dca223df5cb95ea1ae"
+  },
+  "tests/web/training.test.mjs": {
+    "mtime": 1788861693.8008995,
+    "seen": 1789631710.9990458,
+    "ast_hash": "511f4a213448771009a23688536d49e0",
+    "semantic_hash": "511f4a213448771009a23688536d49e0"
+  },
+  "AGENTS.md": {
+    "mtime": 1788622419.1811743,
+    "seen": 1789631710.9990468,
+    "ast_hash": "0b4b999c7ad01401409d2cf4856e80bc",
+    "semantic_hash": "0b4b999c7ad01401409d2cf4856e80bc"
+  },
+  "README.md": {
+    "mtime": 1789207417.9436898,
+    "seen": 1789631710.9990468,
+    "ast_hash": "d1f2ca6dba1b9ca21859c36a34ff9c38",
+    "semantic_hash": "d1f2ca6dba1b9ca21859c36a34ff9c38"
+  },
+  "THIRD_PARTY_NOTICES.md": {
+    "mtime": 1788789697.0795088,
+    "seen": 1789631710.999048,
+    "ast_hash": "4a996f2512505ddc30728a622f3f0a23",
+    "semantic_hash": "4a996f2512505ddc30728a622f3f0a23"
+  },
+  "compose.yaml": {
+    "mtime": 1788621423.2220368,
+    "seen": 1789631710.999048,
+    "ast_hash": "032f6c46e1842b764df93341a54e83e9",
+    "semantic_hash": "032f6c46e1842b764df93341a54e83e9"
+  },
+  "docs/api.md": {
+    "mtime": 1789210204.4000528,
+    "seen": 1789631710.999049,
+    "ast_hash": "d0a1b56e7f6f77043516923a824be6d8",
+    "semantic_hash": "d0a1b56e7f6f77043516923a824be6d8"
+  },
+  "docs/catalog-prompt-evaluation.md": {
+    "mtime": 1788622419.3700564,
+    "seen": 1789631710.999049,
+    "ast_hash": "71be23ab9554070c200dfeb7487d57d9",
+    "semantic_hash": "71be23ab9554070c200dfeb7487d57d9"
+  },
+  "docs/knowledge/training/README.md": {
+    "mtime": 1788851682.2227855,
+    "seen": 1789631710.999049,
+    "ast_hash": "d903e9af71b7dae9c6671bf032647924",
+    "semantic_hash": "d903e9af71b7dae9c6671bf032647924"
+  },
+  "docs/knowledge/training/current-prompts-2026-09-08.md": {
+    "mtime": 1788871942.145171,
+    "seen": 1789631710.99905,
+    "ast_hash": "81e66b02d58696d4b680fa84948fcb81",
+    "semantic_hash": "81e66b02d58696d4b680fa84948fcb81"
+  },
+  "docs/knowledge/training/evidence-register.md": {
+    "mtime": 1788851682.34228,
+    "seen": 1789631710.99905,
+    "ast_hash": "0569a7904d9c2517440fe2f5e8efa7bb",
+    "semantic_hash": "0569a7904d9c2517440fe2f5e8efa7bb"
+  },
+  "docs/knowledge/training/michael-boyle-functional-training.md": {
+    "mtime": 1788851682.2816963,
+    "seen": 1789631710.99905,
+    "ast_hash": "ad2531ee06f63db7db1f0156e12bbc3a",
+    "semantic_hash": "ad2531ee06f63db7db1f0156e12bbc3a"
+  },
+  "docs/live-chat-smoke-2026-09-05.md": {
+    "mtime": 1788620755.7930636,
+    "seen": 1789631710.999051,
+    "ast_hash": "f0989cd276af658481c49b29b72a3489",
+    "semantic_hash": "f0989cd276af658481c49b29b72a3489"
+  },
+  "docs/superpowers/plans/2026-09-05-backend-bootstrap.md": {
+    "mtime": 1788619996.1376727,
+    "seen": 1789631710.999051,
+    "ast_hash": "df0a56695d5aef3258a044df8a5ac548",
+    "semantic_hash": "df0a56695d5aef3258a044df8a5ac548"
+  },
+  "docs/superpowers/plans/2026-09-05-local-rag-and-history.md": {
+    "mtime": 1788622419.4386785,
+    "seen": 1789631710.999051,
+    "ast_hash": "e5b873c9de7018792207fa0cc04723de",
+    "semantic_hash": "e5b873c9de7018792207fa0cc04723de"
+  },
+  "docs/superpowers/plans/2026-09-07-image-input.md": {
+    "mtime": 1788788753.0552864,
+    "seen": 1789631710.999052,
+    "ast_hash": "eae147fd47e6e757612ef46ceb0246fd",
+    "semantic_hash": "eae147fd47e6e757612ef46ceb0246fd"
+  },
+  "docs/superpowers/plans/2026-09-07-web-playground.md": {
+    "mtime": 1788788471.5726137,
+    "seen": 1789631710.999052,
+    "ast_hash": "2c3226dea66a1df707904fd7409be178",
+    "semantic_hash": "2c3226dea66a1df707904fd7409be178"
+  },
+  "docs/superpowers/plans/2026-09-08-training-decision-verification.md": {
+    "mtime": 1788863003.0846066,
+    "seen": 1789631710.999052,
+    "ast_hash": "e4d40b6688cd6d29d2c7cc73c61b7f05",
+    "semantic_hash": "e4d40b6688cd6d29d2c7cc73c61b7f05"
+  },
+  "docs/superpowers/plans/2026-09-08-training-decision.md": {
+    "mtime": 1788862875.6504266,
+    "seen": 1789631710.999053,
+    "ast_hash": "0669106efb5164399550c565bd0a9fd4",
+    "semantic_hash": "0669106efb5164399550c565bd0a9fd4"
+  },
+  "docs/superpowers/plans/2026-09-12-structured-suggestions-verification.md": {
+    "mtime": 1789210204.4623907,
+    "seen": 1789631710.999053,
+    "ast_hash": "ffca0676cd980ac84841c8b83a07bd9f",
+    "semantic_hash": "ffca0676cd980ac84841c8b83a07bd9f"
+  },
+  "docs/superpowers/plans/2026-09-12-structured-suggestions.md": {
+    "mtime": 1789206276.8637562,
+    "seen": 1789631710.999053,
+    "ast_hash": "33151a5b99097662828b219be99fa429",
+    "semantic_hash": "33151a5b99097662828b219be99fa429"
+  },
+  "docs/superpowers/specs/2026-09-08-training-decision-examples.md": {
+    "mtime": 1788851865.7920115,
+    "seen": 1789631710.999053,
+    "ast_hash": "79f556208e669c6c7d1aa20cc5e34701",
+    "semantic_hash": "79f556208e669c6c7d1aa20cc5e34701"
+  },
+  "docs/superpowers/specs/2026-09-08-training-decision-v1.md": {
+    "mtime": 1788862875.6502519,
+    "seen": 1789631710.9990542,
+    "ast_hash": "067e20ff8159750ac06ac529a45f3103",
+    "semantic_hash": "067e20ff8159750ac06ac529a45f3103"
+  },
+  "docs/superpowers/specs/2026-09-12-structured-suggestions-design.md": {
+    "mtime": 1789200536.7621348,
+    "seen": 1789631710.9990542,
+    "ast_hash": "0f2f820c901baa47e9cfae54b55da614",
+    "semantic_hash": "0f2f820c901baa47e9cfae54b55da614"
+  },
+  "src/fitness_bot/data/UPSTREAM_NOTICE.md": {
+    "mtime": 1788619542.8416727,
+    "seen": 1789631710.9990542,
+    "ast_hash": "ed6377a5781a1ebc51ac13ee71939495",
+    "semantic_hash": "ed6377a5781a1ebc51ac13ee71939495"
+  },
+  "src/fitness_bot/web/index.html": {
+    "mtime": 1789202718.3601995,
+    "seen": 1789631710.9990551,
+    "ast_hash": "cfe82969e6e234e1f566da1cbf3324cf",
+    "semantic_hash": "cfe82969e6e234e1f566da1cbf3324cf"
+  },
+  "src/fitness_bot/web/vendor/marked-LICENSE.md": {
+    "mtime": 1788789476.2902708,
+    "seen": 1789631710.9990551,
+    "ast_hash": "63067ac27c0f658572e4798649c2ef4a",
+    "semantic_hash": "63067ac27c0f658572e4798649c2ef4a"
+  },
+  "src/fitness_bot/web/favicon.svg": {
+    "mtime": 1788788575.5317264,
+    "seen": 1789631710.9990551,
+    "ast_hash": "caf00709c559f3eec6db2bb5b5ed7c42",
+    "semantic_hash": "caf00709c559f3eec6db2bb5b5ed7c42"
+  }
+}

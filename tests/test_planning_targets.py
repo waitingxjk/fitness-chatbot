@@ -401,7 +401,24 @@ def test_next_plan_does_not_retain_current_plan_snapshots_in_model_context(setup
 async def test_real_model_boundary_excludes_current_exercises_and_explains_target():
     from test_expert_skills import model_with_capture
 
-    model, capture = model_with_capture(SessionDraft.model_validate(additions()))
+    from fitness_bot.training_schemas import SemanticSessionDraft
+
+    value = additions()
+    value["semantics_version"] = 1
+    for item in value["items"]:
+        item.update(
+            phase="main", purpose_role="primary" if item["role"] == "priority" else "accessory"
+        )
+        if not item.get("set_prescriptions"):
+            item["set_prescriptions"] = [
+                {
+                    "kind": "working",
+                    "repetitions": item["repetitions"],
+                    "rest_seconds": item["rest_seconds"],
+                }
+                for _ in range(item["sets"])
+            ]
+    model, capture = model_with_capture(SemanticSessionDraft.model_validate(value))
     await model.session_plan(current_request(), Catalog.load())
     payload = json.loads(capture.calls[-1][-1].content)
     assert "0289" not in {exercise["id"] for exercise in payload["catalog"]}

@@ -134,7 +134,7 @@ def test_short_time_removes_low_priority_work_and_keeps_rest():
     assert result["removed_items"]
 
 
-def test_high_fatigue_blocks_progression_and_missing_readiness_asks():
+def test_high_fatigue_blocks_progression_but_missing_readiness_allows_candidate():
     from fitness_bot.training_decision import plan_question, validate_session_plan
     from fitness_bot.training_schemas import SessionDraft
 
@@ -146,12 +146,12 @@ def test_high_fatigue_blocks_progression_and_missing_readiness_asks():
         )
     context = request()
     context.context.training_profile["profile"]["readiness"] = None
-    assert "状态" in plan_question(context)
+    assert plan_question(context) is None
     context.context.training_profile["profile"]["readiness"] = {
         "observed_at": (datetime.now(UTC) - timedelta(days=3)).isoformat(),
         "pain": "none",
     }
-    assert "状态" in plan_question(context)
+    assert plan_question(context) is None
     assert "目标" in plan_question(ChatRequest(message="明天练什么"))
 
 

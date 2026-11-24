@@ -12,7 +12,7 @@ from fitness_bot.config import Settings
 from fitness_bot.model import SYSTEM_PROMPT, OpenAICompanionModel
 from fitness_bot.schemas import ChatRequest, SearchPlan
 from fitness_bot.training_decision import RULES
-from fitness_bot.training_schemas import RecommendationDraft, ReviewDraft, SessionDraft
+from fitness_bot.training_schemas import RecommendationDraft, ReviewDraft, SemanticSessionDraft
 
 
 class CaptureModel:
@@ -72,7 +72,7 @@ def skill_module():
         (
             "session_plan",
             "training-recommendation",
-            SessionDraft(
+            SemanticSessionDraft(
                 theme="休息候选",
                 rationale="根据当前状态调整",
                 adjustment="rest",

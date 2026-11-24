@@ -1,0 +1,723 @@
+{
+  "planning_target": "next_workout",
+  "current_workout": null,
+  "remaining_minutes": null,
+  "existing_completed_sets": 0,
+  "existing_pending_sets": 0,
+  "semantics_version": 1,
+  "phase_summaries": [
+    {
+      "phase": "warmup",
+      "label": "热身准备",
+      "item_count": 1,
+      "estimated_seconds": 195,
+      "working_sets": 0,
+      "warmup_sets": 0,
+      "activity_count": 1
+    },
+    {
+      "phase": "main",
+      "label": "主体训练",
+      "item_count": 4,
+      "estimated_seconds": 1322,
+      "working_sets": 10,
+      "warmup_sets": 0,
+      "activity_count": 0
+    },
+    {
+      "phase": "cooldown",
+      "label": "整理放松",
+      "item_count": 1,
+      "estimated_seconds": 195,
+      "working_sets": 0,
+      "warmup_sets": 0,
+      "activity_count": 1
+    }
+  ],
+  "outcome": "add_exercises",
+  "id": "51254784-3e53-46f8-897d-32d6c6db67d0",
+  "version": 1,
+  "status": "proposed",
+  "theme": "上肢，卧推优先",
+  "rationale": "优先支持明确的力量目标，先维持要求观察表现。",
+  "proposal_rationale": "优先支持明确的力量目标，先维持要求观察表现。",
+  "evidence_ids": [
+    "recent.frequency",
+    "baseline.frequency"
+  ],
+  "evidence": [
+    {
+      "kind": "fact",
+      "window": "recent",
+      "metric": "frequency",
+      "value": {
+        "completed_workouts": 3
+      }
+    },
+    {
+      "kind": "fact",
+      "window": "baseline",
+      "metric": "frequency",
+      "value": {
+        "completed_workouts": 9
+      }
+    }
+  ],
+  "load_evidence": [],
+  "rules_version": "training-decision-v1.3",
+  "catalog_version": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+  "profile_version": 1,
+  "profile_snapshot": {
+    "goal": "strength",
+    "goal_notes": "",
+    "priority_exercise_ids": [
+      "0289"
+    ],
+    "experience": "experienced",
+    "weekly_sessions": 3,
+    "session_minutes": 60,
+    "equipment": [
+      "dumbbell",
+      "cable",
+      "elliptical machine",
+      "body weight"
+    ],
+    "time_zone": "UTC",
+    "readiness": {
+      "observed_at": "2026-09-22T09:14:54.328376Z",
+      "pain": "none",
+      "fatigue": "normal",
+      "sleep": "normal",
+      "notes": ""
+    },
+    "confirmed_cycle": null
+  },
+  "planning_assumptions": [],
+  "planning_history_summary": {},
+  "confirmed_cycle": null,
+  "suggested_adjustment": "maintain",
+  "progression_basis": null,
+  "adjustment_reason": "暂不同时增加重量和组数。",
+  "preparation": "熟悉的上肢动态准备和递增热身，不做到明显疲劳。",
+  "preparation_minutes": 3.25,
+  "finish_minutes": 3.25,
+  "buffer_minutes": 5,
+  "items": [
+    {
+      "phase": "warmup",
+      "purpose_role": "general_warmup",
+      "role": "supplement",
+      "purpose": "提高卧推表现",
+      "sets": 0,
+      "set_prescriptions": [
+        {
+          "kind": "activity",
+          "repetitions": null,
+          "duration_seconds": 180,
+          "rest_seconds": 0,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "none",
+            "value": null,
+            "unit": null,
+            "convention": null,
+            "explanation": "按时长完成。"
+          }
+        }
+      ],
+      "repetitions": null,
+      "duration_seconds": 180,
+      "rest_seconds": 0,
+      "effort": "轻松完成，保持动作可控。",
+      "target_rir_min": 2,
+      "target_rir_max": 3,
+      "seconds_per_rep": 4,
+      "switch_seconds": 15,
+      "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+      "item_id": "phase-item-1",
+      "exercise": {
+        "sourceKind": "standard",
+        "trainingType": null,
+        "avatar": null,
+        "id": "2141",
+        "sourceName": "walk elliptical cross trainer",
+        "displayNameZhHans": "行走椭圆机交叉训练器",
+        "aliasesZhHans": [],
+        "bodyPartCode": "cardio",
+        "equipmentCode": "elliptical machine",
+        "targetMuscleCode": "cardiovascular system",
+        "secondaryMuscleCodes": [
+          "quadriceps",
+          "hamstrings",
+          "glutes",
+          "calves"
+        ],
+        "instructionStepsZhHans": [
+          "将椭圆机的阻力水平和倾斜度调整到您想要的设置。",
+          "踩上机器的踏板并轻轻握住手柄。",
+          "首先用脚向下压，然后将手柄拉向身体。",
+          "继续这个动作，交替推和拉，以模拟行走或跑步动作。",
+          "在整个练习过程中保持稳定的步伐并保持核心参与。",
+          "继续进行有氧运动所需的持续时间。",
+          "下车前逐渐降低机器的强度和速度。"
+        ],
+        "mediaId": "rjtuP6X",
+        "detailType": "duration",
+        "defaultWeightUnit": null,
+        "isActive": true,
+        "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "createdAt": "2026-03-18T12:31:32.905618Z",
+        "updatedAt": "2026-03-18T12:31:32.905618Z"
+      },
+      "equipment_label": "椭圆机",
+      "body_part_label": "有氧",
+      "load": {
+        "strategy": "trial",
+        "value": null,
+        "unit": null,
+        "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+      },
+      "alternatives": [],
+      "discarded_alternatives": [],
+      "total_sets": 1,
+      "estimated_seconds": 195
+    },
+    {
+      "phase": "main",
+      "purpose_role": "primary",
+      "role": "priority",
+      "purpose": "提高卧推表现",
+      "sets": 3,
+      "set_prescriptions": [
+        {
+          "kind": "working",
+          "repetitions": 8,
+          "duration_seconds": null,
+          "rest_seconds": 120,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        },
+        {
+          "kind": "working",
+          "repetitions": 8,
+          "duration_seconds": null,
+          "rest_seconds": 120,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        },
+        {
+          "kind": "working",
+          "repetitions": 8,
+          "duration_seconds": null,
+          "rest_seconds": 120,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        }
+      ],
+      "repetitions": 8,
+      "duration_seconds": null,
+      "rest_seconds": 120,
+      "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+      "target_rir_min": 2,
+      "target_rir_max": 3,
+      "seconds_per_rep": 4,
+      "switch_seconds": 90,
+      "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+      "item_id": "phase-item-2",
+      "exercise": {
+        "sourceKind": "standard",
+        "trainingType": null,
+        "avatar": null,
+        "id": "0289",
+        "sourceName": "dumbbell bench press",
+        "displayNameZhHans": "哑铃卧推",
+        "aliasesZhHans": [
+          "哑铃平板卧推"
+        ],
+        "bodyPartCode": "chest",
+        "equipmentCode": "dumbbell",
+        "targetMuscleCode": "pectorals",
+        "secondaryMuscleCodes": [
+          "triceps",
+          "shoulders"
+        ],
+        "instructionStepsZhHans": [
+          "平躺在长凳上，双脚平放在地上，背部紧贴长凳。",
+          "双手各握一个哑铃，手掌朝前，双臂伸至胸部上方。",
+          "慢慢地将哑铃降低到胸部两侧，保持肘部呈 90 度角。",
+          "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
+          "重复所需的重复次数。"
+        ],
+        "mediaId": "SpYC0Kp",
+        "detailType": "weightedReps",
+        "defaultWeightUnit": "kg",
+        "isActive": true,
+        "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "createdAt": "2026-03-18T12:31:32.877684Z",
+        "updatedAt": "2026-03-18T12:31:32.877684Z"
+      },
+      "equipment_label": "哑铃",
+      "body_part_label": "胸部",
+      "load": {
+        "strategy": "trial",
+        "value": null,
+        "unit": null,
+        "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+      },
+      "alternatives": [],
+      "discarded_alternatives": [],
+      "total_sets": 3,
+      "estimated_seconds": 426
+    },
+    {
+      "phase": "main",
+      "purpose_role": "accessory",
+      "role": "assistance",
+      "purpose": "上肢拉",
+      "sets": 3,
+      "set_prescriptions": [
+        {
+          "kind": "working",
+          "repetitions": 10,
+          "duration_seconds": null,
+          "rest_seconds": 90,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        },
+        {
+          "kind": "working",
+          "repetitions": 10,
+          "duration_seconds": null,
+          "rest_seconds": 90,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        },
+        {
+          "kind": "working",
+          "repetitions": 10,
+          "duration_seconds": null,
+          "rest_seconds": 90,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        }
+      ],
+      "repetitions": 10,
+      "duration_seconds": null,
+      "rest_seconds": 90,
+      "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+      "target_rir_min": 2,
+      "target_rir_max": 3,
+      "seconds_per_rep": 4,
+      "switch_seconds": 90,
+      "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+      "item_id": "phase-item-3",
+      "exercise": {
+        "sourceKind": "standard",
+        "trainingType": null,
+        "avatar": null,
+        "id": "0180",
+        "sourceName": "cable low seated row",
+        "displayNameZhHans": "绳索低位坐姿划船",
+        "aliasesZhHans": [],
+        "bodyPartCode": "back",
+        "equipmentCode": "cable",
+        "targetMuscleCode": "upper back",
+        "secondaryMuscleCodes": [
+          "biceps",
+          "forearms"
+        ],
+        "instructionStepsZhHans": [
+          "坐在机器上，双脚平放在脚踏板上，膝盖稍微弯曲。",
+          "正手握住手柄，手掌朝下。",
+          "保持背部挺直，稍微向前倾斜，肘部保持轻微弯曲。",
+          "将手柄拉向身体，将肩胛骨挤压在一起。",
+          "在动作的最高点暂停片刻，然后慢慢松开手柄回到起始位置。",
+          "重复所需的重复次数。"
+        ],
+        "mediaId": "hvV79Si",
+        "detailType": "weightedReps",
+        "defaultWeightUnit": "kg",
+        "isActive": true,
+        "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "createdAt": "2026-03-18T12:31:32.874859Z",
+        "updatedAt": "2026-03-18T12:31:32.874859Z"
+      },
+      "equipment_label": "绳索器械",
+      "body_part_label": "背部",
+      "load": {
+        "strategy": "trial",
+        "value": null,
+        "unit": null,
+        "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+      },
+      "alternatives": [],
+      "discarded_alternatives": [],
+      "total_sets": 3,
+      "estimated_seconds": 390
+    },
+    {
+      "phase": "main",
+      "purpose_role": "accessory",
+      "role": "assistance",
+      "purpose": "垂直拉",
+      "sets": 2,
+      "set_prescriptions": [
+        {
+          "kind": "working",
+          "repetitions": 10,
+          "duration_seconds": null,
+          "rest_seconds": 90,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        },
+        {
+          "kind": "working",
+          "repetitions": 10,
+          "duration_seconds": null,
+          "rest_seconds": 90,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        }
+      ],
+      "repetitions": 10,
+      "duration_seconds": null,
+      "rest_seconds": 90,
+      "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+      "target_rir_min": 2,
+      "target_rir_max": 3,
+      "seconds_per_rep": 4,
+      "switch_seconds": 90,
+      "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+      "item_id": "phase-item-4",
+      "exercise": {
+        "sourceKind": "standard",
+        "trainingType": null,
+        "avatar": null,
+        "id": "0150",
+        "sourceName": "cable bar lateral pulldown",
+        "displayNameZhHans": "绳索杆高位下拉",
+        "aliasesZhHans": [],
+        "bodyPartCode": "back",
+        "equipmentCode": "cable",
+        "targetMuscleCode": "lats",
+        "secondaryMuscleCodes": [
+          "biceps",
+          "rhomboids",
+          "rear deltoids"
+        ],
+        "instructionStepsZhHans": [
+          "将电缆滑轮调整至较高位置并安装直杆。",
+          "面向缆绳机坐着，双脚平放在地面上，膝盖稍微弯曲。",
+          "正手握住杠铃，握距略宽于肩宽。",
+          "稍微向后倾斜，挺胸，保持下背部轻微的拱形。",
+          "将杠铃向下拉向胸部，用肘部引导并将肩胛骨挤压在一起。",
+          "在动作底部暂停片刻，然后慢慢地将杠铃返回到起始位置。",
+          "重复所需的重复次数。"
+        ],
+        "mediaId": "eYnzaCm",
+        "detailType": "weightedReps",
+        "defaultWeightUnit": "kg",
+        "isActive": true,
+        "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "createdAt": "2026-03-18T12:31:32.874157Z",
+        "updatedAt": "2026-03-18T12:31:32.874157Z"
+      },
+      "equipment_label": "绳索器械",
+      "body_part_label": "背部",
+      "load": {
+        "strategy": "trial",
+        "value": null,
+        "unit": null,
+        "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+      },
+      "alternatives": [],
+      "discarded_alternatives": [],
+      "total_sets": 2,
+      "estimated_seconds": 260
+    },
+    {
+      "phase": "main",
+      "purpose_role": "accessory",
+      "role": "supplement",
+      "purpose": "肩部补充",
+      "sets": 2,
+      "set_prescriptions": [
+        {
+          "kind": "working",
+          "repetitions": 12,
+          "duration_seconds": null,
+          "rest_seconds": 60,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        },
+        {
+          "kind": "working",
+          "repetitions": 12,
+          "duration_seconds": null,
+          "rest_seconds": 60,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "trial",
+            "value": null,
+            "unit": null,
+            "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+          }
+        }
+      ],
+      "repetitions": 12,
+      "duration_seconds": null,
+      "rest_seconds": 60,
+      "effort": "保留约 2–3 次余力，以动作控制和当天感受为准。",
+      "target_rir_min": 2,
+      "target_rir_max": 3,
+      "seconds_per_rep": 4,
+      "switch_seconds": 90,
+      "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+      "item_id": "phase-item-5",
+      "exercise": {
+        "sourceKind": "standard",
+        "trainingType": null,
+        "avatar": null,
+        "id": "0334",
+        "sourceName": "dumbbell lateral raise",
+        "displayNameZhHans": "哑铃侧平举",
+        "aliasesZhHans": [],
+        "bodyPartCode": "shoulders",
+        "equipmentCode": "dumbbell",
+        "targetMuscleCode": "delts",
+        "secondaryMuscleCodes": [
+          "traps"
+        ],
+        "instructionStepsZhHans": [
+          "双脚分开与肩同宽站立，双手各握一个哑铃，手掌朝向身体。",
+          "保持背部挺直并启动核心肌群。",
+          "将手臂向两侧抬起，直到与地板平行，保持肘部稍微弯曲。",
+          "在顶部暂停片刻，然后慢慢将手臂放回起始位置。",
+          "重复所需的重复次数。"
+        ],
+        "mediaId": "DsgkuIt",
+        "detailType": "weightedReps",
+        "defaultWeightUnit": "kg",
+        "isActive": true,
+        "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "createdAt": "2026-03-18T12:31:32.879137Z",
+        "updatedAt": "2026-03-18T12:31:32.879137Z"
+      },
+      "equipment_label": "哑铃",
+      "body_part_label": "肩部",
+      "load": {
+        "strategy": "trial",
+        "value": null,
+        "unit": null,
+        "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+      },
+      "alternatives": [],
+      "discarded_alternatives": [],
+      "total_sets": 2,
+      "estimated_seconds": 246
+    },
+    {
+      "phase": "cooldown",
+      "purpose_role": "cooldown",
+      "role": "supplement",
+      "purpose": "提高卧推表现",
+      "sets": 0,
+      "set_prescriptions": [
+        {
+          "kind": "activity",
+          "repetitions": null,
+          "duration_seconds": 180,
+          "rest_seconds": 0,
+          "target_rir_min": 2,
+          "target_rir_max": 3,
+          "load": {
+            "strategy": "none",
+            "value": null,
+            "unit": null,
+            "convention": null,
+            "explanation": "按时长完成。"
+          }
+        }
+      ],
+      "repetitions": null,
+      "duration_seconds": 180,
+      "rest_seconds": 0,
+      "effort": "轻松完成，保持动作可控。",
+      "target_rir_min": 2,
+      "target_rir_max": 3,
+      "seconds_per_rep": 4,
+      "switch_seconds": 15,
+      "alternative_condition": "仅在器械不可用、场地或偏好改变时提出替换；需重新校验技能、剂量和用时。出现疼痛时先停止相关动作，不自动换动作继续。",
+      "item_id": "phase-item-6",
+      "exercise": {
+        "sourceKind": "standard",
+        "trainingType": null,
+        "avatar": null,
+        "id": "2141",
+        "sourceName": "walk elliptical cross trainer",
+        "displayNameZhHans": "行走椭圆机交叉训练器",
+        "aliasesZhHans": [],
+        "bodyPartCode": "cardio",
+        "equipmentCode": "elliptical machine",
+        "targetMuscleCode": "cardiovascular system",
+        "secondaryMuscleCodes": [
+          "quadriceps",
+          "hamstrings",
+          "glutes",
+          "calves"
+        ],
+        "instructionStepsZhHans": [
+          "将椭圆机的阻力水平和倾斜度调整到您想要的设置。",
+          "踩上机器的踏板并轻轻握住手柄。",
+          "首先用脚向下压，然后将手柄拉向身体。",
+          "继续这个动作，交替推和拉，以模拟行走或跑步动作。",
+          "在整个练习过程中保持稳定的步伐并保持核心参与。",
+          "继续进行有氧运动所需的持续时间。",
+          "下车前逐渐降低机器的强度和速度。"
+        ],
+        "mediaId": "rjtuP6X",
+        "detailType": "duration",
+        "defaultWeightUnit": null,
+        "isActive": true,
+        "catalogVersion": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+        "createdAt": "2026-03-18T12:31:32.905618Z",
+        "updatedAt": "2026-03-18T12:31:32.905618Z"
+      },
+      "equipment_label": "椭圆机",
+      "body_part_label": "有氧",
+      "load": {
+        "strategy": "trial",
+        "value": null,
+        "unit": null,
+        "explanation": "通过轻负重试做选择可控制且保留余力的重量；不直接搬用历史或替代器械重量。"
+      },
+      "alternatives": [],
+      "discarded_alternatives": [],
+      "total_sets": 1,
+      "estimated_seconds": 195
+    }
+  ],
+  "working_sets": 10,
+  "estimated_minutes_min": 29,
+  "estimated_minutes_max": 34,
+  "removed_items": [],
+  "ordering_checks": [
+    {
+      "type": "priority",
+      "explanation": "先安排本次重点动作；顺序原则关联 E2，具体方案是产品提案。"
+    },
+    {
+      "type": "unknown",
+      "explanation": "尚无经审阅的握力、腰背稳定和技术疲劳标签，不能保证后续项目完全不受影响。"
+    },
+    {
+      "type": "catalog_muscle_overlap",
+      "first": "2141",
+      "second": "2141",
+      "muscles": [
+        "calves",
+        "cardiovascular system",
+        "glutes",
+        "hamstrings",
+        "quadriceps"
+      ],
+      "explanation": "目录肌群有重叠，后续动作需按实际用力调整；这不是精确疲劳预测。"
+    },
+    {
+      "type": "catalog_muscle_overlap",
+      "first": "0180",
+      "second": "0150",
+      "muscles": [
+        "biceps"
+      ],
+      "explanation": "目录肌群有重叠，后续动作需按实际用力调整；这不是精确疲劳预测。"
+    }
+  ],
+  "feedback_questions": [
+    "实际完成哪些动作和组次？",
+    "最后工作组的余力或主观用力如何？",
+    "有无疼痛、提前结束或跳过项目，原因是什么？"
+  ],
+  "sources": [
+    {
+      "id": "E1",
+      "title": "ACSM 抗阻训练立场文件（摘要）",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/"
+    },
+    {
+      "id": "E2",
+      "title": "动作顺序系统综述（摘要）",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32077380/"
+    },
+    {
+      "id": "E3",
+      "title": "自由重量与固定器械系统综述（摘要）",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/"
+    },
+    {
+      "id": "E5",
+      "title": "减量安排专家共识",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37730925/"
+    }
+  ],
+  "limitations": [
+    "这是依据研究原则和产品规则生成的候选方案，具体剂量尚未经过专业个体审阅。",
+    "当天再次确认状态；出现疼痛或明显不适时停止相关动作。"
+  ]
+}

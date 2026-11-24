@@ -211,9 +211,16 @@ async def attach_evidence(session, user_id, observations, now, latest_records):
 
 async def revalidate_plan_evidence(session, user_id, plan):
     """Lock source rows through commit; confirmation writes take the same lock."""
-    required = {i["load"].get("observation_id") for i in plan["items"]} - {None}
+    from fitness_bot.prescriptions import legacy_sets
+
+    loads = [row["load"] for item in plan["items"] for row in legacy_sets(item)]
+    required = {load.get("observation_id") for load in loads} - {None}
+    verified = {
+        load.get("observation_id") for load in loads if load.get("strategy") != "history_reference"
+    } - {None}
     if signal := plan.get("progression_basis"):
-        required.update([signal["latest_observation_id"], signal["prior_observation_id"]])
+        verified.update([signal["latest_observation_id"], signal["prior_observation_id"]])
+        required.update(verified)
     observations = {
         e["value"]["id"]: e["value"]
         for e in plan["evidence"]
@@ -223,7 +230,7 @@ async def revalidate_plan_evidence(session, user_id, plan):
     observations.update({o["id"]: o for o in plan.get("load_evidence", [])})
     for oid in sorted(required, key=lambda key: str(observations.get(key, {}).get("source"))):
         observation = observations.get(oid)
-        if not observation or not observation.get("attestation"):
+        if not observation or (oid in verified and not observation.get("attestation")):
             raise TurnConflict("Load confirmation missing; generate a new plan")
         source = observation["source"]
         workout = await session.scalar(
@@ -235,6 +242,12 @@ async def revalidate_plan_evidence(session, user_id, plan):
             )
             .with_for_update()
         )
+        if not workout or workout.deleted or workout.version != source["version"]:
+            raise TurnConflict("Training evidence changed during generation; please retry")
+        if oid not in verified:
+            # An unverified reference still requires the exact owned source snapshot.
+            # It never acquires comparison/progression eligibility from plan acceptance.
+            continue
         confirmation = await session.scalar(
             select(ObservationAttestationRow)
             .where(
